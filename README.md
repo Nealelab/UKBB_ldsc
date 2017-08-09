@@ -1,10 +1,28 @@
 # UKBB ldsc scripts
 
-Scripts used for running LD score regression ([LDSC](https://github.com/bulik/ldsc)) to estimate SNP-heritability in UK Biobank. These are mostly intended for documentation purposes, and make take some work to get running or adapt to other applications. 
+Scripts used for running LD score regression ([LDSC](https://github.com/bulik/ldsc)) to estimate SNP-heritability in UK Biobank. These are mostly intended for documentation purposes, and may take some work to get running or adapt to other applications. 
 
-## Usage
+# Table of Contents
 
-### 0. Requirements
+* [Usage](#usage)
+  * [Requirements](#requirements)
+  * [Setup (create\_hm3\_keytable\.py)](#setup-create_hm3_keytablepy)
+    * [Generated reference files](#generated-reference-files)
+    * [Munged sumstats files](#munged-sumstats-files)
+  * [Running ldsc (ldsc\_h2\_parallel\_batch\.py)](#running-ldsc-ldsc_h2_parallel_batchpy)
+    * [Implementation Note](#implementation-note)
+    * [Settings](#settings)
+    * [Submission script (ldsc\_h2\_parallel\_batch\_submit\.sh)](#submission-script-ldsc_h2_parallel_batch_submitsh)
+  * [Aggregating results (agg\_ldsc\.sh)](#aggregate-results-agg_ldscsh)
+  * [Exploring h2 results (ukbb\_h2\.Rmd)](#exploring-h2-results-ukbb_h2rmd)
+* [Results](#results)
+
+TOC created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
+
+
+# Usage
+
+## Requirements
 
 Broadly, the core scripts here depend on:
 
@@ -15,7 +33,7 @@ Broadly, the core scripts here depend on:
 
 See the respective scripts for more info.
 
-### 1. Setup (`create_hm3_keytable.py`)
+## Setup (`create_hm3_keytable.py`)
 
 Creates a Hail keytable ([docs](https://hail.is/docs/stable/hail.KeyTable.html)) of HapMap3 SNPs passing QC in UKBB that can be used for LD score regression. This takes the place of the filtering normally performed in `munge_sumstats.py` ([see code from ldsc](https://github.com/bulik/ldsc/blob/master/munge_sumstats.py)). Variants in the resulting list are:
 
@@ -32,7 +50,7 @@ Struct{v_hm3:Variant,HM3_rsid:String,v_ukb:Variant,UKBB_rsid:String}
 ```
 The two variant encodings managing the differences in contig labels between the HM3 VCF and UKBB (i.e. leading "chr", leading 0 on chrosomes 1-9).
 
-#### Generated reference files
+### Generated reference files
 
 In addition to the final keytable of HM3 variants passing QC to use for LDSC, serveral interim files are generated that may be of more general interest:
 
@@ -62,7 +80,7 @@ gs://ukbb_association/ldsc/ld_ref_panel/hm3.r3.hg19.auto_bi_af.ukbb_full_qcpos.k
 ```
 
 
-#### Munged sumstats files
+### Munged sumstats files
 
 This final QC+ keytable (`hm3.r3.hg19.auto_bi_af.ukbb_gwas_qcpos.kt`) is then used the generate ldsc sumstats files (format described [here](https://github.com/bulik/ldsc/wiki/Summary-Statistics-File-Format)) as part of the GWAS output from UKBB. In the few instances where rsids for the same chr:pos:ref:alt differ between HM3 and UKBB, the output sumstats files use the rsid reported by UKBB.
 
@@ -72,7 +90,7 @@ gs://ukbb-gwas-results/ldsc/
 ```
 
 
-### 2. Running ldsc (`ldsc_h2_parallel_batch.py`)
+## Running ldsc (`ldsc_h2_parallel_batch.py`)
 
 This script runs [ldsc](https://github.com/bulik/ldsc) to estimate SNP-heritability for a batch of phenotypes using [MTAG](https://github.com/omeed-maghzian/mtag) with the standard default `eur_w_ld_chr` pre-computed European population LD scores. We use the version of ldsc provided with MTAG to take advantage of it's interface for calling ldsc from within python rather than via ther command line. Results are parsed into a gzipped tsv with columns:
 
@@ -83,14 +101,14 @@ phenotype, mean_chi2, lambdaGC, intercept intercept_se, intercept_z, intercept_p
 Conversion to liability-scale h2 for dichotomous traits is done assuming that the population prevelence is equal to the prevelence in the UKBB GWAS sample. 
 
 
-#### Implementation Note
+### Implementation Note
 
 This is almost certainly not the ideal way to strcture this analysis. Making a human manage the splitting/batching here somewhat defeats the purpose of having flexible cloud compute. We're conly doing it this way currently for expediency while we investigate better long-term alternatives.
 
 With the current settings in the submission script this takes a little over 10 CPU hours split over 10 minimal `n1-highcpu-16` VMs, each running 8 traits in parallel at a time. Attempts to scale this up to more traits on a machine (with 32- or 64-core VMs) have seen poor performance, likely due to being I/O bound for reading reference and sumstat files. 
 
 
-#### Settings
+### Settings
 
 Using this script involves both setting job information in the script and passing arguments for parallelization via the command line. The following setting are set by editing the the python script (`ldsc_h2_parallel_batch.py`):
 
@@ -112,19 +130,19 @@ It's assumed that there are `num_phens` phenotypes in the `phen_summary` file an
 Within an instance of `ldsc_h2_parallel_batch.py`, it will estimate h2 for `num_proc` phenotypes at a time in parallel, and continue running until it's share of the `num_phens` phenotypes is finished.
 
 
-#### Submission script (`ldsc_h2_parallel_batch_submit.sh`)
+### Submission script (`ldsc_h2_parallel_batch_submit.sh`)
 
 **WARNING: THIS SCRIPT WILL CREATE NEW CLUSTERS BUT WILL NOT SHUT THEM DOWN**
 
 This is a simple bash script to loop job submission of `ldsc_h2_parallel_batch.py` for each batch of phenotypes, assuming parallelization to `$maxi` batches. A new cluster is spun up and a job submitted to each cluster using [cloudtools](https://github.com/Nealelab/cloudtools). If using this script, please monitor the jobs and **shut down each cluster when it completes**.  
 
 
-### 3. Aggregate results (`agg_ldsc.sh`)
+## Aggregating results (`agg_ldsc.sh`)
 
 Downloads the results for each ldsc batch, combines them into a single file, uploads that file back to the cloud, and creates a local Rdata object for use in R markdown (see next).
 
 
-### 4. Exploring h2 results (`ukbb_h2.Rmd`)
+## Exploring h2 results (`ukbb_h2.Rmd`)
 
 This [R-Markdown](http://rmarkdown.rstudio.com/) file provides some interactive plots for exploring the ldsc h2 results using [shiny](https://shiny.rstudio.com/). The example includes lookups of specific phenotypes (by UKBB ID number), histograms and scatter plots with all of the output variables, and QQ plots of the p-values for h2 and the ldsc intercept.
 
@@ -133,7 +151,7 @@ This [R-Markdown](http://rmarkdown.rstudio.com/) file provides some interactive 
 ![Example R Markdown plots](ldsc_rmd_example.png)
 
 
-## Results
+# Results
 
 In process. Internally, see:
 
