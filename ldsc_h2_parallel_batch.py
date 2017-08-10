@@ -5,8 +5,8 @@
 # Settings:
 wd = '/home/mtag/' # root working directory
 ld_ref_panel = '/home/mtag/mtag-master/ld_ref_panel/eur_w_ld_chr/' # local path
-phen_summary = 'gs://ukbb-gwas-results/ukb1859/ukb1859_phenosummary_final.tsv' # in cloud
-num_phens = 1564
+phen_summary = 'gs://ukbb_association/ukb1189/ukb1189_icd10_phenosummary.tsv' # in cloud
+num_phens = 640
 ss_bucket = 'gs://ukbb-gwas-results/ldsc' # 'gs://ukbb_association/ldsc/sumstats' # bucket with sumstats.gz files
 out_bucket = 'gs://ukbb-gwas-results/ldsc_results' # ouput google bucket location
 num_proc = 8 # number of processes to run
@@ -21,7 +21,7 @@ parser.add_argument('--paridx', type=int, required=True, help="which of the phen
 args = parser.parse_args()
 
 idx = xrange(args.paridx-1, num_phens, args.parsplit)
-h2_fname = 'ukbb1859_h2_results.batch_'+str(args.paridx)+'.txt.gz'
+h2_fname = 'ukbb1189_icd10_h2_results.batch_'+str(args.paridx)+'.txt.gz'
 
 ###########################################
 
@@ -240,6 +240,12 @@ def ldsc_h2(args, **kwargs):
     return process_h2(h2_results, phname, ncas, ncon).values.tolist()
 
 
+def strip_icd(text):
+    if text.startswith("41202_"):
+        return text[6:]
+    else:
+        return text
+
 
 if __name__ == "__main__":
 
@@ -260,6 +266,9 @@ if __name__ == "__main__":
     # get subset of phenotypes to run
     ph_sub = phens.iloc[idx]
     ph_list = list(ph_sub.index.values)
+    
+    # strip ICD code prefix (not used in ldsc sumstats file names)
+    ph_list = [strip_icd(x) for x in ph_list]
 
     print "Phenotypes to run:"
     print ph_list
