@@ -105,7 +105,7 @@ Conversion to liability-scale h2 for dichotomous traits is done assuming that th
 
 This is almost certainly not the ideal way to strcture this analysis. Making a human manage the splitting/batching here somewhat defeats the purpose of having flexible cloud compute. We're conly doing it this way currently for expediency while we investigate better long-term alternatives.
 
-With the current settings in the submission script this takes a little over 10 CPU hours split over 10 minimal `n1-highcpu-16` VMs, each running 8 traits in parallel at a time. Attempts to scale this up to more traits on a machine (with 32- or 64-core VMs) have seen poor performance, likely due to being I/O bound for reading reference and sumstat files. 
+With the current settings in the submission script running ~1500 traits takes a little over 10 CPU hours split over 10 minimal `n1-highcpu-16` VMs, each running 8 traits in parallel at a time. Attempts to scale this up to more traits on a machine (with 32- or 64-core VMs) have seen poor performance, likely due to being I/O bound for reading reference and sumstat files. 
 
 
 ### Settings
