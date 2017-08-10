@@ -63,7 +63,7 @@ renderPrint({
 
 renderUI({
 	phenstem = split(input$pheno, "_")[1]
-	ukb_url = a("Find this phenotype on the UK Biobank Showcase", href=paste0("http://biobank.ctsu.ox.ac.uk/crystal/search.cgi?srch=",phenstem))
+	ukb_url = a("Find this phenotype on the UK Biobank Showcase (numeric codes only, excluding ICD)", href=paste0("http://biobank.ctsu.ox.ac.uk/crystal/search.cgi?srch=",phenstem))
 	
 	tagList(ukb_url)
 	})
