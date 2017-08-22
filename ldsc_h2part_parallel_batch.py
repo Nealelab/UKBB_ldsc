@@ -8,8 +8,8 @@ wd = '/home/mtag/' # root working directory
 ld_ref_panel = '/home/mtag/mtag-master/ld_ref_panel/baselineLD_v1.1/baselineLD.' # local path
 ld_w_panel = '/home/mtag/mtag-master/ld_ref_panel/1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.' # local path
 ld_frq_panel = '/home/mtag/mtag-master/ld_ref_panel/1000G_Phase3_frq/1000G.EUR.QC.'
-phen_summary = 'gs://ukbb_association/ukb11898-icd10/ukb11898-icd10_phenosummary.tsv' # in cloud
-num_phens = 640
+phen_summary = 'gs://ukbb-gwas-results/ukb1859/ukb1859_phenosummary_final.tsv' # in cloud
+num_phens = 1564
 ss_bucket = 'gs://ukbb-gwas-results/ldsc' # 'gs://ukbb_association/ldsc/sumstats' # bucket with sumstats.gz files
 out_bucket = 'gs://ukbb-gwas-results/ldsc_results' # ouput google bucket location
 num_proc = 6 # number of processes to run
@@ -24,7 +24,7 @@ parser.add_argument('--paridx', type=int, required=True, help="which of the phen
 args = parser.parse_args()
 
 idx = xrange(args.paridx-1, num_phens, args.parsplit)
-h2_fname = 'ukbb11898_icd10_h2part_results.batch_'+str(args.paridx)+'.txt.gz'
+h2_fname = 'ukbb18597_h2part_results.batch_'+str(args.paridx)+'.txt.gz'
 
 ###########################################
 

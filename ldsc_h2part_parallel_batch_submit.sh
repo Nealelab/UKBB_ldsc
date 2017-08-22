@@ -7,7 +7,7 @@ set -e
 # - spins up cluster
 # - submits ldsc batch in background
 
-maxi=$((8))
+maxi=$((10))
 
 for i in `seq 2 $maxi`; do
 # for i in `seq 1 1`; do
