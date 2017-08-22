@@ -3,7 +3,7 @@
 infile <- commandArgs(T)[1]
 outname <- commandArgs(T)[2]
 
-dat <- read.table(infile, header=T, stringsAsFactors=F)
+dat <- read.table(infile, header=T, stringsAsFactors=F, sep='\t')
 save(dat, file=outname)
 
 summary(dat)

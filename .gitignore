@@ -3,3 +3,4 @@ ldsc_h2_parallel_batch_submit_test.sh
 *.Rdata
 *.RData
 *.log
+.DS_Store
