@@ -257,7 +257,7 @@ gsutil cp ukbb_all_h2part_results.txt.gz gs://ukbb-gwas-results/ldsc_results/ukb
 set +e
 use R-3.4
 ./make_rdata.R ukbb_all_h2univar_results.txt.gz ukbb_h2univar.RData > make_rdata_h2univar.log
-./make_rdata.R ukbb_all_h2part_results.txt.gz ukbb_hpart.RData > make_rdata_h2part.log
+./make_rdata.R ukbb_all_h2part_results.txt.gz ukbb_h2part.RData > make_rdata_h2part.log
 
 # cleanup
 rm *phenosummary_final.tsv
