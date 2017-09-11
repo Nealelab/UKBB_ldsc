@@ -90,13 +90,17 @@ gs://ukbb-gwas-results/ldsc/
 ```
 
 
-## Running ldsc (`ldsc_h2_parallel_batch.py`)
+## Running ldsc (`ldsc_h2*_parallel_batch.py`)
 
-This script runs [ldsc](https://github.com/bulik/ldsc) to estimate SNP-heritability for a batch of phenotypes using [MTAG](https://github.com/omeed-maghzian/mtag) with the standard default `eur_w_ld_chr` pre-computed European population LD scores. We use the version of ldsc provided with MTAG to take advantage of it's interface for calling ldsc from within python rather than via ther command line. Results are parsed into a gzipped tsv with columns:
+These script run [ldsc](https://github.com/bulik/ldsc) to estimate SNP-heritability for a batch of phenotypes using [MTAG](https://github.com/omeed-maghzian/mtag). We use the version of ldsc provided with MTAG to take advantage of it's interface for calling ldsc from within python rather than via the command line. 
+
+The script `ldsc_h2_parallel_batch.py` runs univariate LD score regression with the standard default `eur_w_ld_chr` pre-computed European population LD scores. Results are parsed into a gzipped tsv with columns:
 
 ```
 phenotype, mean_chi2, lambdaGC, intercept intercept_se, intercept_z, intercept_p, ratio, ratio_se, h2_observed, h2_observed_se, h2_liability, h2_liability_se, h2_z, h2_p
 ```
+
+The script `ldsc_h2part_parallel_batch.py` similarly runs partitioned LD score regression, using the `baselineLD_v1.1` set of precomputed LD scores from 1000 Genomes Phase 3 European populations available (here)[https://data.broadinstitute.org/alkesgroup/LDSCORE/] and described by (Gazal et al. (2017))[http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html]. The full set of results for the annotations (e.g. corresponding to the `--print-coefficients` output file) are converted to a flat row of results per phenotype. 
 
 Conversion to liability-scale h2 for dichotomous traits is done assuming that the population prevelence is equal to the prevelence in the UKBB GWAS sample. 
 
@@ -105,12 +109,12 @@ Conversion to liability-scale h2 for dichotomous traits is done assuming that th
 
 This is almost certainly not the ideal way to strcture this analysis. Making a human manage the splitting/batching here somewhat defeats the purpose of having flexible cloud compute. We're conly doing it this way currently for expediency while we investigate better long-term alternatives.
 
-With the current settings in the submission script running ~1500 traits takes a little over 10 node hours (~160 CPU hours) split over 10 minimal `n1-highcpu-16` VMs, each running 8 traits in parallel at a time. Attempts to scale this up to more traits on a machine (with 32- or 64-core VMs) have seen poor performance, likely due to being I/O bound for reading reference and sumstat files. 
+With the current settings in the submission script running univariate h2 for ~1500 traits takes a little over 10 node hours (~160 CPU hours) split over 10 minimal `n1-highcpu-16` VMs, each running 8 traits in parallel at a time. Paritioned heritbaility is slower, taking just under 20 hours on 10 `n1-standard-16` VMs running 6 traits at a time for the same traits. Attempts to scale this up to more traits on a machine (with 32- or 64-core VMs) have seen poor performance, likely due to being I/O bound for reading reference and sumstat files. 
 
 
 ### Settings
 
-Using this script involves both setting job information in the script and passing arguments for parallelization via the command line. The following setting are set by editing the the python script (`ldsc_h2_parallel_batch.py`):
+Using this script involves both setting job information in the script and passing arguments for parallelization via the command line. The following setting are set by editing the the python script (`ldsc_h2_parallel_batch.py` or `ldsc_h2part_parallel_batch.py`):
 
 ```
 ld_ref_panel = '/home/mtag/mtag-master/ld_ref_panel/eur_w_ld_chr/' # local path
@@ -130,16 +134,16 @@ It's assumed that there are `num_phens` phenotypes in the `phen_summary` file an
 Within an instance of `ldsc_h2_parallel_batch.py`, it will estimate h2 for `num_proc` phenotypes at a time in parallel, and continue running until it's share of the `num_phens` phenotypes is finished.
 
 
-### Submission script (`ldsc_h2_parallel_batch_submit.sh`)
+### Submission script (`ldsc_h2*_parallel_batch_submit.sh`)
 
 **WARNING: THIS SCRIPT WILL CREATE NEW CLUSTERS BUT WILL NOT SHUT THEM DOWN**
 
-This is a simple bash script to loop job submission of `ldsc_h2_parallel_batch.py` for each batch of phenotypes, assuming parallelization to `$maxi` batches. A new cluster is spun up and a job submitted to each cluster using [cloudtools](https://github.com/Nealelab/cloudtools). If using this script, please monitor the jobs and **shut down each cluster when it completes**.  
+This is a simple bash script to loop job submission of `ldsc_h2*_parallel_batch.py` for each batch of phenotypes, assuming parallelization to `$maxi` batches. A new cluster is spun up and a job submitted to each cluster using [cloudtools](https://github.com/Nealelab/cloudtools). If using this script, please monitor the jobs and **shut down each cluster when it completes**.  
 
 
 ## Aggregating results (`agg_ldsc.sh`)
 
-Downloads the results for each ldsc batch, combines them into a single file, uploads that file back to the cloud, and creates a local Rdata object for use in R markdown (see next).
+Downloads the results for each ldsc batch, combines them into a single file, uploads that file back to the cloud, and creates a local Rdata object for use in R markdown (see next). Descriptive information is also incorporated from the appropriate phenosummary files.  
 
 
 ## Exploring h2 results (`ukbb_h2.Rmd`)
