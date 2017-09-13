@@ -1,0 +1,139 @@
+---
+title: "Heritability for `r phen`"
+date: "Last updated `r format(Sys.Date())`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(plotly)
+require(reshape2)
+
+dat_sub <- dat[which(dat$phenotype==phen),]
+
+ukcode <- strsplit(phen,"_")[[1]][1]
+
+isICD <- is.na(as.numeric(ukcode))
+if(isICD){
+	ukb_url = "http://biobank.ctsu.ox.ac.uk/crystal/search.cgi?srch=41202"
+	ukcode = "41202"
+}else{
+	ukb_url = paste0("http://biobank.ctsu.ox.ac.uk/crystal/search.cgi?srch=",ukcode)
+}
+
+isBinary <- !is.na(dat_sub$N_case[1])
+
+if(isBinary){
+	Neff <- 4/((1/dat_sub$N_case)+(1/dat_sub$N_control))
+}else{
+	Neff <- dat_sub$N
+}
+isSmallCont <- (Neff < 1000 && !isBinary)
+isSmallBinary <- (Neff < 1000 && isBinary)
+
+format_bigint <- function(n){
+	formatC(n,format="f",big.mark=',',drop0trailing=T)
+}
+
+```
+<br>
+
+<div class="panel panel-primary">
+<div class="panel-body">
+### **Phenotype:** `r dat_sub$description`
+
+#### **Estimated heritability:** `r sprintf("%0.4f",dat_sub$h2_liability)` (se=`r sprintf("%0.3g",dat_sub$h2_liability_se)`, p=`r sprintf("%0.3e",dat_sub$h2_p)`)
+
+This phenotype can be found `r if(isICD){" as part of the ICD code listings"}` on the UK Biobank Showcase for [code `r ukcode`](`r ukb_url`). GWAS results are available for _N_ = `r format_bigint(dat_sub$N)` unrelated individuals of European ancestry. This is a `r ifelse(isBinary, "binary", "continuous")` phenotype`r if(isBinary){paste0(" with ",format_bigint(dat_sub$N_case)," cases and ",format_bigint(dat_sub$N_control)," controls")}`.  
+
+</div>
+</div>
+
+`r if(isBinary){paste0("<div class=\"panel panel-info\"><div class=\"panel-body\"> <p class=\"text-info\">**Note:**</p> Heritability for this binary outcome is reported on the liability scale, assuming that the population prevalence matches the observed prevalence of ",sprintf("%0.3g",dat_sub$prevelence)," in the UK Biobank analysis set. This may be unreliable if the outcome was only defined for a subset of individuals, or if the the UK Biobank study population (which skews older, whiter, and higher SES than the general UK population, among other things) is not a representative sample for this phenotype. For comparison, estimated **observed-scale heritability** is: ", sprintf("%0.4f",dat_sub$h2_observed)," (se=",sprintf("%0.3g",dat_sub$h2_observed_se),"). The p-value is unaffected.</div></div>")}`
+`r if(isSmallCont){paste0("<div class=\"panel panel-warning\">Warning<div class=\"panel-body\"> The sample size for this phenotype is quite limited. Estimates are likely to be unstable. </div></div>")}`
+`r if(isSmallBinary){paste0("<div class=\"panel panel-warning\"><div class=\"panel panel-heading\"><h3 class=\"panel-title\">Warning</h3></div><div class=\"panel-body\"> The effective sample size for this phenotype is quite limited (N_eff=",format_bigint(round(Neff,2)),"). Estimates are likely to be unstable. Liability-scale transformation for this binary phenotype may be especially misleading. </div></div>")}`
+
+<br>
+
+### Full Results
+
+All results are from partitioned heritability analysis of this phenotype using [LD score regression](link) with XX annotations as described by [Gazal et al](link). See [Technical Details](link) for more information.
+
+<br>
+
+#### Confounding and Model Misspecification
+
+In addition to heritability, LD score regression also estimates a intercept term that indexes of population stratification, other counfounding, and potential misspecification in the partitioned LD score model for the distribution of genetic effects genome-wide. 
+
+* **Intercept:** `r round(dat_sub$intercept,4)` (se=`r sprintf("%0.3g",dat_sub$intercept_se)`, p=`r sprintf("%0.3e",dat_sub$intercept_p)`)
+* **Mean $\chi^2$:** `r round(dat_sub$mean_chi2,4)`
+* **$\lambda_{GC}$:** `r round(dat_sub$lambdaGC,4)`
+* **Ratio:** `r sprintf("%0.4f",dat_sub$ratio)` (se=`r sprintf("%0.4f",dat_sub$ratio_se)`)
+
+Intercept values near 1 indicate little or no confounding. Comparing the intercept and the mean chi2 statistic provides an rough index for how much of the polygenic signal in the GWAS may be due to confounding rather than genetic effects (assuming the LD score model is well specified).
+
+<br>
+
+#### Partitioned Heritability
+
+##### Significance of categorical annotations
+
+```{r part_coef_p, echo=FALSE}
+coef_p_cols <- names(dat_sub)[grep("..Coefficient_p",names(dat_sub))]
+
+# remove continuous annotations
+coef_p_cols <- coef_p_cols[-grep("base",coef_p_cols)]
+coef_p_cols <- coef_p_cols[-grep(".extend.500",coef_p_cols)]
+coef_p_cols <- coef_p_cols[-grep("MAF",coef_p_cols)]
+coef_p_cols <- coef_p_cols[-grep("Recomb",coef_p_cols)]
+coef_p_cols <- coef_p_cols[-grep("GERP.NS",coef_p_cols)]
+coef_p_cols <- coef_p_cols[-grep("Backgrd",coef_p_cols)]
+coef_p_cols <- coef_p_cols[-grep("CpG",coef_p_cols)]
+coef_p_cols <- coef_p_cols[-grep("Diversity",coef_p_cols)]
+
+dtmp <- dat_sub[,c("phenotype",coef_p_cols)]
+df <- melt(dtmp,id.vars = "phenotype")
+df$logp <- -log10(df$value)
+df$variable <- sapply(df$variable,function(a) strsplit(as.character(a), split="\\.\\.")[[1]][1])
+
+# define barplot
+pp <- plot_ly(df, width=800) %>%
+			add_trace(
+			  x=~variable,
+			  y=~logp,
+			  hoverinfo="text",
+			  text=~paste0("Annotation: ",variable,
+			  		   "<br>p-value: ", signif(value, 3)),
+			  type="bar",
+			  name="p-value for coefficient"
+	  ) %>% add_trace(
+	  		x=~variable, 
+	  		y=rep(-log10(.05/nrow(df)),nrow(df)), 
+	  		type="scatter",
+	  		mode="lines",
+	  		hoverinfo="text",
+			text="",
+	  		name="Bonferroni significance",
+	  		yaxis='y2'
+	  ) %>% add_trace(
+	  		x=~variable, 
+	  		y=rep(-log10(.05),nrow(df)), 
+	  		type="scatter",
+	  		mode="lines",
+	  		hoverinfo="text",
+			text="",
+	  		name="Nominal significance",
+	  		yaxis='y2'
+	  ) %>% layout(
+	  			 showlegend=F,
+	  			 xaxis = list(title="Annotation", tickangle=-30),
+	  			 yaxis = list(title="-log10(p-value)",side='left', range=c(0,max(df$logp))),
+	  			 yaxis2 = list(title="", showgrid = FALSE, zeroline = FALSE, overlaying='y', side='right', range=c(0,max(df$logp)),showticklabels=F),
+	  			 margin=list(b=150)
+	  ) 
+
+pp
+
+```
+
+The orange line indicates Bonferroni-corrected signicance within categorical annotations for this phenotype. Green line indicates nominal significance ($p < .05$). The 500-bp extended annotation for baseline functional annotations is omitted from inference.

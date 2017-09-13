@@ -14,7 +14,6 @@ Scripts used for running LD score regression ([LDSC](https://github.com/bulik/ld
     * [Settings](#settings)
     * [Submission script (ldsc\_h2\_parallel\_batch\_submit\.sh)](#submission-script-ldsc_h2_parallel_batch_submitsh)
   * [Aggregating results (agg\_ldsc\.sh)](#aggregate-results-agg_ldscsh)
-  * [Exploring h2 results (ukbb\_h2\.Rmd)](#exploring-h2-results-ukbb_h2rmd)
 * [Results](#results)
 
 TOC created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
@@ -144,15 +143,6 @@ This is a simple bash script to loop job submission of `ldsc_h2*_parallel_batch.
 ## Aggregating results (`agg_ldsc.sh`)
 
 Downloads the results for each ldsc batch, combines them into a single file, uploads that file back to the cloud, and creates a local Rdata object for use in R markdown (see next). Descriptive information is also incorporated from the appropriate phenosummary files.  
-
-
-## Exploring h2 results (`ukbb_h2.Rmd`)
-
-This [R-Markdown](http://rmarkdown.rstudio.com/) file provides some interactive plots for exploring the ldsc h2 results using [shiny](https://shiny.rstudio.com/). The example includes lookups of specific phenotypes (by UKBB ID number), histograms and scatter plots with all of the output variables, and QQ plots of the p-values for h2 and the ldsc intercept.
-
-`ukbb_h2.Rmd` assumes you have created `dat.RData` with the output from `ldsc_h2_parallel_batch.py` above (e.g. `ukbb1859_h2_results.batch_1.txt.gz`) and have that RData object stored in the current working directory.
-
-![Example R Markdown plots](ldsc_rmd_example.png)
 
 
 # Results

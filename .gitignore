@@ -1,6 +1,8 @@
-ldsc_h2_parallel_batch_submit_test.sh
+./scripts/ldsc_h2_parallel_batch_submit_test.sh
 *.gz
 *.Rdata
 *.RData
 *.log
+./old
+./old/*
 .DS_Store
