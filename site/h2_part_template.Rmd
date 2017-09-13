@@ -42,7 +42,7 @@ format_bigint <- function(n){
 <div class="panel-body">
 ### **Phenotype:** `r dat_sub$description`
 
-#### **Estimated heritability:** `r sprintf("%0.4f",dat_sub$h2_liability)` (se=`r sprintf("%0.3g",dat_sub$h2_liability_se)`, p=`r sprintf("%0.3e",dat_sub$h2_p)`)
+#### **Estimated SNP heritability:** `r sprintf("%0.4f",dat_sub$h2_liability)` (se=`r sprintf("%0.3g",dat_sub$h2_liability_se)`, p=`r sprintf("%0.3e",dat_sub$h2_p)`)
 
 This phenotype can be found `r if(isICD){" as part of the ICD code listings"}` on the UK Biobank Showcase for [code `r ukcode`](`r ukb_url`). GWAS results are available for _N_ = `r format_bigint(dat_sub$N)` unrelated individuals of European ancestry. This is a `r ifelse(isBinary, "binary", "continuous")` phenotype`r if(isBinary){paste0(" with ",format_bigint(dat_sub$N_case)," cases and ",format_bigint(dat_sub$N_control)," controls")}`.  
 

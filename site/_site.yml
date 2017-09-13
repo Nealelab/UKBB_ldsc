@@ -9,9 +9,9 @@ navbar:
     - text: "Technical Details"
       href: index.html
     - text: "Github Repo"
-      href: index.html
+      href: https://github.com/Nealelab/UKBB_ldsc
     - text: "Neale Lab UKBB"
-      href: index.html
+      href: http://www.nealelab.is/
 
 output:
   html_document:
