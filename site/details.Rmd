@@ -1,0 +1,41 @@
+---
+title: "Details on LD Score Regression in UK Biobank"
+date: "Last updated `r format(Sys.Date())`"
+output: html_document
+---
+
+<br>
+<br>
+
+#### Summary
+
+* SNP Heritability is estimated are from LD Score Regression (LDSR; [Bulik-Sullivan et al. 2015](`http://www.nature.com/ng/journal/v47/n3/full/ng.3211.html`) or [on pubmed](`https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/`)) using [ldsc](`https://github.com/bulik/ldsc`) and [MTAG](`https://github.com/omeed-maghzian/mtag`)
+
+* Full code is available on the [Github repo](`https://github.com/Nealelab/UKBB_ldsc`)
+
+* A full technical discussion on the limitations of this analysis and recommendations for intepreting the results can be found on the [Neale Lab blog](`http://www.nealelab.is`).
+
+<br>
+<br>
+
+#### LDSR Details
+
+* We follow the conventional approach of restricting to GWAS results from HapMap3 sites passing MAF > 0.01 and INFO > 0.9 as input, but we’ve reimplemented this to define a single passing list in UKBB rather than running `munge_sumstats.py` from [ldsc](`https://github.com/bulik/ldsc`) with the `w_hm3.snplist` reference file.
+
+* We’ve run both univariate and partitioned heritability analyses. For reasons that will be discussed in a later post we’re currently presenting the partitioned heritability LDSR results as the primary analysis in the summary browser (link), but the univariate results are also available [here](`https://nealelab.github.io/UKBB_ldsc/h2_univar_browser.html`).
+
+* The univariate LDSR analysis was run with default settings using [precomputed LD scores from 1000 Genomes European ancestry samples](`https://data.broadinstitute.org/alkesgroup/LDSCORE/`) (i.e. `./eur_w_ld`)
+
+* The partitioned LDSR analysis was run using the v1.1 of the Baseline-LD annotations described by [Gazal et al. 2017](`http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html`) (also on [biorxiv](`http://www.biorxiv.org/content/early/2017/04/03/082024`)) computed from 1000 Genomes Phase 3 data from European ancestry populations and corresponding allele frequencies (available from [the ldsc reference downloads page](`https://data.broadinstitute.org/alkesgroup/LDSCORE/`)). Default settings were used, with the exception of removing the maximum chi2 filter due to the extreme sample size of UKBB.
+
+<br>
+<br>
+
+#### Tools
+
+* LDSR was run using the implementation in [MTAG](`https://github.com/omeed-maghzian/mtag`), which provides a convenient interface to [ldsc](`https://github.com/bulik/ldsc`) from within python rather than via the command line.
+
+* All analyses were run on the [Google Cloud Platform](`https://cloud.google.com/`), with the assistance of [Hail](`https://hail.is`), [cloudtools](`https://github.com/Nealelab/cloudtools`), and many other tools. 
+
+* This site has been generated with the assistance of [R Markdown](`http://rmarkdown.rstudio.com/`) with [plotly](`https://plot.ly/r/`), [DT](`https://rstudio.github.io/DT/`), and [crosstalk](https://rstudio.github.io/crosstalk/), and is hosted via [Github Pages](`https://pages.github.com/`).
+
