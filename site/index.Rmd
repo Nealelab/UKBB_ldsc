@@ -7,7 +7,7 @@ output: html_document
 
 <div class="well">
 
-As you may know, the UK Biobank recently released data on ~500,000 individuals to the scientific community to advance research on genetics. The [Neale Lab](`http://nealelab.is`) has been working to make some basic analyses of that data freely available; you can read more about the overall effort [here](`http://nealelab.is`).
+As you may know, the UK Biobank recently released data on ~500,000 individuals to the scientific community to advance research on genetics. The [Neale Lab](http://nealelab.is) has been working to make some basic analyses of that data freely available; you can read more about the overall effort [here](http://nealelab.is).
 
 <br>
 
@@ -23,9 +23,7 @@ Building on the initial genome-wide association analyses, we’ve now estimated 
 You can learn more about the heritability analysis in this series of blog posts:
 
 * [Heritability 101: What is “heritability”?](`link`)
-
 * [Heritability 201: Types of heritability and how we estimate it](`link`)
-
 * (coming soon:) Insights from estimates of SNP-heritability for >2,000 traits and disorders in UK Biobank
 
 <br>
@@ -33,8 +31,7 @@ You can learn more about the heritability analysis in this series of blog posts:
 More technical descriptions are also available:
 
 * [Heritability 501: LDSR-based h2 in UKBB for the technically-minded](`link`)
-
-* [UKBB_ldsc github repository](`https://github.com/Nealelab/UKBB_ldsc`)
+* [UKBB_ldsc github repository](https://github.com/Nealelab/UKBB_ldsc)
 
 <br>
 
@@ -61,13 +58,13 @@ We’ve created a browser to explore the results [here](`h2_browser.html`). You 
 
 **What method have you used to estimated heritability?**
 
-To enable this quick initial analysis on such large-scale data we’re relying on LD score regression ([article](`https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/`), [github repo](`https://github.com/bulik/ldsc`)). Full code and technical details are available in the [UKBB_ldsc github repository](`https://github.com/Nealelab/UKBB_ldsc`) and described in [Heritability 501](`link`).
+To enable this quick initial analysis on such large-scale data we’re relying on LD score regression ([article](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/), [github repo](https://github.com/bulik/ldsc)). Full code and technical details are available in the [UKBB_ldsc github repository](https://github.com/Nealelab/UKBB_ldsc) and described in [Heritability 501](`link`).
 
 <br>
 
 **Are the primary GWAS results used for this analysis available? **
 
-Yes! Parial results are available for browsing through the [Global Biobank Engine](), and the full GWAS results are available for bulk download from [here](`link`). See [the introductory post](`link`) for much more information. 
+Yes! Parial results are available for browsing through the [Global Biobank Engine](`link`), and the full GWAS results are available for bulk download from [here](`link`). See [the introductory post](`link`) for much more information. 
 
 <br>
 

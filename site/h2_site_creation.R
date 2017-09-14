@@ -11,6 +11,12 @@ require("rmarkdown")
 # build
 render_site()
 
+#########
+
+# for yaml for per-pheno sites
+# load(../results/ukbb_h2part.RData)
+# d2 <- dat$phenotype
+# cat(paste0(" h2_summary_",d2,".html:\n    src: \"h2_part_template.Rmd\"\n    params:\n      pheno: \"",d2,"\"\n      datfile: \"../results/ukbb_h2part.RData\"\n"), file="tmp.yaml")
 
 
 #####################

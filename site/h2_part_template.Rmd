@@ -57,7 +57,7 @@ This phenotype can be found `r if(isICD){" as part of the ICD code listings"}` o
 </div>
 </div>
 
-`r if(isBinary){paste0("<div class=\"panel panel-info\"><div class=\"panel-body\"> <p class=\"text-info\">**Note:**</p> Heritability for this binary outcome is reported on the liability scale, assuming that the population prevalence matches the observed prevalence of ",sprintf("%0.3g",dat_sub$prevelence)," in the UK Biobank analysis set. This may be unreliable if the outcome was only defined for a subset of individuals, or if the the UK Biobank study population (which skews older, whiter, and higher SES than the general UK population, among other things) is not a representative sample for this phenotype. For comparison, estimated **observed-scale heritability** is: ", sprintf("%0.4f",dat_sub$h2_observed)," (se=",sprintf("%0.3g",dat_sub$h2_observed_se),"). The p-value is unaffected.</div></div>")}`
+`r if(isBinary){paste0("<div class=\"panel panel-info\"><div class=\"panel-body\"> <p class=\"text-info\">**Note:**</p> Heritability for this binary outcome is reported on the liability scale, assuming that the population prevalence matches the observed prevalence of ",sprintf("%0.3g",dat_sub$prevelence)," in the UK Biobank analysis set. This may be unreliable if the outcome was only defined for a subset of individuals, or if the the UK Biobank study population (which skews older, whiter, and higher SES than the general UK population, <a href=\"https://academic.oup.com/aje/article/doi/10.1093/aje/kwx246/3883629/Comparison-of-Sociodemographic-and-Health-Related\">among other things</a>) is not a representative sample for this phenotype. For comparison, estimated **observed-scale heritability** is: ", sprintf("%0.4f",dat_sub$h2_observed)," (se=",sprintf("%0.3g",dat_sub$h2_observed_se),"). The p-value is unaffected.</div></div>")}`
 `r if(isSmallCont){paste0("<div class=\"panel panel-warning\">Warning<div class=\"panel-body\"> The sample size for this phenotype is quite limited. Estimates are likely to be unstable. </div></div>")}`
 `r if(isSmallBinary){paste0("<div class=\"panel panel-warning\"><div class=\"panel panel-heading\"><h3 class=\"panel-title\">Warning</h3></div><div class=\"panel-body\"> The effective sample size for this phenotype is quite limited (N_eff=",format_bigint(round(Neff,2)),"). Estimates are likely to be unstable. Liability-scale transformation for this binary phenotype may be especially misleading. </div></div>")}`
 
@@ -65,7 +65,7 @@ This phenotype can be found `r if(isICD){" as part of the ICD code listings"}` o
 
 ### Full Results
 
-All results are from partitioned heritability analysis of this phenotype using [LD score regression](link) with XX annotations as described by [Gazal et al](link). See [Technical Details](link) for more information.
+All results are from partitioned heritability analysis of this phenotype using LD score regression ([Bulik-Sullivan et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/), [github repo](https://github.com/bulik/ldsc)) with 74 annotations as described by [Gazal et al. 2017](http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html) (also on [biorxiv](http://www.biorxiv.org/content/early/2017/04/03/082024)). See [Technical Details](`details.html`) for more information.
 
 <br>
 
@@ -78,7 +78,7 @@ In addition to heritability, LD score regression also estimates a intercept term
 * **$\lambda_{GC}$:** `r round(dat_sub$lambdaGC,4)`
 * **Ratio:** `r sprintf("%0.4f",dat_sub$ratio)` (se=`r sprintf("%0.4f",dat_sub$ratio_se)`)
 
-Intercept values near 1 indicate little or no confounding. Comparing the intercept and the mean chi2 statistic provides an rough index for how much of the polygenic signal in the GWAS may be due to confounding rather than genetic effects (assuming the LD score model is well specified).
+Intercept values near 1 indicate little or no confounding. Comparing the intercept and the mean $\chi^2$ statistic provides an rough index for how much of the polygenic signal in the GWAS may be due to confounding rather than genetic effects (assuming the LD score model is well specified).
 
 <br>
 
@@ -116,7 +116,7 @@ pp <- plot_ly(df, width=800) %>%
 			  name="p-value for coefficient"
 	  ) %>% add_trace(
 	  		x=~variable, 
-	  		y=rep(-log10(.05/nrow(df)),nrow(df)), 
+	  		y=rep(-log10(.05/38),nrow(df)), 
 	  		type="scatter",
 	  		mode="lines",
 	  		hoverinfo="text",
@@ -137,11 +137,11 @@ pp <- plot_ly(df, width=800) %>%
 	  			 xaxis = list(title="Annotation", tickangle=-30),
 	  			 yaxis = list(title="-log10(p-value)",side='left', range=c(0,max(df$logp))),
 	  			 yaxis2 = list(title="", showgrid = FALSE, zeroline = FALSE, overlaying='y', side='right', range=c(0,max(df$logp)),showticklabels=F),
-	  			 margin=list(b=150)
+	  			 margin=list(b=150,l=100)
 	  ) 
 
 config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
 
 ```
 
-The orange line indicates Bonferroni-corrected signicance within categorical annotations for this phenotype. Green line indicates nominal significance ($p < .05$). The 500-bp extended annotation for baseline functional annotations is omitted from inference.
+The orange line indicates Bonferroni-corrected significance across 38 annotations for this phenotype ($p <$ 1.3e-3). The green line indicates nominal significance ($p <$ .05). Bonferroni correction excludes the 10 MAF bin annotations and the 26 buffer annotations (extending 500-bp around the baseline functional annotations) since they are primarily intended as statistical controls rather than for direct inference.

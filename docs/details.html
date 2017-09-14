@@ -212,28 +212,28 @@ $(document).ready(function () {
 <div id="summary" class="section level4">
 <h4>Summary</h4>
 <ul>
-<li><p>SNP Heritability is estimated are from LD Score Regression (LDSR; <a href="%60http://www.nature.com/ng/journal/v47/n3/full/ng.3211.html%60">Bulik-Sullivan et al. 2015</a> or <a href="%60https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/%60">on pubmed</a>) using <a href="%60https://github.com/bulik/ldsc%60">ldsc</a> and <a href="%60https://github.com/omeed-maghzian/mtag%60">MTAG</a></p></li>
-<li><p>Full code is available on the <a href="%60https://github.com/Nealelab/UKBB_ldsc%60">Github repo</a></p></li>
-<li><p>A full technical discussion on the limitations of this analysis and recommendations for intepreting the results can be found on the <a href="%60http://www.nealelab.is%60">Neale Lab blog</a>.</p></li>
+<li><p>SNP Heritability is estimated are from LD Score Regression (LDSR; <a href="http://www.nature.com/ng/journal/v47/n3/full/ng.3211.html">Bulik-Sullivan et al. 2015</a> or <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/">on pubmed</a>) using <a href="https://github.com/bulik/ldsc">ldsc</a> and <a href="https://github.com/omeed-maghzian/mtag">MTAG</a></p></li>
+<li><p>Full code is available on the <a href="https://github.com/Nealelab/UKBB_ldsc">Github repo</a></p></li>
+<li><p>A full technical discussion on the limitations of this analysis and recommendations for intepreting the results can be found on the <a href="http://www.nealelab.is">Neale Lab blog</a>.</p></li>
 </ul>
 <p><br> <br></p>
 </div>
 <div id="ldsr-details" class="section level4">
 <h4>LDSR Details</h4>
 <ul>
-<li><p>We follow the conventional approach of restricting to GWAS results from HapMap3 sites passing MAF &gt; 0.01 and INFO &gt; 0.9 as input, but we’ve reimplemented this to define a single passing list in UKBB rather than running <code>munge_sumstats.py</code> from <a href="%60https://github.com/bulik/ldsc%60">ldsc</a> with the <code>w_hm3.snplist</code> reference file.</p></li>
-<li><p>We’ve run both univariate and partitioned heritability analyses. For reasons that will be discussed in a later post we’re currently presenting the partitioned heritability LDSR results as the primary analysis in the summary browser (link), but the univariate results are also available <a href="%60https://nealelab.github.io/UKBB_ldsc/h2_univar_browser.html%60">here</a>.</p></li>
-<li><p>The univariate LDSR analysis was run with default settings using <a href="%60https://data.broadinstitute.org/alkesgroup/LDSCORE/%60">precomputed LD scores from 1000 Genomes European ancestry samples</a> (i.e. <code>./eur_w_ld</code>)</p></li>
-<li><p>The partitioned LDSR analysis was run using the v1.1 of the Baseline-LD annotations described by <a href="%60http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html%60">Gazal et al. 2017</a> (also on <a href="%60http://www.biorxiv.org/content/early/2017/04/03/082024%60">biorxiv</a>) computed from 1000 Genomes Phase 3 data from European ancestry populations and corresponding allele frequencies (available from <a href="%60https://data.broadinstitute.org/alkesgroup/LDSCORE/%60">the ldsc reference downloads page</a>). Default settings were used, with the exception of removing the maximum chi2 filter due to the extreme sample size of UKBB.</p></li>
+<li><p>We follow the conventional approach of restricting to GWAS results from HapMap3 sites passing MAF &gt; 0.01 and INFO &gt; 0.9 as input, but we’ve reimplemented this to define a single passing list in UKBB rather than running <code>munge_sumstats.py</code> from <a href="https://github.com/bulik/ldsc">ldsc</a> with the <code>w_hm3.snplist</code> reference file.</p></li>
+<li><p>We’ve run both univariate and partitioned heritability analyses. For reasons that will be discussed in a later post we’re currently presenting the partitioned heritability LDSR results as the primary analysis in the summary browser (link), but the univariate results are also available <a href="https://nealelab.github.io/UKBB_ldsc/h2_univar_browser.html">here</a>.</p></li>
+<li><p>The univariate LDSR analysis was run with default settings using <a href="https://data.broadinstitute.org/alkesgroup/LDSCORE/">precomputed LD scores from 1000 Genomes European ancestry samples</a> (i.e. <code>./eur_w_ld</code>)</p></li>
+<li><p>The partitioned LDSR analysis was run using the v1.1 of the Baseline-LD annotations described by <a href="http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html">Gazal et al. 2017</a> (also on <a href="http://www.biorxiv.org/content/early/2017/04/03/082024">biorxiv</a>) computed from 1000 Genomes Phase 3 data from European ancestry populations and corresponding allele frequencies (available from <a href="https://data.broadinstitute.org/alkesgroup/LDSCORE/">the ldsc reference downloads page</a>). Default settings were used, with the exception of removing the maximum chi2 filter due to the extreme sample size of UKBB.</p></li>
 </ul>
 <p><br> <br></p>
 </div>
 <div id="tools" class="section level4">
 <h4>Tools</h4>
 <ul>
-<li><p>LDSR was run using the implementation in <a href="%60https://github.com/omeed-maghzian/mtag%60">MTAG</a>, which provides a convenient interface to <a href="%60https://github.com/bulik/ldsc%60">ldsc</a> from within python rather than via the command line.</p></li>
-<li><p>All analyses were run on the <a href="%60https://cloud.google.com/%60">Google Cloud Platform</a>, with the assistance of <a href="%60https://hail.is%60">Hail</a>, <a href="%60https://github.com/Nealelab/cloudtools%60">cloudtools</a>, and many other tools.</p></li>
-<li><p>This site has been generated with the assistance of <a href="%60http://rmarkdown.rstudio.com/%60">R Markdown</a> with <a href="%60https://plot.ly/r/%60">plotly</a>, <a href="%60https://rstudio.github.io/DT/%60">DT</a>, and <a href="https://rstudio.github.io/crosstalk/">crosstalk</a>, and is hosted via <a href="%60https://pages.github.com/%60">Github Pages</a>.</p></li>
+<li><p>LDSR was run using the implementation in <a href="https://github.com/omeed-maghzian/mtag">MTAG</a>, which provides a convenient interface to <a href="https://github.com/bulik/ldsc">ldsc</a> from within python rather than via the command line.</p></li>
+<li><p>All analyses were run on the <a href="https://cloud.google.com/">Google Cloud Platform</a>, with the assistance of <a href="https://hail.is">Hail</a>, <a href="https://github.com/Nealelab/cloudtools">cloudtools</a>, and many other tools.</p></li>
+<li><p>This site has been generated with the assistance of <a href="http://rmarkdown.rstudio.com/">R Markdown</a> with <a href="https://plot.ly/r/">plotly</a>, <a href="https://rstudio.github.io/DT/">DT</a>, and <a href="https://rstudio.github.io/crosstalk/">crosstalk</a>, and is hosted via <a href="https://pages.github.com/">Github Pages</a>.</p></li>
 </ul>
 </div>
 
