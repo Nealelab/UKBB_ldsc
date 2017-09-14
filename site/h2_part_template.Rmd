@@ -23,10 +23,10 @@ ukcode <- strsplit(phen,"_")[[1]][1]
 
 isICD <- is.na(as.numeric(ukcode))
 if(isICD){
-	ukb_url = "http://biobank.ctsu.ox.ac.uk/crystal/search.cgi?srch=41202"
+	ukb_url = "http://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41202"
 	ukcode = "41202"
 }else{
-	ukb_url = paste0("http://biobank.ctsu.ox.ac.uk/crystal/search.cgi?srch=",ukcode)
+	ukb_url = paste0("http://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=",ukcode)
 }
 
 isBinary <- !is.na(dat_sub$N_case[1])
