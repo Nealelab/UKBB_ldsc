@@ -3,11 +3,11 @@ navbar:
   title: "UKBB Heritability"
   left:
     - text: "Home"
-      href: https://nealelab.github.io//UKBB_ldsc/index.html
+      href: https://nealelab.github.io/UKBB_ldsc/index.html
     - text: "Browser"
-      href: https://nealelab.github.io//UKBB_ldsc/h2_browser.html
+      href: https://nealelab.github.io/UKBB_ldsc/h2_browser.html
     - text: "Technical Details"
-      href: http://www.nealelab.is/
+      href: https://nealelab.github.io/UKBB_ldsc/details.html
     - text: "Github Repo"
       href: https://github.com/Nealelab/UKBB_ldsc
     - text: "Neale Lab UKBB"
