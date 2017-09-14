@@ -29,13 +29,15 @@ dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$desc
 
 <br>
 
+`r if(isUnivar){paste0("<div class=\"panel panel-warning\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Note</h3></div><div class=\"panel-body\">You are viewing results from univariate LD score regression. We recommend the <a href=\"h2_browser.html\">partitioned results</a> instead.</div></div>")}`
+
 ```{r lookup, echo=FALSE}
 d2 <- dat[,c("phenotype","table_desc","N","prevelence","intercept","intercept_p","h2_liability","h2_p")]
 shared_dat <- SharedData$new(d2)
 
 datatable(shared_dat, 
 		  rownames = F, 
-		  colnames = c("ID","Phenotype","N","Prev.","Int.","Int p","h2","h2 p"), 
+		  colnames = c("ID","Phenotype","N","Prev.","Int.","Int. p","h2","h2 p"), 
 #		  extensions='FixedHeader', 
 		  selection="none",
 		  style="bootstrap", 
@@ -63,7 +65,7 @@ Results shown here include:
 * **N**: The sample size in the UKBB analysis set (more info on the GWAS analysis [here]())
 * **Prevalence** (Prev.) for binary phenotypes
 * **Intercept** (Int.): the intercept term from `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression. Values > 1 may indicate population stratification, confounding, or some other model misspecification. P-value (Int. p) corresponds to the test that the intercept is greater than 1.
-* **Heritability** ($h^2$): the SNP heritability estimate from `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression. Value is given on the liability scale for binary phenotypes, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set. P-value ($h^2$ p) corresponds to the test that the intercept is greater than 1.
+* **Heritability** ($h^2$): the SNP heritability estimate from `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression. Value is given on the liability scale for binary phenotypes, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set. P-value (h2 p) corresponds to the test that the intercept is greater than 1.
 
 Click on a phenotype for more detailed results from the partitioned LD score regression analysis.
  
