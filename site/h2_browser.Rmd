@@ -2,6 +2,9 @@
 title: "UKBB SNP-Heritability Browser"
 date: "Last updated `r format(Sys.Date())`"
 output: html_document
+params:
+  isUnivar: FALSE
+  datfile: "../results/ukbb_h2part.RData"
 ---
 
 ```{r setup, include=FALSE}
@@ -12,6 +15,10 @@ require(plotly)
 require(DT)
 require(crosstalk)
 require(crosstool)
+
+# parameters
+load(file=params$datfile)
+isUnivar <- as.logical(params$isUnivar)
 
 # define utility columns
 dat$isBinary <- !is.na(dat$N_case)

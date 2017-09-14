@@ -1,4 +1,5 @@
 name: "UKBB-ldsc"
+output_dir: "../docs"
 navbar:
   title: "UKBB Heritability"
   left:
@@ -12,7 +13,27 @@ navbar:
       href: https://github.com/Nealelab/UKBB_ldsc
     - text: "Neale Lab UKBB"
       href: http://www.nealelab.is/
-
 output:
   html_document:
     theme: sandstone
+output_files:
+  index.html:
+    src: "index.Rmd"
+  details.html:
+    src: "details.Rmd"
+  h2_browser.html:
+    src: "h2_browser.Rmd"
+    params:
+      isUnivar: "FALSE"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_univar_browser.html:
+    src: "h2_browser.Rmd"
+    params:
+      isUnivar: "TRUE"
+      datfile: "../results/ukbb_h2univar.RData"
+  h2_summary_50.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "50"
+      datfile: "../results/ukbb_h2part.RData"
+

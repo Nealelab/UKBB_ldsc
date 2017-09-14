@@ -1,7 +1,10 @@
 ---
-title: "Heritability for `r phen`"
 date: "Last updated `r format(Sys.Date())`"
 output: html_document
+params:
+  pheno: "50"
+  datfile: "../results/ukbb_h2part.RData"
+title: "Heritability for `r params$pheno`"
 ---
 
 ```{r setup, include=FALSE}
@@ -9,6 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 require(plotly)
 require(reshape2)
 
+# handle params
+phen <- as.character(params$pheno)
+load(file=params$datfile)
+
+# setup
 dat_sub <- dat[which(dat$phenotype==phen),]
 
 ukcode <- strsplit(phen,"_")[[1]][1]
@@ -24,9 +32,9 @@ if(isICD){
 isBinary <- !is.na(dat_sub$N_case[1])
 
 if(isBinary){
-	Neff <- 4/((1/dat_sub$N_case)+(1/dat_sub$N_control))
+	Neff <- 4/((1/dat_sub$N_case[1])+(1/dat_sub$N_control[1]))
 }else{
-	Neff <- dat_sub$N
+	Neff <- dat_sub$N[1]
 }
 isSmallCont <- (Neff < 1000 && !isBinary)
 isSmallBinary <- (Neff < 1000 && isBinary)
@@ -92,7 +100,7 @@ coef_p_cols <- coef_p_cols[-grep("CpG",coef_p_cols)]
 coef_p_cols <- coef_p_cols[-grep("Diversity",coef_p_cols)]
 
 dtmp <- dat_sub[,c("phenotype",coef_p_cols)]
-df <- melt(dtmp,id.vars = "phenotype")
+df <- reshape2::melt(dtmp,id.vars = "phenotype")
 df$logp <- -log10(df$value)
 df$variable <- sapply(df$variable,function(a) strsplit(as.character(a), split="\\.\\.")[[1]][1])
 
@@ -132,7 +140,7 @@ pp <- plot_ly(df, width=800) %>%
 	  			 margin=list(b=150)
 	  ) 
 
-pp
+config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
 
 ```
 
