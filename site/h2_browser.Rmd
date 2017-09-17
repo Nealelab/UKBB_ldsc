@@ -9,16 +9,18 @@ params:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# parameters
+load(file=normalizePath(params$datfile))
+isUnivar <- as.logical(params$isUnivar)
+
+# packages
 require(reshape2)
 require(ggplot2)
 require(plotly)
 require(DT)
 require(crosstalk)
 require(crosstool)
-
-# parameters
-load(file=params$datfile)
-isUnivar <- as.logical(params$isUnivar)
 
 # define utility columns
 dat$isBinary <- !is.na(dat$N_case)
@@ -55,24 +57,26 @@ datatable(shared_dat,
 ```
 
 <br>
-<br>
+
+<div class="well">
 
 ### Lookup a phenotype
 
-Explore results of `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression for UK Biobank phenotypes. You can read more about this analysis [on the annoucement page](`http://`).
+Explore results of `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression for UK Biobank phenotypes. You can read more about this analysis and find links to more information [on the annoucement page](http://www.nealelab.is/blog/2017/9/15/heritability-of-2000-traits-and-disorders-in-the-uk-biobank).
 
 You can search for phenotypes by:
 
 * **Description**, e.g. "height"
 * **ICD code**, e.g. "I25"
-* **ID**, i.e. the UK Biobank phenotype ID matching the [UKBB showcase](`http://biobank.ctsu.ox.ac.uk/crystal/search.cgi`)
+* **ID**, i.e. the UK Biobank phenotype ID matching the [UKBB showcase](http://biobank.ctsu.ox.ac.uk/crystal/search.cgi)
 
 Results shown here include:
 
-* **N**: The sample size in the UKBB analysis set (more info on the GWAS analysis [here]())
+* **N**: The sample size in the UKBB analysis set (more info on the GWAS analysis [here](http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas))
 * **Prevalence** (Prev.) for binary phenotypes
 * **Intercept** (Int.): the intercept term from `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression. Values > 1 may indicate population stratification, confounding, or some other model misspecification. P-value (Int. p) corresponds to the test that the intercept is greater than 1.
 * **Heritability** ($h^2$): the SNP heritability estimate from `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression. Value is given on the liability scale for binary phenotypes, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set. P-value (h2 p) corresponds to the test that the intercept is greater than 1.
 
 Click on a phenotype for more detailed results from the partitioned LD score regression analysis.
- 
+
+</div>

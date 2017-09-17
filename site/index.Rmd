@@ -7,30 +7,31 @@ output: html_document
 
 <div class="well">
 
-As you may know, the UK Biobank recently released data on ~500,000 individuals to the scientific community to advance research on genetics. The [Neale Lab](http://nealelab.is) has been working to make some basic analyses of that data freely available; you can read more about the overall effort [here](http://nealelab.is).
+As you may know, the UK Biobank recently released data on ~500,000 individuals to the scientific community to advance research on genetics. The [Neale Lab](http://nealelab.is) has been working to make some basic analyses of that data freely available; you can read more about the overall effort [here](http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-480000-samples-in-the-uk-biobank).
 
 <br>
 
-Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 2,000 as of this writing. As with the primary analyses, we’re making the heritability results available for [browsing](`h2_browser.html`) and bulk [download](`TBD`). 
+Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 2,000 as of this writing. As with the primary analyses, we’re making the heritability results available for [browsing](h2_browser.html) and bulk [download](https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0). 
 
 <br>
 
 <a href="h2_browser.html" class="btn btn-primary btn-lg">Browse  $h^2$</a>
-<a href="#" class="btn btn-primary btn-lg">Downloads</a>
+<a href="plots_home.html" class="btn btn-primary btn-lg">Explore Plots</a>
+<a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" class="btn btn-primary btn-lg">Download Results</a>
 
 <br>
 
 You can learn more about the heritability analysis in this series of blog posts:
 
-* [Heritability 101: What is “heritability”?](`link`)
-* [Heritability 201: Types of heritability and how we estimate it](`link`)
-* (coming soon:) Insights from estimates of SNP-heritability for >2,000 traits and disorders in UK Biobank
+* [Heritability 101: What is “heritability”?](http://www.nealelab.is/blog/2017/9/13/heritability-101-what-is-heritability)
+* [Heritability 201: Types of heritability and how we estimate it](http://www.nealelab.is/blog/2017/9/13/heritability-201-types-of-heritability-and-how-we-estimate-it)
+* (coming soon) Insights from estimates of SNP-heritability for >2,000 traits and disorders in UK Biobank
 
 <br>
 
 More technical descriptions are also available:
 
-* [Heritability 501: LDSR-based h2 in UKBB for the technically-minded](`link`)
+* [Heritability 501: LDSR-based h2 in UKBB for the technically-minded](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded)
 * [UKBB_ldsc github repository](https://github.com/Nealelab/UKBB_ldsc)
 
 <br>
@@ -39,7 +40,7 @@ We view these results as preliminary and subject to change as we continue to ref
 
 <br>
 
-If you want more information, please contact us at: <nealelab.ukb@gmail.com>.
+If you want more information, please **contact us at: <nealelab.ukb@gmail.com>.**
 
 </div>
 
@@ -52,25 +53,25 @@ If you want more information, please contact us at: <nealelab.ukb@gmail.com>.
 
 **Where can I find the heritability results?**
 
-We’ve created a browser to explore the results [here](`h2_browser.html`). You can also download the full results file [here](`TBD`).
+We’ve created a browser to explore the results [here](h2_browser.html). You can also download the full results file [here](https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0).
 
 <br>
 
 **What method have you used to estimated heritability?**
 
-To enable this quick initial analysis on such large-scale data we’re relying on LD score regression ([article](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/), [github repo](https://github.com/bulik/ldsc)). Full code and technical details are available in the [UKBB_ldsc github repository](https://github.com/Nealelab/UKBB_ldsc) and described in [Heritability 501](`link`).
+To enable this quick initial analysis on such large-scale data we’re relying on LD score regression ([article](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/), [github repo](https://github.com/bulik/ldsc)). Full code and technical details are available in the [UKBB_ldsc github repository](https://github.com/Nealelab/UKBB_ldsc) and described in [Heritability 501](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded).
 
 <br>
 
 **Are the primary GWAS results used for this analysis available? **
 
-Yes! Parial results are available for browsing through the [Global Biobank Engine](`link`), and the full GWAS results are available for bulk download from [here](`link`). See [the introductory post](`link`) for much more information. 
+Yes! Results will be available for browsing through the [Global Biobank Engine](https://biobankengine.stanford.edu/), and the full GWAS results are available for download from [here](https://www.dropbox.com/sh/g28ee03vy4hvqw5/AAAGunSi-VK-0cUqvcwyt67ra/associations?dl=0). See [the introductory post](http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-480000-samples-in-the-uk-biobank) for much more information. 
 
 <br>
 
 **How should I interpret these heritability results?**
 
-*Very carefully.* For starters, we’ve written a couple of primers that cover the concept of heritability and common misconceptions ([Heritability 101](`link`)) and the specific type of heritability that’s being estimated in this analysis ([Heritability 201](`link`)). A longer discussion of the many limitations of this analysis is included in our more technical description of the project ([Heritability 501](`link`)).
+*Very carefully.* For starters, we’ve written a couple of primers that cover the concept of heritability and common misconceptions ([Heritability 101](http://www.nealelab.is/blog/2017/9/13/heritability-101-what-is-heritability)) and the specific type of heritability that’s being estimated in this analysis ([Heritability 201](http://www.nealelab.is/blog/2017/9/13/heritability-201-types-of-heritability-and-how-we-estimate-it)). A longer discussion of the many limitations of this analysis is included in our more technical description of the project ([Heritability 501](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded)).
 
 We’ll revisit this question in future posts as we explore the results in more detail, but here’s the executive summary: This is a very rough initial analysis and should be treated accordingly. All estimates are for (a) the heritability from common genetic variants (b) of automatically cleaned and transformed phenotypes (c) in a non-random population sample of the UK (d) estimated with a fairly simple statistical model. We expect the results will mostly be useful for generating hypotheses for follow-up (e.g. identifying trends in the estimates for categories of phenotypes, choosing phenotypes with robust statistical evidence for heritability), rather than being a definitive statement about the “true” heritability of a individual phenotype. 
 

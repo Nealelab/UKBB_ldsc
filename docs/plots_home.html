@@ -11,7 +11,7 @@
 
 
 
-<title>Details on LD Score Regression in UK Biobank</title>
+<title>Vizualizing LDSR results</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -222,7 +222,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Details on LD Score Regression in UK Biobank</h1>
+<h1 class="title toc-ignore">Vizualizing LDSR results</h1>
 <h4 class="date"><em>Last updated 2017-09-17</em></h4>
 
 </div>
@@ -230,26 +230,14 @@ $(document).ready(function () {
 
 <p><br></p>
 <div class="well">
-<h4 id="summary">Summary</h4>
+<h3 id="overview">Overview</h3>
+<p>To assist with exploring results for &gt;2,000 traits, we’ve developed a set of interactive plots</p>
 <ul>
-<li><p>SNP Heritability is estimated are from LD Score Regression (LDSR; <a href="http://www.nature.com/ng/journal/v47/n3/full/ng.3211.html">Bulik-Sullivan et al. 2015</a> or <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/">on pubmed</a>) using <a href="https://github.com/bulik/ldsc">ldsc</a> and <a href="https://github.com/omeed-maghzian/mtag">MTAG</a></p></li>
-<li><p>Full code is available on the <a href="https://github.com/Nealelab/UKBB_ldsc">Github repo</a></p></li>
-<li><p>The <a href="http://www.nealelab.is/blog">Neale Lab blog</a> has <a href="http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded">a full technical discussion</a> on the limitations of this analysis and recommendations for intepreting the results, as well as more general details about <a href="http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas">our analysis of UK Biobank</a>.</p></li>
-</ul>
-<p><br> <br></p>
-<h4 id="ldsr-details">LDSR Details</h4>
-<ul>
-<li><p>We follow the conventional approach of restricting to GWAS results from HapMap3 sites passing MAF &gt; 0.01 and INFO &gt; 0.9 as input, but we’ve reimplemented this to define a single passing list in UKBB rather than running <code>munge_sumstats.py</code> from <a href="https://github.com/bulik/ldsc">ldsc</a> with the <code>w_hm3.snplist</code> reference file.</p></li>
-<li><p>We’ve run both univariate and partitioned heritability analyses. For reasons that will be discussed in a later post we’re currently presenting the partitioned heritability LDSR results as the primary analysis in the <a href="h2_browser.html">summary browser</a>, but the univariate results are also available <a href="h2_univar_browser.html">here</a>.</p></li>
-<li><p>The univariate LDSR analysis was run with default settings using <a href="https://data.broadinstitute.org/alkesgroup/LDSCORE/">precomputed LD scores from 1000 Genomes European ancestry samples</a> (i.e. <code>./eur_w_ld</code>)</p></li>
-<li><p>The partitioned LDSR analysis was run using the v1.1 of the Baseline-LD annotations described by <a href="http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html">Gazal et al. 2017</a> (also on <a href="http://www.biorxiv.org/content/early/2017/04/03/082024">biorxiv</a>) computed from 1000 Genomes Phase 3 data from European ancestry populations and corresponding allele frequencies (available from <a href="https://data.broadinstitute.org/alkesgroup/LDSCORE/">the ldsc reference downloads page</a>). Default settings were used, with the exception of removing the maximum <span class="math inline">\(\chi^2\)</span> filter due to the extreme sample size of UKBB.</p></li>
-</ul>
-<p><br> <br></p>
-<h4 id="tools">Tools</h4>
-<ul>
-<li><p>LDSR was run using the implementation in <a href="https://github.com/omeed-maghzian/mtag">MTAG</a>, which provides a convenient interface to <a href="https://github.com/bulik/ldsc">ldsc</a> from within python rather than via the command line.</p></li>
-<li><p>All analyses were run on the <a href="https://cloud.google.com/">Google Cloud Platform</a>, with the assistance of <a href="https://hail.is">Hail</a>, <a href="https://github.com/Nealelab/cloudtools">cloudtools</a>, and many other tools.</p></li>
-<li><p>This site has been generated with the assistance of <a href="http://rmarkdown.rstudio.com/">R Markdown</a> with <a href="https://plot.ly/r/">plotly</a>, <a href="https://rstudio.github.io/DT/">DT</a>, and <a href="https://rstudio.github.io/crosstalk/">crosstalk</a>, and is hosted via <a href="https://pages.github.com/">Github Pages</a>.</p></li>
+<li><a href="viz_h2.html"><span class="math inline">\(h^2\)</span> and intercept estimates</a></li>
+<li><a href="viz_annot.html">Partitioned annotation effect sizes</a></li>
+<li><a href="viz_qq.html">QQ plots of $h^2 and intercept significance</a></li>
+<li><a href="viz_sampsize.html">Relationship of estimates with sample size</a></li>
+<li><a href="viz_univar.html">Comparison of univariate and partitioned LDSR</a></li>
 </ul>
 </div>
 
