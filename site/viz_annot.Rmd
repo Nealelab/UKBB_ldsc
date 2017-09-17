@@ -35,7 +35,9 @@ dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$desc
 
 <br>
 
-### Coefficients - Binary Annotations
+### Binary Annotations {.tabset .tabset-fade}
+
+#### Coefficients
 
 <div class="well">
 
@@ -91,7 +93,7 @@ bscols(widths=c(10,2),
 <br>
 
 
-### Coefficient Z-score - Binary Annotations
+#### Coefficient Z-score
 
 <div class="well">
 
@@ -152,7 +154,7 @@ bscols(widths=c(10,2),
 <br>
 
 
-### Enrichments - Binary Annotations
+#### Enrichment
 
 <div class="well">
 
@@ -212,7 +214,9 @@ bscols(widths=c(10,2),
 
 <br>
 
-### Coefficient Z-score - Continuous Annotations
+### Continuous Annotations {.tabset .tabset-fade}
+
+#### Coefficient Z score
 
 <div class="well">
 
