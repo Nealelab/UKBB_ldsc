@@ -25,7 +25,7 @@ To assist with exploring results for >2,000 traits, we've developed a set of int
 
 * [$h^2$ and intercept estimates](viz_h2.html)
 * [Partitioned annotation effect sizes](viz_annot.html)
-* [QQ plots of $h^2 and intercept significance](viz_qq.html)
+* [QQ plots of $h^2$ and intercept significance](viz_qq.html)
 * [Relationship of estimates with sample size](viz_sampsize.html)
 * [Comparison of univariate and partitioned LDSR](viz_univar.html)
 
