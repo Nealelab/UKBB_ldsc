@@ -14,7 +14,13 @@ render_site()
 #########
 
 # for yaml for per-pheno sites
-# load(../results/ukbb_h2part.RData)
+# load("../results/ukbb_h2part.RData")
+
+# dat$isBinary <- !is.na(dat$N_case)
+# dat$Neff <- dat$N
+# dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
+# dat <- dat[dat$Neff > 200,]
+
 # d2 <- dat$phenotype
 # cat(paste0(" h2_summary_",d2,".html:\n    src: \"h2_part_template.Rmd\"\n    params:\n      pheno: \"",d2,"\"\n      datfile: \"../results/ukbb_h2part.RData\"\n"), file="tmp.yaml")
 

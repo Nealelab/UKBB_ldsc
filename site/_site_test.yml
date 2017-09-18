@@ -1,0 +1,82 @@
+name: "UKBB-ldsc"
+output_dir: "../docs"
+exclude: ["analytics_header.html"]
+navbar:
+  title: "UKBB Heritability"
+  left:
+    - text: "Browser"
+      href: h2_browser.html
+    - text: "Plots"
+      menu:
+        - text: "Heritability and Intercept"
+          href: viz_h2.html
+        - text: "Partitioned Annotations"
+          href: viz_annot.html
+        - text: "QQ Plots"
+          href: viz_qq.html
+        - text: "Sample Size Scaling"
+          href: viz_sampsize.html
+        - text: "Univariate LDSR"
+          href: viz_univar.html
+    - text: "Technical Details"
+      href: details.html
+  right:
+    - text: "Github Repo"
+      href: https://github.com/Nealelab/UKBB_ldsc
+    - text: "Neale Lab UKBB"
+      href: http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-480000-samples-in-the-uk-biobank
+output:
+  html_document:
+    theme: sandstone
+    includes:
+      in_header: analytics_header.html
+output_files:
+  index.html:
+    src: "index.Rmd"
+  details.html:
+    src: "details.Rmd"
+  h2_browser.html:
+    src: "h2_browser.Rmd"
+    params:
+      isUnivar: "FALSE"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_univar_browser.html:
+    src: "h2_browser.Rmd"
+    params:
+      isUnivar: "TRUE"
+      datfile: "../results/ukbb_h2univar.RData"
+  plots_home.html:
+    src: "plots_home.Rmd"
+  viz_h2.html:
+    src: "viz_h2.Rmd"
+    params:
+      datfile: "../results/ukbb_h2part.RData"
+  viz_qq.html:
+    src: "viz_qq.Rmd"
+    params:
+      datfile: "../results/ukbb_h2part.RData"
+  viz_sampsize.html:
+    src: "viz_sampsize.Rmd"
+    params:
+      datfile: "../results/ukbb_h2part.RData"
+  viz_univar.html:
+    src: "viz_univar.Rmd"
+    params:
+      datfile1: "../results/ukbb_h2part.RData"
+      datfile2: "../results/ukbb_h2univar.RData"
+  h2_summary_1950.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1950"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_20003_1141167206.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "20003_1141167206"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_F33.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "F33"
+      datfile: "../results/ukbb_h2part.RData"
+

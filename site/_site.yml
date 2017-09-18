@@ -1,5 +1,6 @@
 name: "UKBB-ldsc"
-output_dir: "../docs/"
+output_dir: "../docs"
+exclude: ["analytics_header.html"]
 navbar:
   title: "UKBB Heritability"
   left:
@@ -27,7 +28,8 @@ navbar:
 output:
   html_document:
     theme: sandstone
-    favicon: 
+    includes:
+      in_header: analytics_header.html
 output_files:
   index.html:
     src: "index.Rmd"
@@ -381,11 +383,6 @@ output_files:
     src: "h2_part_template.Rmd"
     params:
       pheno: "20002_1650"
-      datfile: "../results/ukbb_h2part.RData"
-  h2_summary_20002_1579.html:
-    src: "h2_part_template.Rmd"
-    params:
-      pheno: "20002_1579"
       datfile: "../results/ukbb_h2part.RData"
   h2_summary_20002_1542.html:
     src: "h2_part_template.Rmd"
@@ -3496,11 +3493,6 @@ output_files:
     src: "h2_part_template.Rmd"
     params:
       pheno: "20002_1651"
-      datfile: "../results/ukbb_h2part.RData"
-  h2_summary_20002_1340.html:
-    src: "h2_part_template.Rmd"
-    params:
-      pheno: "20002_1340"
       datfile: "../results/ukbb_h2part.RData"
   h2_summary_20002_1322.html:
     src: "h2_part_template.Rmd"
@@ -11047,11 +11039,6 @@ output_files:
     params:
       pheno: "K59"
       datfile: "../results/ukbb_h2part.RData"
-  h2_summary_B50.html:
-    src: "h2_part_template.Rmd"
-    params:
-      pheno: "B50"
-      datfile: "../results/ukbb_h2part.RData"
   h2_summary_R14.html:
     src: "h2_part_template.Rmd"
     params:
@@ -11092,4 +11079,510 @@ output_files:
     params:
       pheno: "L72"
       datfile: "../results/ukbb_h2part.RData"
+  h2_summary_991.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "991"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_904.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "904"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1021.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1021"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_943.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "943"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_874.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "874"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1090.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1090"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_2634.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "2634"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6162_1.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6162_1"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6162_100.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6162_100"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6164_100.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6164_100"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6164_4.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6164_4"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40009.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40009"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_30520.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "30520"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1170.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1170"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1200.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1200"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_20118_6.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "20118_6"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_20118_13.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "20118_13"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22126.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22126"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22129.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22129"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22134.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22134"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22140.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22140"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22504.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22504"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22506_113.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22506_113"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C159.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C159"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C20.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C20"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C221.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C221"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C260.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C260"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C439.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C439"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C56.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C56"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C859.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C859"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_I619.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_I619"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_I64.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_I64"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_I802.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_I802"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_J189.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_J189"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1070.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1070"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_884.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "884"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_971.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "971"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1001.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1001"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_914.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "914"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1100.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1100"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_3637.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "3637"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6162_3.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6162_3"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6164_5.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6164_5"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6162_4.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6162_4"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6164_3.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6164_3"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1180.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1180"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_30530.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "30530"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1210.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1210"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_20118_7.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "20118_7"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_20118_11.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "20118_11"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22127.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22127"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_20118_16.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "20118_16"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22130.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22130"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22135.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22135"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22502.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22502"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22506_111.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22506_111"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C189.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C189"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C61.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C61"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C679.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C679"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C719.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C719"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C80.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C80"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C900.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C900"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C920.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C920"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_G122.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_G122"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_I219.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_I219"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_I259.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_I259"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_J449.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_J449"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40007.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40007"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_894.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "894"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1011.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1011"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_981.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "981"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1080.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1080"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_864.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "864"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_924.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "924"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_2624.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "2624"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_3647.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "3647"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6162_2.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6162_2"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6164_1.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6164_1"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_6164_2.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "6164_2"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_30510.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "30510"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1220.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1220"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1160.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1160"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_1190.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "1190"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_20118_8.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "20118_8"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_20118_12.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "20118_12"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22128.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22128"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22137.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22137"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22133.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22133"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22503.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22503"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_22506_112.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "22506_112"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C169.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C169"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C19.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C19"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C259.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C259"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C459.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C459"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C509.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C509"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_C64.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_C64"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_I251.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_I251"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_I609.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_I609"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_J440.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_J440"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_40001_J841.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "40001_J841"
+      datfile: "../results/ukbb_h2part.RData"
+  h2_summary_90088.html:
+    src: "h2_part_template.Rmd"
+    params:
+      pheno: "90088"
+      datfile: "../results/ukbb_h2part.RData"
+
 
