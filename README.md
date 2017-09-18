@@ -149,6 +149,6 @@ Downloads the results for each ldsc batch, combines them into a single file, upl
 
 # Results
 
-* [Results browser](https://nealelab.github.io/UKBB_ldsc/)
-* [Full downloads](link)
+* [Results browser](https://nealelab.github.io/UKBB_ldsc/index.html)
+* [Full downloads](https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0)
 
