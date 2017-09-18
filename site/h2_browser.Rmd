@@ -26,6 +26,10 @@ require(crosstool)
 dat$isBinary <- !is.na(dat$N_case)
 dat$Neff <- dat$N
 dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
+
+dat <- dat[dat$Neff > 200,]
+
+
 #dat$isNomSig_h2 <- dat$h2_p < .05
 #dat$isBonfSig_h2 <- dat$h2_p < (.05/nrow(dat))
 #dat$isPassing <- (dat$N > 10000) & (!dat$isBinary | dat$N_case > 400)

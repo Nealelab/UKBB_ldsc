@@ -41,6 +41,8 @@ dat$isBinary <- !is.na(dat$N_case)
 dat$Neff <- dat$N
 dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
 
+dat <- dat[dat$Neff > 200,]
+
 dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$description,"</a>")
 
 ```
