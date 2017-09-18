@@ -52,7 +52,28 @@
 
   ga('create', 'UA-106608402-1', 'auto');
   ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
 
+</script>
+
+<script>
+/**
+* Function that tracks a click on an outbound link in Analytics.
+# modifications from: https://hacks.mozilla.org/2016/01/google-analytics-privacy-and-event-tracking/
+*/
+var trackOutboundLink = function(url) {
+    // check if the GA object exists and that it has initialized
+    if(window.ga && ga.loaded) { {
+        // if yes, rely on GA to follow link
+        ga('send', 'event', 'outbound', 'click', url, {
+            'transport': 'beacon',
+            'hitCallback': function(){document.location = url;}
+        });
+    } else {
+        // if not, follow link ourselves
+        document.location = url;
+    }
+}
 </script>
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -263,9 +284,9 @@ $(document).ready(function () {
 <div class="well">
 <p>As you may know, the UK Biobank recently released data on ~500,000 individuals to the scientific community to advance research on genetics. The <a href="http://nealelab.is">Neale Lab</a> has been working to make some basic analyses of that data freely available; you can read more about the overall effort <a href="http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-480000-samples-in-the-uk-biobank">here</a>.</p>
 <p><br></p>
-<p>Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 2,000 as of this writing. As with the primary analyses, we’re making the heritability results available for <a href="h2_browser.html">browsing</a> and bulk <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0">download</a>.</p>
+<p>Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 2,000 as of this writing. As with the primary analyses, we’re making the heritability results available for <a href="h2_browser.html">browsing</a> and bulk <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">download</a>.</p>
 <p><br></p>
-<p><a href="h2_browser.html" class="btn btn-primary btn-lg">Browse <span class="math inline">\(h^2\)</span></a> <a href="plots_home.html" class="btn btn-primary btn-lg">Explore Plots</a> <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" class="btn btn-primary btn-lg">Download Results</a></p>
+<p><a href="h2_browser.html" class="btn btn-primary btn-lg">Browse <span class="math inline">\(h^2\)</span></a> <a href="plots_home.html" class="btn btn-primary btn-lg">Explore Plots</a> <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0"  class="btn btn-primary btn-lg" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">Download Results</a></p>
 <p><br></p>
 <p>You can learn more about the heritability analysis in this series of blog posts:</p>
 <ul>
@@ -288,7 +309,7 @@ $(document).ready(function () {
 <div class="well">
 <h4 id="faq">FAQ</h4>
 <p><strong>Where can I find the heritability results?</strong></p>
-<p>We’ve created a browser to explore the results <a href="h2_browser.html">here</a>. You can also download the full results file <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0">here</a>.</p>
+<p>We’ve created a browser to explore the results <a href="h2_browser.html">here</a>. You can also download the full results file <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">here</a>.</p>
 <p><br></p>
 <p><strong>What method have you used to estimated heritability?</strong></p>
 <p>To enable this quick initial analysis on such large-scale data we’re relying on LD score regression (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/">article</a>, <a href="https://github.com/bulik/ldsc">github repo</a>). Full code and technical details are available in the <a href="https://github.com/Nealelab/UKBB_ldsc">UKBB_ldsc github repository</a> and described in <a href="http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded">Heritability 501</a>.</p>

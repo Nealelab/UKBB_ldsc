@@ -16,7 +16,7 @@ output: html_document
 
 * The [Neale Lab blog](http://www.nealelab.is/blog) has [a full technical discussion](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded) on the limitations of this analysis and recommendations for intepreting the results, as well as more general details about [our analysis of UK Biobank](http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas).
 
-* Results on this site are very loosely filtered to report only phenotypes with effective N > 200. Where appropriate, stricter filters are applied as indicated. Results for phenotypes with effective N < 200 can still be found in the [downloads](https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0).
+* Results on this site are very loosely filtered to report only phenotypes with effective N > 200. Where appropriate, stricter filters are applied as indicated. Results for phenotypes with effective N < 200 can still be found in the <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">downloads</a>.
 
 <br>
 <br>

@@ -52,7 +52,28 @@
 
   ga('create', 'UA-106608402-1', 'auto');
   ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
 
+</script>
+
+<script>
+/**
+* Function that tracks a click on an outbound link in Analytics.
+# modifications from: https://hacks.mozilla.org/2016/01/google-analytics-privacy-and-event-tracking/
+*/
+var trackOutboundLink = function(url) {
+    // check if the GA object exists and that it has initialized
+    if(window.ga && ga.loaded) { {
+        // if yes, rely on GA to follow link
+        ga('send', 'event', 'outbound', 'click', url, {
+            'transport': 'beacon',
+            'hitCallback': function(){document.location = url;}
+        });
+    } else {
+        // if not, follow link ourselves
+        document.location = url;
+    }
+}
 </script>
 
 <style type="text/css">code{white-space: pre;}</style>

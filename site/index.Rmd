@@ -11,13 +11,13 @@ As you may know, the UK Biobank recently released data on ~500,000 individuals t
 
 <br>
 
-Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 2,000 as of this writing. As with the primary analyses, we’re making the heritability results available for [browsing](h2_browser.html) and bulk [download](https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0). 
+Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 2,000 as of this writing. As with the primary analyses, we’re making the heritability results available for [browsing](h2_browser.html) and bulk <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">download</a>. 
 
 <br>
 
 <a href="h2_browser.html" class="btn btn-primary btn-lg">Browse  $h^2$</a>
 <a href="plots_home.html" class="btn btn-primary btn-lg">Explore Plots</a>
-<a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" class="btn btn-primary btn-lg">Download Results</a>
+<a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0"  class="btn btn-primary btn-lg" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">Download Results</a>
 
 <br>
 
@@ -53,7 +53,7 @@ If you want more information, please **contact us at: <nealelab.ukb@gmail.com>.*
 
 **Where can I find the heritability results?**
 
-We’ve created a browser to explore the results [here](h2_browser.html). You can also download the full results file [here](https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0).
+We’ve created a browser to explore the results [here](h2_browser.html). You can also download the full results file <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">here</a>.
 
 <br>
 

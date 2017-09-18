@@ -52,7 +52,28 @@
 
   ga('create', 'UA-106608402-1', 'auto');
   ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
 
+</script>
+
+<script>
+/**
+* Function that tracks a click on an outbound link in Analytics.
+# modifications from: https://hacks.mozilla.org/2016/01/google-analytics-privacy-and-event-tracking/
+*/
+var trackOutboundLink = function(url) {
+    // check if the GA object exists and that it has initialized
+    if(window.ga && ga.loaded) { {
+        // if yes, rely on GA to follow link
+        ga('send', 'event', 'outbound', 'click', url, {
+            'transport': 'beacon',
+            'hitCallback': function(){document.location = url;}
+        });
+    } else {
+        // if not, follow link ourselves
+        document.location = url;
+    }
+}
 </script>
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -267,7 +288,7 @@ $(document).ready(function () {
 <li><p>SNP Heritability is estimated are from LD Score Regression (LDSR; <a href="http://www.nature.com/ng/journal/v47/n3/full/ng.3211.html">Bulik-Sullivan et al. 2015</a> or <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/">on pubmed</a>) using <a href="https://github.com/bulik/ldsc">ldsc</a> and <a href="https://github.com/omeed-maghzian/mtag">MTAG</a></p></li>
 <li><p>Full code is available on the <a href="https://github.com/Nealelab/UKBB_ldsc">Github repo</a></p></li>
 <li><p>The <a href="http://www.nealelab.is/blog">Neale Lab blog</a> has <a href="http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded">a full technical discussion</a> on the limitations of this analysis and recommendations for intepreting the results, as well as more general details about <a href="http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas">our analysis of UK Biobank</a>.</p></li>
-<li><p>Results on this site are very loosely filtered to report only phenotypes with effective N &gt; 200. Where appropriate, stricter filters are applied as indicated. Results for phenotypes with effective N &lt; 200 can still be found in the <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0">downloads</a>.</p></li>
+<li><p>Results on this site are very loosely filtered to report only phenotypes with effective N &gt; 200. Where appropriate, stricter filters are applied as indicated. Results for phenotypes with effective N &lt; 200 can still be found in the <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">downloads</a>.</p></li>
 </ul>
 <p><br> <br></p>
 <h4 id="ldsr-details">LDSR Details</h4>
