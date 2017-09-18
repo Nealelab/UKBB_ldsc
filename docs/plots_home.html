@@ -63,7 +63,7 @@
 */
 var trackOutboundLink = function(url) {
     // check if the GA object exists and that it has initialized
-    if(window.ga && ga.loaded) { {
+    if(window.ga && ga.loaded) {
         // if yes, rely on GA to follow link
         ga('send', 'event', 'outbound', 'click', url, {
             'transport': 'beacon',
