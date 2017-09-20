@@ -31,7 +31,6 @@ dat2 <- dat[,c("phenotype","intercept","intercept_z","intercept_p","ratio","h2_l
 names(dat2) <- gsub("intercept","univariate_intercept",names(dat2))
 names(dat2) <- gsub("h2","univariate_h2",names(dat2))
 names(dat2) <- gsub("ratio","univariate_ratio",names(dat2))
-load(file=params$datfile2)
 
 rm(dat)
 dat <- merge(dat1,dat2,by="phenotype")
