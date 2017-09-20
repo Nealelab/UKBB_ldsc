@@ -25,18 +25,18 @@ You can learn more about the heritability analysis in this series of blog posts:
 
 * [Heritability 101: What is “heritability”?](http://www.nealelab.is/blog/2017/9/13/heritability-101-what-is-heritability)
 * [Heritability 201: Types of heritability and how we estimate it](http://www.nealelab.is/blog/2017/9/13/heritability-201-types-of-heritability-and-how-we-estimate-it)
-* (coming soon) Insights from estimates of SNP-heritability for >2,000 traits and disorders in UK Biobank
+* [Insights from estimates of SNP-heritability for >2,000 traits and disorders in UK Biobank](http://www.nealelab.is/blog/2017/9/20/insights-from-estimates-of-snp-heritability-for-2000-traits-and-disorders-in-uk-biobank)
 
 <br>
 
 More technical descriptions are also available:
 
-* [Heritability 501: LDSR-based h2 in UKBB for the technically-minded](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded)
+* [Heritability 501: LDSR-based $h^2$ in UKBB for the technically-minded](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded)
 * [UKBB_ldsc github repository](https://github.com/Nealelab/UKBB_ldsc)
 
 <br>
 
-We view these results as preliminary and subject to change as we continue to refine the analyses as well as the genome-wide association results they are based on. But we hope you’ll agree that they provide an interesting and useful first look at the genetics of the many diverse traits and disorders studied in the UK Biobank.
+We view these results as preliminary and subject to change - we are continuing to refine the analyses as well as the genome-wide association results they are based on. But we hope you’ll agree that they provide an interesting and useful first look at the genetics of the many diverse traits and disorders studied in the UK Biobank.
 
 <br>
 
