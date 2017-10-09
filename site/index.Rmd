@@ -7,7 +7,7 @@ output: html_document
 
 <div class="well">
 
-As you may know, the UK Biobank recently released data on ~500,000 individuals to the scientific community to advance research on genetics. The [Neale Lab](http://nealelab.is) has been working to make some basic analyses of that data freely available; you can read more about the overall effort [here](http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-370000-samples-in-the-uk-biobank).
+As you may know, the UK Biobank recently released data on ~500,000 individuals to the scientific community to advance research on genetics. The [Neale Lab](http://nealelab.is) has been working to make some basic analyses of that data freely available; you can read more about the overall effort [here](http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank).
 
 <br>
 
@@ -65,7 +65,7 @@ To enable this quick initial analysis on such large-scale data we’re relying o
 
 **Are the primary GWAS results used for this analysis available? **
 
-Yes! Results will be available for browsing through the [Global Biobank Engine](https://biobankengine.stanford.edu/), and the full GWAS results are [available for download](https://sites.google.com/broadinstitute.org/ukbbgwasresults/). See [the introductory post](http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-370000-samples-in-the-uk-biobank) for much more information. 
+Yes! Results will be available for browsing through the [Global Biobank Engine](https://biobankengine.stanford.edu/), and the full GWAS results are [available for download](https://sites.google.com/broadinstitute.org/ukbbgwasresults/). See [the introductory post](http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank) for much more information. 
 
 <br>
 

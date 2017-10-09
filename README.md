@@ -1,6 +1,6 @@
 # UKBB ldsc scripts
 
-Scripts used for running LD score regression ([LDSC](https://github.com/bulik/ldsc)) to estimate SNP-heritability in UK Biobank. See the [UK Biobank GWAS announcement](http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-370000-samples-in-the-uk-biobank), the [hertiabilility analysis post](http://www.nealelab.is/blog/2017/9/15/heritability-of-2000-traits-and-disorders-in-the-uk-biobank) and the [results site](https://nealelab.github.io/UKBB_ldsc/).
+Scripts used for running LD score regression ([LDSC](https://github.com/bulik/ldsc)) to estimate SNP-heritability in UK Biobank. See the [UK Biobank GWAS announcement](http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank), the [hertiabilility analysis post](http://www.nealelab.is/blog/2017/9/15/heritability-of-2000-traits-and-disorders-in-the-uk-biobank) and the [results site](https://nealelab.github.io/UKBB_ldsc/).
 
 These scripts are mostly intended for documentation purposes, and may take some work to get running or adapt to other applications. All of the scripts described below are in the `./scripts/` folder. You can also find the code used to generate the [results site](https://nealelab.github.io/UKBB_ldsc/) in the `./site/` folder.
 

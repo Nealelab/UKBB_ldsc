@@ -24,7 +24,7 @@ navbar:
     - text: "Github Repo"
       href: https://github.com/Nealelab/UKBB_ldsc
     - text: "Neale Lab UKBB"
-      href: http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-370000-samples-in-the-uk-biobank
+      href: http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank
 output:
   html_document:
     theme: sandstone
