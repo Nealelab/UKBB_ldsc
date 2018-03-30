@@ -63,10 +63,13 @@ print('Time: {:%H:%M:%S (%Y-%b-%d)}'.format(datetime.datetime.now()))
 ###
 
 # Reinstall google cloud engine (broken by switching to anaconda)
-subprocess.call(['/home/anaconda2/bin/pip','install','google-compute-engine'])
+subprocess.call(['pip','install','google-compute-engine'])
 
 # Install joblib (for MTAG)
-subprocess.call(['/home/anaconda2/bin/pip','install','joblib'])
+subprocess.call(['pip','install','joblib'])
+
+# for ldsc
+subprocess.call(['pip','install','bitarray'])
 
 # Download MTAG for ref panel
 if not os.path.isdir('/home/mtag/mtag-master'):
