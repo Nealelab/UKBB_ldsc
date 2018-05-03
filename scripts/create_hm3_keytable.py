@@ -196,6 +196,17 @@ if gs_missing(BUCKET + HM3_qcpos_stem + '.ht') or force_all:
     # save passing
     ukb_qc2 = ukb_qc2.drop(ukb_qc2.sort_al)
     ukb_qc2.write(BUCKET + HM3_qcpos_stem + '.ht', overwrite=True)
+
+
+
+if gs_missing(BUCKET + HM3_qcpos_stem + '.tsv.bgz') or force_all:
+
+    # format tsv version
+    ukb_qc2 = hail.read_table(BUCKET + HM3_qcpos_stem + '.ht')
+    ukb_qc2 = ukb_qc2.annotate(A1=ukb_qc2.alleles[0],A2=ukb_qc2.alleles[1])
+    ukb_qc2 = ukb_qc2.select(ukb_qc2.locus,ukb_qc2.A1,ukb_qc2.A2,ukb_qc2.rsid,ukb_qc2.varid,ukb_qc2.variant,ukb_qc2.AF,INFO=ukb_qc2.info)
+    
+    # save
     ukb_qc2.export(BUCKET + HM3_qcpos_stem + '.tsv.bgz')
 
 
