@@ -98,7 +98,7 @@ These script run [ldsc](https://github.com/bulik/ldsc) to estimate SNP-heritabil
 The script `ldsc_h2_parallel_batch.py` runs univariate LD score regression with the standard default `eur_w_ld_chr` pre-computed European population LD scores. Results are parsed into a gzipped tsv with columns:
 
 ```
-phenotype, mean_chi2, lambdaGC, intercept intercept_se, intercept_z, intercept_p, ratio, ratio_se, h2_observed, h2_observed_se, h2_liability, h2_liability_se, h2_z, h2_p
+phenotype, mean_chi2, lambdaGC, intercept, intercept_se, intercept_z, intercept_p, ratio, ratio_se, h2_observed, h2_observed_se, h2_liability, h2_liability_se, h2_z, h2_p
 ```
 
 The script `ldsc_h2part_parallel_batch.py` similarly runs partitioned LD score regression, using the `baselineLD_v1.1` set of precomputed LD scores from 1000 Genomes Phase 3 European populations available (here)[https://data.broadinstitute.org/alkesgroup/LDSCORE/] and described by (Gazal et al. (2017))[http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html]. The full set of results for the annotations (e.g. corresponding to the `--print-coefficients` output file) are converted to a flat row of results per phenotype. 
@@ -108,7 +108,7 @@ Conversion to liability-scale h2 for dichotomous traits is done assuming that th
 
 ### Implementation Note
 
-This is almost certainly not the ideal way to strcture this analysis. Making a human manage the splitting/batching here somewhat defeats the purpose of having flexible cloud compute. We're conly doing it this way currently for expediency while we investigate better long-term alternatives.
+This is almost certainly not the ideal way to structure this analysis. Making a human manage the splitting/batching here somewhat defeats the purpose of having flexible cloud compute. We're doing it this way currently for expediency while we investigate better long-term alternatives.
 
 With the current settings in the submission script running univariate h2 for ~1500 traits takes a little over 10 node hours (~160 CPU hours) split over 10 minimal `n1-highcpu-16` VMs, each running 8 traits in parallel at a time. Paritioned heritbaility is slower, taking just under 20 hours on 10 `n1-standard-16` VMs running 6 traits at a time for the same traits. Attempts to scale this up to more traits on a machine (with 32- or 64-core VMs) have seen poor performance, likely due to being I/O bound for reading reference and sumstat files. 
 
