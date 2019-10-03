@@ -1,0 +1,50 @@
+name: "UKBB-ldsc"
+output_dir: "../docs"
+exclude: ["analytics_header.html","./rmd_source/*","./yml_source/*"]
+navbar:
+  title: "UKBB Heritability"
+  left:
+    - text: "Browser"
+      href: h2_browser.html
+    - text: "Methods"
+      menu:
+        - text: "Overview"
+          href: details.html
+        - text: "Selecting Primary GWAS"
+          href: select_topline.html
+        - text: "Confidence Criteria"
+          href: confidence.html
+        - text: "Significance Thresholds"
+          href: significance.html
+    - text: "Plots"
+      menu:
+        - text: "Heritability and Intercept"
+          href: viz_h2.html
+        - text: "Partitioned Annotations"
+          href: viz_annot.html
+        - text: "QQ Plots"
+          href: viz_qq.html
+        - text: "Sample Size Scaling"
+          href: viz_sampsize.html
+        - text: "Univariate LDSR"
+          href: viz_univar.html
+  right:
+    - text: "Github Repo"
+      href: https://github.com/Nealelab/UKBB_ldsc
+    - text: "Neale Lab UKB"
+      href: https://www.nealelab.is/uk-biobank
+output:
+  html_document:
+    theme: sandstone
+    includes:
+      in_header: analytics_header.html
+output_files:
+  index.html:
+    src: "index.Rmd"
+  details.html:
+    src: "details.Rmd"
+  h2_browser.html:
+    src: "h2_browser.Rmd"
+    params:
+      isUnivar: "FALSE"
+      datfile: "../results/round1/ukbb_h2part.RData"

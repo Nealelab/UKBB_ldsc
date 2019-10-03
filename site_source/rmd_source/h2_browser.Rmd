@@ -4,7 +4,7 @@ date: "Last updated `r format(Sys.Date())`"
 output: html_document
 params:
   isUnivar: FALSE
-  datfile: "../results/ukbb_h2part.RData"
+  datfile: "../results/round1/ukbb_h2part.RData"
 ---
 
 ```{r setup, include=FALSE}

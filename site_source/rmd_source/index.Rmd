@@ -1,5 +1,5 @@
 ---
-title: "Heritability of >2,000 traits & disorders in UK Biobank"
+title: "Heritability of >4,000 traits & disorders in UK Biobank"
 output: html_document
 ---
 

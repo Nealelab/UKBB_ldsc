@@ -1,0 +1,19 @@
+  plots_home.html:
+    src: "./rmd_source/plots_home.Rmd"
+  viz_h2.html:
+    src: "./rmd_source/viz_h2.Rmd"
+    params:
+      datfile: "../../results/ukbb_h2part.RData"
+  viz_qq.html:
+    src: "./rmd_source/viz_qq.Rmd"
+    params:
+      datfile: "../../results/ukbb_h2part.RData"
+  viz_sampsize.html:
+    src: "./rmd_source/viz_sampsize.Rmd"
+    params:
+      datfile: "../../results/ukbb_h2part.RData"
+  viz_univar.html:
+    src: "./rmd_source/viz_univar.Rmd"
+    params:
+      datfile1: "../../results/ukbb_h2part.RData"
+      datfile2: "../../results/ukbb_h2univar.RData"
