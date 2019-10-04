@@ -1,0 +1,226 @@
+---
+title: "Vizualizing $h^2$ results: $h^2$ and intercept"
+date: "Last updated `r format(Sys.Date())`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+params:
+  datfile: "../results/ukbb_h2part.RData"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(reshape2)
+require(ggplot2)
+require(plotly)
+require(DT)
+require(crosstalk)
+require(crosstool)
+
+# handle params
+load(file=params$datfile)
+
+# setup
+dat$isBinary <- !is.na(dat$N_case)
+dat$Neff <- dat$N
+dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
+
+dat <- dat[dat$Neff > 200,]
+
+dat$isNomSig_h2 <- dat$h2_p < .05
+dat$isBonfSig_h2 <- dat$h2_p < (.05/nrow(dat))
+dat$isNomSig_int <- dat$intercept_p < .05
+dat$isBonfSig_int <- dat$intercept_p < (.05/nrow(dat))
+dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$description,"</a>")
+
+# shared data object
+d1 <- dat[,c("phenotype","table_desc","description","prevelence","intercept","intercept_z","intercept_p","h2_liability","h2_z","h2_p","Neff","isBinary","isBonfSig_h2","isBonfSig_int")]
+
+```
+
+<br>
+
+### $h^2$ vs. Intercept {.tabset .tabset-fade}
+
+Use the "Data" tab to get information on points selected on the plot (including links to the phenotype page), or to select points to highlight on the plots. **Note:** You must open the Data tab prior to making the selection for this function to work.
+
+#### Estimates
+
+<div class="well">
+
+```{r int_h2, echo=FALSE}
+# setup shared data
+shared_h2 <- SharedData$new(d1)
+
+# define plot
+pp <- plot_ly(shared_h2, 
+			  x=~intercept, 
+			  y=~h2_liability, 
+			  type="scatter",
+			  mode="markers",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
+			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevelence)) %>% highlight(on="plotly_selected",off='plotly_deselect', color="darkorange", selected=attrs_selected(showlegend=F), dynamic = FALSE) %>% layout(dragmode="select")
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=T, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_h2, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", shared_h2, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", shared_h2, ~isBonfSig_int, multiple=T)
+	)
+)
+```
+</div>
+
+#### Z scores
+
+<div class="well">
+
+```{r int_h2_z, echo=FALSE}
+# define plot
+pp <- plot_ly(shared_h2, 
+			  x=~intercept_z, 
+			  y=~h2_z, 
+			  type="scatter",
+			  mode="markers",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
+			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevelence)) %>% highlight(on="plotly_selected",off='plotly_deselect', color="darkorange", selected=attrs_selected(showlegend=F), dynamic = FALSE) %>% layout(dragmode="select")
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=T, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_h2, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", shared_h2, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", shared_h2, ~isBonfSig_int, multiple=T)
+	)
+)
+```
+</div>
+
+#### Data
+
+<div class="well">
+
+```{r int_h2_dat, echo=FALSE}
+datatable(shared_h2, 
+		  rownames = F, 
+#		  colnames = c("phenotype","table_desc","description","prevelence","intercept","intercept_z","intercept_p","h2_liability","h2_z","h2_p","Neff","isBinary","isBonfSig_h2","isBonfSig_int"), 
+		  colnames = c("ID","Phenotype","Description","Prev.","Int.","Int.z","Int.p","h2","h2.z","h2.p","N_eff","isBinary","Sig.h2","Sig.int"),
+#		  extensions='FixedHeader', 
+		  selection="multiple",
+		  style="bootstrap", 
+		  class="display", 
+		  escape=F,
+		  options = list(scrollY="400px", scrollX=TRUE, pageLength=10, columnDefs=list(list(visible=FALSE, targets=c(2,3,5,8,11:13)))) # fixedHeader=TRUE, 
+) %>% formatSignif(columns = c(5), digits=4) %>% formatSignif(columns = c(7,8,10), digits=3) %>%  formatRound(columns=11, digits=0)
+```
+</div>
+
+<br>
+
+
+### Intercept distribution
+
+<div class="well">
+
+```{r hist_int, echo=FALSE}
+d1 <- SharedData$new(dat)
+
+pp <- plot_ly(d1,
+			  x = ~intercept, 
+			  type = "histogram",
+			  histnorm = "probability"
+	  		)
+
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", d1, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", d1, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", d1, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", d1, ~isBonfSig_int, multiple=T)
+	)
+)
+```
+
+</div>
+
+<br>
+
+### $h^2$ distribution
+
+<div class="well">
+
+```{r hist_h2, echo=FALSE}
+d2 <- SharedData$new(dat)
+
+pp <- plot_ly(d2,
+			  x = ~h2_liability, 
+			  type = "histogram",
+			  histnorm = "probability"
+	  		)
+
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", d2, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", d2, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", d2, ~isBonfSig_int, multiple=T)
+	)
+)
+```
+
+</div>
+
+<br>
+
+### LambdaGC Ratio
+
+<div class="well">
+
+```{r hist_ratio, echo=FALSE}
+d3 <- SharedData$new(dat[!is.na(dat$ratio) & dat$mean_chi2 > 1.002,])
+
+pp <- plot_ly(d3,
+			  x = ~ratio, 
+			  type = "histogram",
+			  histnorm = "probability"
+	  		)
+
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", d3, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", d3, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", d3, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", d3, ~isBonfSig_int, multiple=T)
+	)
+)
+
+```
+
+<br>
+
+**Note:** The "ratio" metric from LDSR is defined as:
+$$\frac{Intercept-1}{mean(\chi^2)-1}$$
+and is roughly an estimate of the balance between inflation in $lambda_{GC}$ (i.e. the genomic control factor) due to confounding vs. inflation from polygenic signal. Phenotypes with $mean(\chi^2) < 1.002$ are excluded. This value will be inflated if the LDSR intercept is inflated, for instance due to model misspecification.
+
+</div>
+
+<br>

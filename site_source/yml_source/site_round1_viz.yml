@@ -1,0 +1,23 @@
+  round1_plots_home.html:
+    src: "./rmd_source/round1_plots_home.Rmd"
+  round1_viz_h2.html:
+    src: "./rmd_source/round1_viz_h2.Rmd"
+    params:
+      datfile: "../results/round1/ukbb_h2part.RData"
+  round1_viz_qq.html:
+    src: "./rmd_source/round1_viz_qq.Rmd"
+    params:
+      datfile: "../results/round1/ukbb_h2part.RData"
+  round1_viz_sampsize.html:
+    src: "./rmd_source/round1_viz_sampsize.Rmd"
+    params:
+      datfile: "../results/round1/ukbb_h2part.RData"
+  round1_viz_annot.html:
+    src: "./rmd_source/round1_viz_annot.Rmd"
+    params:
+      datfile: "../results/round1/ukbb_h2part.RData"
+  round1_viz_univar.html:
+    src: "./rmd_source/round1_viz_univar.Rmd"
+    params:
+      datfile1: "../results/round1/ukbb_h2part.RData"
+      datfile2: "../results/round1/ukbb_h2univar.RData"

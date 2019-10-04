@@ -28,6 +28,16 @@ navbar:
           href: viz_sampsize.html
         - text: "Univariate LDSR"
           href: viz_univar.html
+    - text: "Archive"
+      menu:
+        - text: "Round 1 Methods"
+          href: round1_details.html
+        - text: "Round 1 Browser"
+          href: round1_h2_browser.html
+        - text: "Round 1 Univariate Browser"
+          href: round1_h2_univar_browser.html
+        - text: "Round 1 Plots"
+          href: round1_plots_home.html
   right:
     - text: "Github Repo"
       href: https://github.com/Nealelab/UKBB_ldsc
@@ -35,7 +45,8 @@ navbar:
       href: https://www.nealelab.is/uk-biobank
 output:
   html_document:
-    theme: sandstone
+    theme: flatly
+    css: sandflat.min.css
     includes:
       in_header: analytics_header.html
 output_files:

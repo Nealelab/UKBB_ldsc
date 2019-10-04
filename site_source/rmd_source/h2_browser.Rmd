@@ -4,14 +4,31 @@ date: "Last updated `r format(Sys.Date())`"
 output: html_document
 params:
   isUnivar: FALSE
-  datfile: "../results/round1/ukbb_h2part.RData"
+  datfile: "ukb31063_h2_topline.17jun2019.tsv.gz"
 ---
+
+<style type="text/css">
+div.main-container {
+  max-width: 1800px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+</style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+# table {
+#   table-layout:fixed;
+# }
+# table td {
+#   word-wrap: break-word;
+#   max-width: 300px;
+#   white-space: pre-wrap;
+# }
+
 # parameters
-load(file=normalizePath(params$datfile))
+dat <- read.delim(file=normalizePath(params$datfile),sep='\t',header=T,stringsAsFactors=F,colClasses=c(intercept_p="character"))
 isUnivar <- as.logical(params$isUnivar)
 
 # packages
@@ -22,22 +39,8 @@ require(DT)
 require(crosstalk)
 require(crosstool)
 
-# define utility columns
-dat$isBinary <- !is.na(dat$N_case)
-dat$Neff <- dat$N
-dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
-
-dat <- dat[dat$Neff > 200,]
-
-
-#dat$isNomSig_h2 <- dat$h2_p < .05
-#dat$isBonfSig_h2 <- dat$h2_p < (.05/nrow(dat))
-#dat$isPassing <- (dat$N > 10000) & (!dat$isBinary | dat$N_case > 400)
-#coef_p_cols <- names(dat)[grep("..Coefficient_p",names(dat))]
-
 # setup links
-dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$description,"</a>")
-
+dat$description <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$description,"</a>")
 ```
 
 <br>
@@ -45,42 +48,89 @@ dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$desc
 `r if(isUnivar){paste0("<div class=\"panel panel-warning\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Note</h3></div><div class=\"panel-body\">You are viewing results from univariate LD score regression. We recommend the <a href=\"h2_browser.html\">partitioned results</a> instead.</div></div>")}`
 
 ```{r lookup, echo=FALSE}
-d2 <- dat[,c("phenotype","table_desc","N","prevelence","intercept","intercept_p","h2_liability","h2_p")]
-shared_dat <- SharedData$new(d2)
+# shared_dat <- SharedData$new(dat[, c("phenotype","description","h2_liability","h2_p","h2_sig","confidence","intercept","intercept_p","ratio","n","Neff","isBinary","prevalence","source","sex")])
+dat <- dat[,c("phenotype","description","h2_liability","h2_liability_se","h2_p","h2_sig","confidence","notes","intercept","intercept_se","intercept_p","lambdaGC","ratio","Neff","variable_type","prevalence","source","sex")]
 
-datatable(shared_dat, 
+# avoid empty values
+dat$h2_sig[is.na(dat$h2_sig)] <- "NA"
+dat$notes[dat$notes==""] <- "none"
+
+# setup factors
+dat$sex[dat$sex=="both_sexes"] <- "both"
+fact_cols <- c("h2_sig","confidence","notes","variable_type","source","sex")
+for(nam in fact_cols){
+  dat[,nam] <- as.factor(dat[,nam])
+}
+
+# setup numeric (do here to get shorter length for table formatting)
+num_cols <- c("h2_liability","h2_liability_se","intercept_se","ratio","prevalence","lambdaGC")
+for(nam in num_cols){
+  dat[,nam] <- signif(dat[,nam],3)
+}
+
+# avoid p=1
+p_cols <- c("h2_p")
+for(nam in p_cols){
+  prec <- 3
+  p_num <- signif(dat[,nam],prec)
+  while(any(p_num==1)){
+    prec <- prec+1
+    p_num[p_num==1] <- signif(dat[,nam],prec)[p_num==1]
+  }
+  dat[,nam] <- p_num
+}
+
+# handle intercept_p as a string (due to high precision p-vals)
+prec <- 3
+intp_string <- dat$intercept_p
+intp_string[(dat$intercept_p == as.character(as.numeric(dat$intercept_p)))] <- as.character(signif(as.numeric(dat$intercept_p),prec)[(dat$intercept_p == as.character(as.numeric(dat$intercept_p)))])
+highstr <- intp_string[!(dat$intercept_p == as.character(as.numeric(dat$intercept_p)))]
+highstr_lead <- as.character(signif(as.numeric(substr(highstr,1,6)),prec))
+highstr_exp <- sapply(highstr,function(a) strsplit(a,split="e")[[1]][2],USE.NAMES = F)
+intp_string[!(dat$intercept_p == as.character(as.numeric(dat$intercept_p)))] <- paste0(highstr_lead,"e",highstr_exp)
+while(any(intp_string=="1")){
+  prec <- prec+1
+  intp_string[intp_string=="1"] <- as.character(signif(as.numeric(dat$intercept_p),prec)[intp_string=="1"])
+}
+dat$intercept_p <- intp_string
+
+# extra num precision
+num_cols4 <- c("intercept")
+for(nam in num_cols4){
+  dat[,nam] <- signif(dat[,nam],4)
+}
+
+# integers
+int_cols <- c("Neff")
+for(nam in int_cols){
+  dat[,nam] <- as.integer(round(dat[,nam]))
+}
+
+dt <- datatable(SharedData$new(dat), 
+      filter = "top",
 		  rownames = F, 
-		  colnames = c("ID","Phenotype","N","Prev.","Int.","Int. p","h2","h2 p"), 
-#		  extensions='FixedHeader', 
+		  colnames = c("ID","Phenotype","h2","h2 se","h2 p","h2 Sig?","Confidence","Notes","Int.","Int. se","Int. p","lambda","ratio","Neff","var type","Prev.","Source","Sex"), 
 		  selection="none",
-		  style="bootstrap", 
+		  style="default", 
 		  class="display", 
 		  escape=F,
-		  options = list(scrollY="400px", scrollX=TRUE, pageLength=10) # fixedHeader=TRUE, 
-) %>% formatSignif(columns = c(5), digits=4) %>% formatSignif(columns = c(6:8), digits=3) %>% formatSignif(columns = 4, digits=2) %>% formatRound(columns=3, digits=0)
+      extensions = c('FixedHeader','Buttons'),
+		  options = list(scrollY="475px", scrollX=TRUE, pageLength=12, fixedHeader=TRUE, autoWidth=TRUE,
+		                 order = list(list(4,"asc"), list(6, "asc")),
+		                 columnDefs = list(list(visible=FALSE, targets=c(0,3,7,9,11:12,14:15,17)),
+		                                   list(width="300px", targets=c(1)),
+		                                   list(className='dt-right', targets=c(10)),
+		                                   list(className='dt-center', targets=c(5,6)),
+		                                   # ordering on SE(int) in order to get int p-vals < 1e-300 to sort correctly
+		                                   # not a robust solution (vs. sorting on z score), but works for now
+		                                   # without adding a column of data to the file size
+		                                   list(orderData=c(10,9), targets=c(10)),
+		                                   list(orderSequence=c("desc","asc"), targets=c(2,8))),
+		                 dom = 'Bfrtip', buttons = I('colvis'),
+		                 buttons = list(list(extend = 'colvis', columns = c(1)))) 
+) 
+
+dt
 ```
 
 <br>
-
-<div class="well">
-
-### Lookup a phenotype
-
-Explore results of `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression for UK Biobank phenotypes. You can read more about this analysis and find links to more information [on the annoucement page](http://www.nealelab.is/blog/2017/9/15/heritability-of-2000-traits-and-disorders-in-the-uk-biobank).
-
-You can search for phenotypes by:
-
-* **Description**, e.g. "height"
-* **ICD code**, e.g. "I25"
-* **ID**, i.e. the UK Biobank phenotype ID matching the [UKBB showcase](http://biobank.ctsu.ox.ac.uk/crystal/search.cgi)
-
-Results shown here include:
-
-* **N**: The sample size in the UKBB analysis set (more info on the GWAS analysis [here](http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas))
-* **Prevalence** (Prev.) for binary phenotypes
-* **Intercept** (Int.): the intercept term from `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression. Values > 1 may indicate population stratification, confounding, or some other model misspecification. P-value (Int. p) corresponds to the test that the intercept is greater than 1.
-* **Heritability** ($h^2$): the SNP heritability estimate from `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression. Value is given on the liability scale for binary phenotypes, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set. P-value (h2 p) corresponds to the test that the intercept is greater than 1.
-
-Click on a phenotype for more detailed results from the partitioned LD score regression analysis.
-
-</div>

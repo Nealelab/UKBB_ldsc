@@ -8,6 +8,7 @@ require("rmarkdown")
 # setup
 setwd("/Users/raymondwalters/Documents/Code/github/UKBB_ldsc/site_build/")
 process <- FALSE
+round1 <- TRUE
 viz <- FALSE
 pages <- FALSE
 testing <- TRUE
@@ -17,10 +18,29 @@ h2 <- read.delim("../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz")
 system("cp ../site_source/yml_source/site_header.yml ./_site.yml")
 system("cat ../site_source/yml_source/site_core.yml >> _site.yml")
 system("cp ../site_source/rmd_source/index.Rmd ./")
-system("cp ../site_source/rmd_source/details.Rmd ./")
+system("cp ../site_source/rmd_source/methods.Rmd ./")
 system("cp ../site_source/rmd_source/h2_browser.Rmd ./")
 system("cp ../site_source/analytics_header.html ./")
+system("cp ../site_source/sandflat/sandflat.min.css ./")
 system("cp -r ../site_source/icon ./")
+
+if(round1){
+  
+  system("cat ../site_source/yml_source/site_round1_core.yml >> _site.yml")
+  system("cp ../site_source/rmd_source/round1_details.Rmd ./")
+  system("cp ../site_source/rmd_source/round1_h2_browser.Rmd ./")
+  
+  if(viz){
+    system("cat ../site_source/yml_source/site_round1_viz.yml >> _site.yml")
+    system("cp ../site_source/rmd_source/round1_plots_home.Rmd ./")
+    system("cp ../site_source/rmd_source/round1_viz_annot.Rmd ./")
+    system("cp ../site_source/rmd_source/round1_viz_h2.Rmd ./")
+    system("cp ../site_source/rmd_source/round1_viz_qq.Rmd ./")
+    system("cp ../site_source/rmd_source/round1_viz_sampsize.Rmd ./")
+    system("cp ../site_source/rmd_source/round1_viz_univar.Rmd ./")
+  }
+}
+
 
 if(viz){
   system("cat ../site_source/yml_source/site_viz.yml >> _site.yml")
@@ -59,6 +79,7 @@ render_site()
 system("rm *Rmd")
 system("rm analytics_header.html")
 system("rm -r icon")
+system("rm sandflat.min.css")
 if(process){
   system("rm -r images")
 }
