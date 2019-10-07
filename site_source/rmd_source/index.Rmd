@@ -84,36 +84,12 @@ We’ll revisit this question in future posts as we explore the results in more 
 
 #### Credits
 
-**Heritability analysis team:**
-Liam Abbott,
-Sam Bryant,
-Claire Churchhouse,
-Benjamin Neale,
-Duncan Palmer,
-Raymond Walters
+* **Lead:** Raymond Walters
+* **LDSR analysis support:** Nikolas Baya, Katherine Tashman, Danfeng Chen, Liam Abbott
+* **Phenotype analysis support**: Caitlin Carey, Duncan Palmer
+* **Supervision**: Benjamin Neale
+* **UK Biobank GWAS Core Team:** Liam Abbott, Sam Bryant, Claire Churchhouse, Andrea Ganna, Daniel Howrigan, Duncan Palmer, Ben Neale, Raymond Walters, Caitlin Carey, The Hail team, Benjamin Neale
 
-**Neale Lab UKBB team:**
-Liam Abbott,
-Verneri Anttila,
-Krishna Aragam,
-Jon Bloom,
-Sam Bryant,
-Claire Churchhouse,
-Joanne Cole,
-Mark J. Daly,
-Andrea Ganna,
-Jackie Goldstein,
-Mary Haas,
-Joel Hirschhorn,
-Daniel Howrigan,
-Sekar Kathiresan,
-Dan King,
-Benjamin Neale,
-Duncan Palmer,
-Tim Poterba,
-Manuel Rivas,
-Cotton Seed,
-Sailaja Vedantam,
-Raymond Walters
+See [Credits](credits.html) for complete acknowledgements.
 
 </div>
