@@ -1,0 +1,7 @@
+<!-- CSS for code snippets, since Rmd seems to override the main CSS -->
+<style>
+code{
+    color: #c7254e;
+    background-color: #f9f2f4;
+}
+</style>
