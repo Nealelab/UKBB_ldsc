@@ -39,14 +39,17 @@ navbar:
         - text: "Round 1 Plots"
           href: round1_plots_home.html
   right:
-    - text: "Github Repo"
+    - text: "Credits"
+      href: "credits.html"
+    - text: "Github"
       href: https://github.com/Nealelab/UKBB_ldsc
     - text: "Neale Lab UKB"
       href: https://www.nealelab.is/uk-biobank
 output:
   html_document:
-    theme: flatly
-    css: sandflat.min.css
+    theme: default
+    highlight: null
+    css: ["sandflat.min.css","dt_style.css"]
     includes:
       in_header: analytics_header.html
 output_files:
