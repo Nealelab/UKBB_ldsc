@@ -1,6 +1,7 @@
 ---
-title: "UKBB SNP-Heritability Browser"
+title: "Round 1 UKBB SNP-Heritability Browser"
 date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
 output: html_document
 params:
   isUnivar: FALSE

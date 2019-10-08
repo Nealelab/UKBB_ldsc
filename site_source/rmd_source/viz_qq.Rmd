@@ -9,6 +9,9 @@ params:
   datfile: "../results/ukbb_h2part.RData"
 ---
 
+```{r child = '_toc_fix.Rmd'}
+```
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 require(reshape2)
