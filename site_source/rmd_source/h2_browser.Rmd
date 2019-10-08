@@ -1,17 +1,23 @@
 ---
-title: "UKBB SNP-Heritability Browser"
+title: "UKB SNP-Heritability Browser"
 date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
 output: html_document
 params:
-  isUnivar: FALSE
-  datfile: "ukb31063_h2_topline.17jun2019.tsv.gz"
+  datfile: "ukb31063_h2_topline.02Oct2019.tsv.gz"
 ---
 
-<style type="text/css">
+```{r child = '_code_highlight_fix.Rmd'}
+```
+
+<style>
 div.main-container {
   max-width: 1800px;
   margin-left: 50px;
   margin-right: 50px;
+}
+.well {
+  max-width: 800px
 }
 </style>
 
@@ -29,7 +35,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # parameters
 dat <- read.delim(file=normalizePath(params$datfile),sep='\t',header=T,stringsAsFactors=F,colClasses=c(intercept_p="character"))
-isUnivar <- as.logical(params$isUnivar)
 
 # packages
 require(reshape2)
@@ -44,8 +49,6 @@ dat$description <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$des
 ```
 
 <br>
-
-`r if(isUnivar){paste0("<div class=\"panel panel-warning\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Note</h3></div><div class=\"panel-body\">You are viewing results from univariate LD score regression. We recommend the <a href=\"h2_browser.html\">partitioned results</a> instead.</div></div>")}`
 
 ```{r lookup, echo=FALSE}
 # shared_dat <- SharedData$new(dat[, c("phenotype","description","h2_liability","h2_p","h2_sig","confidence","intercept","intercept_p","ratio","n","Neff","isBinary","prevalence","source","sex")])
@@ -79,6 +82,15 @@ for(nam in p_cols){
   }
   dat[,nam] <- p_num
 }
+# for(nam in p_cols){
+#   prec <- 3
+#   p_num <- sprintf(fmt=paste0("%.",prec,"#g"),dat[,nam])
+#   while(any(as.numeric(p_num)==1)){
+#     prec <- prec+1
+#     p_num[as.numeric(p_num)==1] <- sprintf(fmt=paste0("%.",prec,"#g"),dat[,nam])[as.numeric(p_num)==1]
+#   }
+#   dat[,nam] <- p_num
+# }
 
 # handle intercept_p as a string (due to high precision p-vals)
 prec <- 3
@@ -107,30 +119,102 @@ for(nam in int_cols){
 }
 
 dt <- datatable(SharedData$new(dat), 
-      filter = "top",
+#      filter = "top",
 		  rownames = F, 
-		  colnames = c("ID","Phenotype","h2","h2 se","h2 p","h2 Sig?","Confidence","Notes","Int.","Int. se","Int. p","lambda","ratio","Neff","var type","Prev.","Source","Sex"), 
+		  colnames = c("ID","Phenotype","h2","h2 se","h2 p","h2 sig?","Confidence","Notes","Int.","Int. se","Int. p","Lambda","Ratio","Neff","Var Type","Prev.","Source","Sex"), 
 		  selection="none",
 		  style="default", 
-		  class="display", 
+		  class="stripe hover compact", 
 		  escape=F,
       extensions = c('FixedHeader','Buttons'),
-		  options = list(scrollY="475px", scrollX=TRUE, pageLength=12, fixedHeader=TRUE, autoWidth=TRUE,
+		  options = list(scrollY="475px", scrollX=TRUE, pageLength=15, fixedHeader=TRUE, autoWidth=TRUE,
+		                 search = list(regex=TRUE),
 		                 order = list(list(4,"asc"), list(6, "asc")),
 		                 columnDefs = list(list(visible=FALSE, targets=c(0,3,7,9,11:12,14:15,17)),
 		                                   list(width="300px", targets=c(1)),
-		                                   list(className='dt-right', targets=c(10)),
-		                                   list(className='dt-center', targets=c(5,6)),
+		                                   list(width="150px", targets=c(0)),
+		                                   list(className='dt-right dt-nowrap', targets=c(2:17)),
+		                                   list(searchable=FALSE, targets=c(2:4,8:13,15)),
 		                                   # ordering on SE(int) in order to get int p-vals < 1e-300 to sort correctly
 		                                   # not a robust solution (vs. sorting on z score), but works for now
 		                                   # without adding a column of data to the file size
 		                                   list(orderData=c(10,9), targets=c(10)),
 		                                   list(orderSequence=c("desc","asc"), targets=c(2,8))),
-		                 dom = 'Bfrtip', buttons = I('colvis'),
-		                 buttons = list(list(extend = 'colvis', columns = c(1)))) 
-) 
+		                 dom = 'Bfrtip', # buttons = I('colvis'),
+		                 buttons = list(list(extend = 'colvis',className="btn btn-primary",text="Select Columns")))
+) %>% formatSignif(columns=c(3,4,10,12,13,16),digits=(3)) %>% formatSignif(columns=c(9),digits=(4)) %>% formatRound(columns=c(14),digits=0,interval=3)
 
 dt
 ```
 
 <br>
+
+<div class="col-lg-6 col-lg-offset-3"><div class="well">
+
+The above table provides results of partitioned LD score regression (LDSR) for GWAS of `r nrow(dat)` UK Biobank phenotypes. You can read more about this analysis on the [methods page](methods.html) and find links to more information about the underlying GWAS on the [Neale Lab blog](http://www.nealelab.is/uk-biobank). 
+
+Additional fields can be viewed using the "Select Columns" button at the top left (columns described below). Use the search box at the top right to filter the table. 
+
+You can also <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">download the complete results file</a>.
+
+</div></div>
+
+<div class="col-lg-6 col-lg-offset-3"><div class="well">
+
+### **Search Suggestions**
+
+Use the search box on the top right of the table to filter the table. 
+
+#### **Find phenotypes by name**
+
+* Description, e.g. `height` or `"Time spent"`
+* ICD code, e.g. `I25`
+* ID, e.g. `2734`, i.e. the phenotype ID matching the [UK Biobank showcase](http://biobank.ctsu.ox.ac.uk/crystal/search.cgi)
+
+#### **Focus on a certain results category**
+
+Searches include all non-numeric fields, so you filter on flags in multiple columns. For example, try
+
+* `z7 finngen` for highly significant $h^2_g$ results for ICD10-based endpoints defined by [FinnGen](https://www.finngen.fi/en)
+* `female medication` for medication codes where the primary GWAS is in females only
+
+#### **Construct complex searches**
+
+Your search can include [JavaScript-style regular expressions](https://www.debuggex.com/cheatsheet/regex/javascript). These are especially useful for combining keyword options or using e.g. the word boundary `\b` to delineate strings that might appear elsewhere. For example, try
+
+* `\bz[47] \bmedium \bmale` for medium confidence results with $z>4$ or $z>7$ for $h^2_g$ and where the primary GWAS is in males
+* `(beer|wine|alcohol)` for all phenotypes containing the terms "beer", "wine", or "alcohol"
+* `"blood pressure" ^((?!(medication)).)*$` for all phenotypes containing "blood pressure" but not "medication"
+
+</div></div>
+
+<div class="col-lg-6 col-lg-offset-3"><div class="well">
+
+### **Table Columns**
+
+The above browser includes the following fields:
+
+* **ID** (hidden): either the UK Biobank phenotype code (e.g. matching the [UKB Showcase](http://biobank.ctsu.ox.ac.uk/crystal/index.cgi)), an ICD10 code, or a [FinnGen](https://www.finngen.fi/en) endpoint code
+* **Phenotype**: Name/description of the phenotype. Clink to link to a more detailed set of LDSR results for the phenotype. 
+* **h2**: the SNP heritability estimate from partitioned LD score regression. Value is given on the liability scale for binary phenotypes, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set.
+* **h2 se** (hidden): standard error of the SNP heritability estimate.
+* **h2 p**: p-value for the test that the SNP hertability is greater than 0.
+* **h2 sig?**: whether the SNP heritability estimate is statisitical significant at different thresholds. Possible values are `z7` (z > 7, highly significant), `z4` (z > 4, significant after correction for multiple testing), `nominal` (p < .05), `nonsig` (p > .05), or `NA` (low confidence results). See [methods](significance.html) for more details.
+* **Confidence**: confidence rating for the SNP hertiability estimate. One of `low`, `medium`, `high`, or `none`. See [methods](confidence.html) for more details.
+* **Notes** (hidden): explanation of confidence ratings lower than "high", as a list of flags delimited with semi-colons. Possible flags are: `isBadPower`, `isLowNeff`, `isMidNeff`, `isExtremeSE`, `isHighSE`, `isSexBias`, `isBadOrdinal`, and `isNumericOrdinal`. See [methods](confidence.html) for more details.
+* **Int.**: the intercept term from partitioned LD score regression. Values > 1 may indicate population stratification, confounding, or some other model misspecification. 
+* **Int. se** (hidden): standard error of the estimated LD score regression intercept.
+* **Int. p**: p-value for the LD score regression intercept testing whether the intercept is greater than 1.
+* **Lambda** (hidden): (Median observed $\chi^2$)/(Median of 1 degree of freedom $chi^2$ distribution). Genomic control measure of inflation of GWAS results for the SNPs used in the LDSR analysis. Increases with sample size.
+* **Ratio** (hidden): (Estimated LDSR intercept -1)/(Mean observed $\chi^2$ -1). Measure of the proportion of inflation of GWAS results that is not explained by the relationship with LD modelled by LDSR. May reflect remaining stratification, confounding, structure, or model misspecification.
+* **Neff**: The effective sample size in the UKB GWAS analysis set. For binary variables is 4/(1/$N_{case}$)+(1/$N_{control}$), otherwise is the sample size. More info on the GWAS analysis set is available on the [Neale Lab blog](http://www.nealelab.is/uk-biobank).
+* **Var Type** (hidden): Measurement type for the phenotype. One of `binary`, `ordinal`, `continuous_irnt` (i.e. inverse rank-normalized), or `continuous_raw`.
+* **Prev.** (hidden): prevalence for binary phenotypes. Is blank if the variable isn't binary.
+* **Source**: the GWAS batch the phenotype belonged to. One of: [PHESANT](https://github.com/astheeggeggs/PHESANT), ICD10, [FinnGen](https://www.finngen.fi/en), or biomarkers. 
+* **Sex** (hidden): the sex strata used as the primary GWAS for this phenotype, e.g. to limit choice of controls for sex-specific case/control phenotypes. One of: both, female, or male.
+
+Hidden fields can be accessed using the "Select Columns" botton on the top left of the browser table. Search includes all fields even when hidden.
+
+Click on a phenotype for more detailed results from the partitioned LD score regression analysis.
+
+</div></div>
