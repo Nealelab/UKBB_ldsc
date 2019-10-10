@@ -1,7 +1,26 @@
+.table {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.table tr {
+  border-bottom: 1px solid #DFD7CA
+}
+.table tr:last-child {
+  border-bottom: 1px solid #3E3F3A
+}
+.table tbody, .table tr.header{
+  border-top: 1px solid #3E3F3A;
+  border-bottom: 1px solid #3E3F3A
+}
+
 td.dt-nowrap { 
   white-space: nowrap 
 }
 
+table.dataTable {
+  width: 100%;
+}
 table.dataTable.stripe tbody tr.odd {
   background-color: #F8F5F0;
 }
