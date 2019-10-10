@@ -29,9 +29,9 @@ output:
 
 * GWAS performed by the [Neale Lab](https://www.nealelab.is/uk-biobank) using [Hail](https://hail.is) on the [Google Cloud Platform](https://cloud.google.com/). [A full technical discussion](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded) on the limitations of this analysis and recommendations for intepreting the results based on the Round 1 results, as well as more general details about [our analysis of UK Biobank](http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas), are available elsewhere. Code is also available [on Github](https://github.com/Nealelab/UK_Biobank_GWAS).
 
-* LD Score regression (LDSR; [Bulik-Sullivan et al. 2015](http://www.nature.com/ng/journal/v47/n3/full/ng.3211.html) or [on pubmed](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/)) formatted sumstats for HapMap3 sites passing QC (MAF > 0.01, INFO > 0.9, excluding multiallelics and the MHC region) in UK Biobank extracted with [Hail](https://hail.is).
+* GWAS summary statistics for HapMap3 sites passing QC (MAF > 0.01, INFO > 0.9, excluding multiallelics and the MHC region) in UK Biobank extracted in the proper format for [ldsc]() using [Hail](https://hail.is).
 
-* SNP Heritability estimated using partitioned LDSR run using the [MTAG](https://github.com/omeed-maghzian/mtag) implementation of [ldsc](https://github.com/bulik/ldsc) with the Baseline-LD v1.1 model ([Gazal et al. 2017](http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html)) on the [Google Cloud Platform](https://cloud.google.com/).
+* SNP Heritability estimated using partitioned LD Score regression (LDSR; [Bulik-Sullivan et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/), [Finucane et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4626285/)) run using the [MTAG](https://github.com/omeed-maghzian/mtag) implementation of [ldsc](https://github.com/bulik/ldsc) with the Baseline-LD v1.1 model ([Gazal et al. 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6133304/)) on the [Google Cloud Platform](https://cloud.google.com/).
 
 * Restricted primary SNP heritability analysis to [one GWAS per phenotype](select_topline.html). This includes identifying sex-specific phenotypes, choice of normalization for continuous phenotypes, evaluation of the dilution fraction for biomarker phenotypes, and pruning of [FinnGen](https://www.finngen.fi/en) endpoints that are identical within current UKB data as detailed [here](select_topline.html).
 
@@ -45,7 +45,7 @@ output:
 
 </div>
 
-<br>
+<p></p>
 
 <div class="well">
 
@@ -64,7 +64,7 @@ Lastly, the previous results based on the Round 1 Neale Lab GWAS remain availabl
 
 </div>
 
-<br>
+<p></p>
 
 <div class="well">
 
@@ -74,7 +74,7 @@ Lastly, the previous results based on the Round 1 Neale Lab GWAS remain availabl
 
 * LDSR was run using the implementation in [MTAG](https://github.com/omeed-maghzian/mtag) because it provides a convenient interface to [ldsc](https://github.com/bulik/ldsc) from within python rather than via the command line.
 
-* The partitioned LDSR analysis was run using the v1.1 of the Baseline-LD annotations described by [Gazal et al. 2017](http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html) (also on [biorxiv](http://www.biorxiv.org/content/early/2017/04/03/082024)) computed from 1000 Genomes Phase 3 data from European ancestry populations and corresponding 1000 Genomes allele frequencies (available from [the ldsc reference downloads page](https://data.broadinstitute.org/alkesgroup/LDSCORE/)). 
+* The partitioned LDSR analysis was run using the v1.1 of the Baseline-LD annotations described by [Gazal et al. 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6133304/). The Baseline-LD v1.1 model contains 75 annotations including functional regions, histone marks, GERP scores, LD-related annotations of population genetics forces, and MAF bins. LD scores were computed from 1000 Genomes Phase 3 data from European ancestry populations, along with weights and allele frequencies. The LD scores and corresponding reference files are available from [the ldsc reference downloads page](https://data.broadinstitute.org/alkesgroup/LDSCORE/)). 
 
 * Default settings were used with the exception of removing the maximum $\chi^2$ filter in order to avoid bias in phenotypes that have extremely large $\chi^2$ for loci with strong effect sizes in the large sample size of UKB.
 
@@ -82,7 +82,7 @@ Lastly, the previous results based on the Round 1 Neale Lab GWAS remain availabl
 
 </div>
 
-<br>
+<p></p>
 
 <div class="well">
 
@@ -100,11 +100,11 @@ Lastly, the previous results based on the Round 1 Neale Lab GWAS remain availabl
 
 * Site hosted via [Github Pages](https://pages.github.com/).
 
-* All code for generating the site available on [Github](https://github.com/nealelab/ukbb_ldsc).
+* All code for generating the site available [on Github](https://github.com/nealelab/ukbb_ldsc).
 
 </div>
 
-<br>
+<p></p>
 
 <div class="well">
 

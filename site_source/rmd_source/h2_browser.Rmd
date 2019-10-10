@@ -17,7 +17,7 @@ div.main-container {
   margin-right: 50px;
 }
 .well {
-  max-width: 800px
+  max-width: 1000px
 }
 </style>
 
@@ -149,7 +149,7 @@ dt
 
 <br>
 
-<div class="col-lg-6 col-lg-offset-3"><div class="well">
+<div class="col-lg-8 col-lg-offset-2"><div class="well">
 
 The above table provides results of partitioned LD score regression (LDSR) for GWAS of `r nrow(dat)` UK Biobank phenotypes. You can read more about this analysis on the [methods page](methods.html) and find links to more information about the underlying GWAS on the [Neale Lab blog](http://www.nealelab.is/uk-biobank). 
 
@@ -159,11 +159,13 @@ You can also <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8b
 
 </div></div>
 
-<div class="col-lg-6 col-lg-offset-3"><div class="well">
+<div class="col-lg-8 col-lg-offset-2"><div class="well">
 
 ### **Search Suggestions**
 
 Use the search box on the top right of the table to filter the table. 
+
+<p></p>
 
 #### **Find phenotypes by name**
 
@@ -171,12 +173,16 @@ Use the search box on the top right of the table to filter the table.
 * ICD code, e.g. `I25`
 * ID, e.g. `2734`, i.e. the phenotype ID matching the [UK Biobank showcase](http://biobank.ctsu.ox.ac.uk/crystal/search.cgi)
 
+<p></p>
+
 #### **Focus on a certain results category**
 
 Searches include all non-numeric fields, so you filter on flags in multiple columns. For example, try
 
 * `z7 finngen` for highly significant $h^2_g$ results for ICD10-based endpoints defined by [FinnGen](https://www.finngen.fi/en)
 * `female medication` for medication codes where the primary GWAS is in females only
+
+<p></p>
 
 #### **Construct complex searches**
 
@@ -188,30 +194,32 @@ Your search can include [JavaScript-style regular expressions](https://www.debug
 
 </div></div>
 
-<div class="col-lg-6 col-lg-offset-3"><div class="well">
+<div class="col-lg-8 col-lg-offset-2"><div class="well">
 
 ### **Table Columns**
 
 The above browser includes the following fields:
 
-* **ID** (hidden): either the UK Biobank phenotype code (e.g. matching the [UKB Showcase](http://biobank.ctsu.ox.ac.uk/crystal/index.cgi)), an ICD10 code, or a [FinnGen](https://www.finngen.fi/en) endpoint code
-* **Phenotype**: Name/description of the phenotype. Clink to link to a more detailed set of LDSR results for the phenotype. 
-* **h2**: the SNP heritability estimate from partitioned LD score regression. Value is given on the liability scale for binary phenotypes, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set.
-* **h2 se** (hidden): standard error of the SNP heritability estimate.
-* **h2 p**: p-value for the test that the SNP hertability is greater than 0.
-* **h2 sig?**: whether the SNP heritability estimate is statisitical significant at different thresholds. Possible values are `z7` (z > 7, highly significant), `z4` (z > 4, significant after correction for multiple testing), `nominal` (p < .05), `nonsig` (p > .05), or `NA` (low confidence results). See [methods](significance.html) for more details.
-* **Confidence**: confidence rating for the SNP hertiability estimate. One of `low`, `medium`, `high`, or `none`. See [methods](confidence.html) for more details.
-* **Notes** (hidden): explanation of confidence ratings lower than "high", as a list of flags delimited with semi-colons. Possible flags are: `isBadPower`, `isLowNeff`, `isMidNeff`, `isExtremeSE`, `isHighSE`, `isSexBias`, `isBadOrdinal`, and `isNumericOrdinal`. See [methods](confidence.html) for more details.
-* **Int.**: the intercept term from partitioned LD score regression. Values > 1 may indicate population stratification, confounding, or some other model misspecification. 
-* **Int. se** (hidden): standard error of the estimated LD score regression intercept.
-* **Int. p**: p-value for the LD score regression intercept testing whether the intercept is greater than 1.
-* **Lambda** (hidden): (Median observed $\chi^2$)/(Median of 1 degree of freedom $chi^2$ distribution). Genomic control measure of inflation of GWAS results for the SNPs used in the LDSR analysis. Increases with sample size.
-* **Ratio** (hidden): (Estimated LDSR intercept -1)/(Mean observed $\chi^2$ -1). Measure of the proportion of inflation of GWAS results that is not explained by the relationship with LD modelled by LDSR. May reflect remaining stratification, confounding, structure, or model misspecification.
-* **Neff**: The effective sample size in the UKB GWAS analysis set. For binary variables is 4/(1/$N_{case}$)+(1/$N_{control}$), otherwise is the sample size. More info on the GWAS analysis set is available on the [Neale Lab blog](http://www.nealelab.is/uk-biobank).
-* **Var Type** (hidden): Measurement type for the phenotype. One of `binary`, `ordinal`, `continuous_irnt` (i.e. inverse rank-normalized), or `continuous_raw`.
-* **Prev.** (hidden): prevalence for binary phenotypes. Is blank if the variable isn't binary.
-* **Source**: the GWAS batch the phenotype belonged to. One of: [PHESANT](https://github.com/astheeggeggs/PHESANT), ICD10, [FinnGen](https://www.finngen.fi/en), or biomarkers. 
-* **Sex** (hidden): the sex strata used as the primary GWAS for this phenotype, e.g. to limit choice of controls for sex-specific case/control phenotypes. One of: both, female, or male.
+| Name | Description |
+|------------|------------------------------------------------------------|
+| **ID** (hidden) | either the UK Biobank phenotype code (e.g. matching the [UKB Showcase](http://biobank.ctsu.ox.ac.uk/crystal/index.cgi)), an ICD10 code, or a [FinnGen](https://www.finngen.fi/en) endpoint code |
+| **Phenotype** | Name/description of the phenotype. Clink to link to a more detailed set of LDSR results for the phenotype. |
+| **h2** | the SNP heritability estimate from partitioned LD score regression. Value is given on the liability scale for binary phenotypes, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set. |
+| **h2 se** (hidden) | standard error of the SNP heritability estimate. |
+| **h2 p** | p-value for the test that the SNP hertability is greater than 0. |
+| **h2 sig?** | whether the SNP heritability estimate is statisitical significant at different thresholds. Possible values are `z7` (z > 7, highly significant), `z4` (z > 4, significant after correction for multiple testing), `nominal` (p < .05), `nonsig` (p > .05), or `NA` (low confidence results). See [methods](significance.html) for more details.
+| **Confidence** | confidence rating for the SNP hertiability estimate. One of `low`, `medium`, `high`, or `none`. See [methods](confidence.html) for more details. |
+| **Notes** (hidden) | explanation of confidence ratings lower than "high", as a list of flags delimited with semi-colons. Possible flags are | `isBadPower`, `isLowNeff`, `isMidNeff`, `isExtremeSE`, `isHighSE`, `isSexBias`, `isBadOrdinal`, and `isNumericOrdinal`. See [methods](confidence.html) for more details. |
+| **Int.** | the intercept term from partitioned LD score regression. Values > 1 may indicate population stratification, confounding, or some other model misspecification. |
+| **Int. se** (hidden) | standard error of the estimated LD score regression intercept. |
+| **Int. p** | p-value for the LD score regression intercept testing whether the intercept is greater than 1. |
+| **Lambda** (hidden) | (Median observed $\chi^2$)/(Median of 1 degree of freedom $chi^2$ distribution). Genomic control measure of inflation of GWAS results for the SNPs used in the LDSR analysis. Increases with sample size. |
+| **Ratio** (hidden) | (Estimated LDSR intercept -1)/(Mean observed $\chi^2$ -1). Measure of the proportion of inflation of GWAS results that is not explained by the relationship with LD modelled by LDSR. May reflect remaining stratification, confounding, structure, or model misspecification. |
+| **Neff** | The effective sample size in the UKB GWAS analysis set. For binary variables is 4/(1/$N_{case}$)+(1/$N_{control}$), otherwise is the sample size. More info on the GWAS analysis set is available on the [Neale Lab blog](http://www.nealelab.is/uk-biobank). |
+| **Var Type** (hidden) | Measurement type for the phenotype. One of `binary`, `ordinal`, `continuous_irnt` (i.e. inverse rank-normalized), or `continuous_raw`. |
+| **Prev.** (hidden) | prevalence for binary phenotypes. Is blank if the variable isn't binary.
+| **Source** | the GWAS batch the phenotype belonged to. One of: [PHESANT](https://github.com/astheeggeggs/PHESANT), ICD10, [FinnGen](https://www.finngen.fi/en), or biomarkers. |
+| **Sex** (hidden) | the sex strata used as the primary GWAS for this phenotype, e.g. to limit choice of controls for sex-specific case/control phenotypes. One of: `both`, `female`, or `male`. |
 
 Hidden fields can be accessed using the "Select Columns" botton on the top left of the browser table. Search includes all fields even when hidden.
 
