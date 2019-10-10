@@ -2,7 +2,7 @@ name: "UKBB-ldsc"
 output_dir: "../docs"
 exclude: ["analytics_header.html","./rmd_source/*","./yml_source/*"]
 navbar:
-  title: "UKBB Heritability"
+  title: "UKB Heritability"
   left:
     - text: "Browser"
       href: h2_browser.html
