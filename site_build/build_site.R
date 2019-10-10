@@ -7,10 +7,10 @@ require("rmarkdown")
 
 # setup
 setwd("/Users/raymondwalters/Documents/Code/github/UKBB_ldsc/site_build/")
-process <- FALSE
-round1 <- TRUE
+process <- TRUE
+round1 <- FALSE
 viz <- FALSE
-pages <- FALSE
+pages <- TRUE
 testing <- TRUE
 h2 <- read.delim("../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz")
 
@@ -19,10 +19,15 @@ system("cp ../site_source/yml_source/site_header.yml ./_site.yml")
 system("cat ../site_source/yml_source/site_core.yml >> _site.yml")
 system("cp ../site_source/rmd_source/index.Rmd ./")
 system("cp ../site_source/rmd_source/methods.Rmd ./")
+system("cp ../site_source/rmd_source/h2_credits.Rmd ./")
 system("cp ../site_source/rmd_source/h2_browser.Rmd ./")
 system("cp ../site_source/analytics_header.html ./")
 system("cp ../site_source/sandflat/sandflat.min.css ./")
+system("cp ../site_source/dt_style.css ./")
+system("cp ../site_source/rmd_source/_code_highlight_fix.Rmd ./")
+system("cp ../site_source/rmd_source/_toc_fix.Rmd ./")
 system("cp -r ../site_source/icon ./")
+system("cp -r ../results/round2_final/ukb_ord_codings_warn.txt ./")
 
 if(round1){
   
@@ -58,17 +63,17 @@ if(process){
   system("cp ../UKBB_ldsc_scripts/ukbb_h2_process_significance.Rmd ./")
   system("cat ../site_source/yml_source/site_processing.yml >> _site.yml")
   system("cp -r ../external_images ./images")
+}else{
+  system("cp ../site_source/process_backup/*html ./")
 }
 
 if(pages){
   if(testing){
     set.seed(5)
-    h2 <- h2[sample(1:nrow(h2),10),]
-
-    # cat(paste0(" h2_summary_",d2,".html:\n    src: \"h2_part_template.Rmd\"\n    params:\n      pheno: \"",d2,"\"\n      datfile: \"../results/ukbb_h2part.RData\"\n"), file="tmp.yaml")
-  }else{
-    set.seed(5)
+    h2 <- h2[c(sample(1:nrow(h2),10),137,2942,732),] # manual exclusions are extreme high/low pvals
   }
+  cat(paste0("\n  h2_summary_",h2$phenotype,".html:\n    src: \"h2_part_template.Rmd\"\n    params:\n      pheno: \"",h2$phenotype,"\"\n      dat_topline: \"../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz\"\n      dat_part: \"../results/round2_final/ukb31063_h2_z4.02Oct2019.tsv.gz\""), file="_site.yml", append=TRUE)
+  system("cp ../site_source/rmd_source/h2_part_template.Rmd ./")
 }
   
 # create site
@@ -80,50 +85,14 @@ system("rm *Rmd")
 system("rm analytics_header.html")
 system("rm -r icon")
 system("rm sandflat.min.css")
+system("rm dt_style.css")
+system("rm ukb_ord_codings_warn.txt")
 if(process){
   system("rm -r images")
+}else{
+  system("rm confidence.html")
+  system("rm significance.html")
+  system("rm select_topline.html")
 }
 
-#########
-
-# for yaml for per-pheno sites
-# load("../results/ukbb_h2part.RData")
-
-# dat$isBinary <- !is.na(dat$N_case)
-# dat$Neff <- dat$N
-# dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
-# dat <- dat[dat$Neff > 200,]
-
-# d2 <- dat$phenotype
-# cat(paste0(" h2_summary_",d2,".html:\n    src: \"h2_part_template.Rmd\"\n    params:\n      pheno: \"",d2,"\"\n      datfile: \"../results/ukbb_h2part.RData\"\n"), file="tmp.yaml")
-
-
-#####################
-
-### old
-
-# load univar data
-# load("./results/ukbb_h2univar.RData")
-# isUnivar <- T
-
-# univar browser
-# render('./site/h2_browser.Rmd',output_file='h2_univar_browser.html',output_dir = './docs')
-
-# load partitioned data
-# load("./results/ukbb_h2part.RData")
-# isUnivar <- F
-
-# partitioned browser
-# render('./site/h2_browser.Rmd',output_file='h2_browser.html',output_dir = './docs')
-
-# front pages
-# render('./site/welcome.Rmd',output_file='index.html',output_dir = './docs')
-# render('./site/details.Rmd',output_file='details.html',output_dir = './docs')
-
-# loop pheno pages
-# for(phen in dat$phenotype[c(1:5,sample(1:nrow(dat),5))]){
-#	dat_sub <- dat[which(dat$phenotype==phen),]
-#	render('./site/h2_part_template.Rmd',
-#		   output_file=paste0('h2_summary_',phen,'.html'),
-#		   output_dir='./docs')
-#}
+# eof
