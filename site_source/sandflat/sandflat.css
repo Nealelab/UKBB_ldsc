@@ -12,6 +12,7 @@ html {
 }
 body {
   margin: 0;
+  padding-top:61px !important;
 }
 article,
 aside,
@@ -1139,7 +1140,7 @@ hr {
   margin-top: 21px;
   margin-bottom: 21px;
   border: 0;
-  border-top: 1px solid #F8F5F0;
+  border-top: 1px solid #DFD7CA;
 }
 .sr-only {
   position: absolute;
@@ -1278,8 +1279,19 @@ h6,
 .h6 {
   font-size: 13px;
 }
+.panel-body h1,
+.panel-body h2,
+.panel-body h3,
+.panel-body h4,
+.well h1,
+.well h2,
+.well h3,
+.well h4{
+  margin-top:0px
+}
 p {
   margin: 0 0 10.5px;
+  padding-bottom:0.05px;
 }
 .lead {
   margin-bottom: 21px;
@@ -3597,7 +3609,6 @@ tbody.collapse.in {
   background-color: #ffffff;
   background-clip: padding-box;
   border: 1px solid #cccccc;
-  border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
