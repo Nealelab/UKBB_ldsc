@@ -84,9 +84,9 @@ Neale Lab GWAS results are available for `r format_bigint(dat_sub$n)` unrelated 
 
 </div></div>
 
-`r if(as.character(dat_sub$confidence)=="none"){paste0("<br><div class=\"panel panel-danger\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Warning: Lack of confidence</h3></div><div class=\"panel-body\">This phenotype has insufficient sample size ($N_{eff}=",round(dat_sub$Neff),"$) for us to have any confidence in the results. Estimates are likely highly unstable. For that reason, we do not report enrichment results from partitioning (though they remain available in the [full results file download](index.html)) and we recommend you avoid making any strong inferences from these results. Read more about our confidence criteria [here](confidence.html).</div></div>")}`
+`r if(as.character(dat_sub$confidence)=="none"){paste0("<br><div class=\"panel panel-danger\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Warning: Lack of confidence</h3></div><div class=\"panel-body\">This phenotype has insufficient sample size ($N_{eff}=",round(dat_sub$Neff),"$) for us to have any confidence in the results. Estimates are likely highly unstable. For that reason, we do not report enrichment results from partitioning (though they remain available in the [full results file download](downloads.html)) and we recommend you avoid making any strong inferences from these results. Read more about our confidence criteria [here](confidence.html).</div></div>")}`
 
-`r if(as.character(dat_sub$confidence)=="low"){paste0("<br><div class=\"panel panel-warning\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Warning: Low confidence</h3></div><div class=\"panel-body\"> Our confidence rating for this phenotype is <strong>low</strong>. Estimates are likely unstable. For that reason, we do not report enrichment results from partitioning (though they remain available in the [full results file download](index.html)) and we recommend you avoid making any strong inferences from these results. Read more about our confidence criteria [here](confidence.html).</div></div>")}`
+`r if(as.character(dat_sub$confidence)=="low"){paste0("<br><div class=\"panel panel-warning\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Warning: Low confidence</h3></div><div class=\"panel-body\"> Our confidence rating for this phenotype is <strong>low</strong>. Estimates are likely unstable. For that reason, we do not report enrichment results from partitioning (though they remain available in the [full results file download](downloads.html)) and we recommend you avoid making any strong inferences from these results. Read more about our confidence criteria [here](confidence.html).</div></div>")}`
 
 <br>
 
@@ -170,7 +170,7 @@ Intercept values near 1 indicate little or no confounding. The reported LDSR rat
 
 <br>
 
-`r if(!doPartition & as.character(dat_sub$confidence) %in% c("medium","high")){paste0("<br><div class=\"panel panel-info\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Insufficient power for partitioning</h3></div><div class=\"panel-body\">We omit results for enrichment of specific annotations in the partitioned heritability model here when the overall SNP heritability is not strongly significant ($z < 7$) as recommended by [Finucane et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4626285/). Partitioned results for this phenotype are available in the [full results file download](index.html), but we caution that the analysis is likely to be underpowered and unstable.</div></div>")}`
+`r if(!doPartition & as.character(dat_sub$confidence) %in% c("medium","high")){paste0("<br><div class=\"panel panel-info\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Insufficient power for partitioning</h3></div><div class=\"panel-body\">We omit results for enrichment of specific annotations in the partitioned heritability model here when the overall SNP heritability is not strongly significant ($z < 7$) as recommended by [Finucane et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4626285/). Partitioned results for this phenotype are available in the [full results file download](downloads.html), but we caution that the analysis is likely to be underpowered and unstable.</div></div>")}`
 
 `r if(doPartition){paste0("<div class=\"panel panel-primary\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Partitioned Heritability</h3></div><div class=\"panel-body\">")}`
 
@@ -318,7 +318,7 @@ All results are from partitioned heritability analysis of this phenotype using L
 
 #### Downloads
 
-Download the full LDSR results for this phenotype, including SNP heritability and partitioning results, from the [link on the front page](index.html).
+Download the full LDSR results for this phenotype (along with all of the other GWASed phenotypes), including SNP heritability and partitioning results, from the [downloads page](downloads.html).
 
 <p></p>
 

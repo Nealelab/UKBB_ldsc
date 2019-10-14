@@ -19,13 +19,13 @@ Several results files related to the LD Score Regression analysis are available 
 
 ## Heritability Results
 
-Results files for this LDSR analysis are available <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">on Dropbox</a>. Available files are:
+Results files for this LDSR analysis are available <a href="https://www.dropbox.com/sh/i4kcffb5ilsktyg/AABYP5Xyg_w6Yw8RrLnYwbsLa?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/i4kcffb5ilsktyg/AABYP5Xyg_w6Yw8RrLnYwbsLa?dl=0'); return false;">on Dropbox</a>. Direct download links for each fine are below.
 
 | File | Size | Description |
 |--------|------|----------------------------------------------------|
-| `ukb31063_h2_topline.02Oct2019.tsv.gz` | 681 KB | Primary SNP heritability results for each phenotype, as reported in the [browser](h2_browser.html) |
-| `ukb31063_h2_z4.02Oct2019.tsv.gz` | 4.4 MB | Partitioned heritability results for all primary phenotypes reaching $z>4$ for significance of $h^2_g$ |
-| `ukb31063_h2_all.02Oct2019.tsv.gz` | 73.7 MB | LDSR results for all of the UKB Neale Lab GWAS, including partitioning, sex-stratified results, and alternative versions of phenotypes (e.g. biomarker dilution, non-normalized) |
+| <a href="https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1'); return false;">`ukb31063_h2_topline.02Oct2019.tsv.gz`</a> | 681 KB | Primary SNP heritability results for each phenotype, as reported in the [browser](h2_browser.html) |
+| <a href="https://www.dropbox.com/s/gu9ueqdulze9c9x/ukb31063_h2_z4.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/gu9ueqdulze9c9x/ukb31063_h2_z4.02Oct2019.tsv.gz?dl=1'); return false;">`ukb31063_h2_z4.02Oct2019.tsv.gz`</a> | 4.4 MB | Partitioned heritability results for all primary phenotypes reaching $z>4$ for significance of $h^2_g$ |
+| <a href="https://www.dropbox.com/s/ipeqyhrpdqav5uh/ukb31063_h2_all.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/ipeqyhrpdqav5uh/ukb31063_h2_all.02Oct2019.tsv.gz?dl=1'); return false;">`ukb31063_h2_all.02Oct2019.tsv.gz`</a> | 73.7 MB | LDSR results for all of the UKB Neale Lab GWAS, including partitioning, sex-stratified results, and alternative versions of phenotypes (e.g. biomarker dilution, non-normalized) |
 
 Note the first two files are simply a subset of the full results in `ukb31063_h2_all.02Oct2019.tsv.gz`. They are provided for the convenience of a smaller download.
 

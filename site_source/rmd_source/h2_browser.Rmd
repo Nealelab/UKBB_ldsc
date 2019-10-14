@@ -155,7 +155,7 @@ The above table provides results of partitioned LD score regression (LDSR) for G
 
 Additional fields can be viewed using the "Select Columns" button at the top left (columns described below). Use the search box at the top right to filter the table. 
 
-You can also <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">download the complete results file</a>.
+You can also [download the complete results file](downloads.html).
 
 </div></div>
 
