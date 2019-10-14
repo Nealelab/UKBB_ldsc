@@ -2,6 +2,8 @@
     src: "index.Rmd"
   details.html:
     src: "methods.Rmd"
+  downloads.html:
+    src: "downloads.Rmd"
   credits.html:
     src: "h2_credits.Rmd"
   h2_browser.html:

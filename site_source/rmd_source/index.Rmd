@@ -11,13 +11,13 @@ As you may know, the UK Biobank released data on ~500,000 individuals to the sci
 
 <p></p>
 
-Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 4,000 as of this writing. As with the primary GWAS analyses, we’re making the heritability results available for [browsing](h2_browser.html) and bulk <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">download</a>. 
+Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 4,000 as of this writing. As with the primary GWAS analyses, we’re making the heritability results available for [browsing](h2_browser.html) and bulk [download](downloads.html). 
 
 <br>
 
 <a href="h2_browser.html" class="btn btn-primary btn-lg">Browse $h^2$</a>
 <a href="plots_home.html" class="btn btn-primary btn-lg">Explore Plots</a>
-<a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0"  class="btn btn-primary btn-lg" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">Download Results</a>
+<a href="downloads.html"  class="btn btn-primary btn-lg">Download Results</a>
 
 <br>
 
@@ -64,15 +64,15 @@ To enable this quick initial analysis on such large-scale data we’re relying o
 
 #### **Are the primary GWAS results used for this analysis available? **
 
-Yes! Results will be available for the full GWAS results are [available for download](https://docs.google.com/spreadsheets/d/1kvPoupSzsSFBNSztMzl04xMoSC3Kcx3CrjVf4yBmESU/edit#gid=227859291). See [the Neale Lab blog](http://www.nealelab.is/uk-biobank) for much more information. 
+Yes! The full GWAS results are [available for download](https://docs.google.com/spreadsheets/d/1kvPoupSzsSFBNSztMzl04xMoSC3Kcx3CrjVf4yBmESU/edit#gid=227859291). See [the Neale Lab blog](http://www.nealelab.is/uk-biobank) for much more information. 
 
-<br>
+<p></p>
 
 #### **Can I download just the LDSC-formatted sumstats files without dealing with the full GWAS results?**
 
 Yes! Sumstats files are available [on Dropbox](). See [this manifest]() for easy searching and programmatic access to the file downloads. 
 
-<br>
+<p></p>
 
 #### **How should I interpret these heritability results?**
 
@@ -80,7 +80,7 @@ Yes! Sumstats files are available [on Dropbox](). See [this manifest]() for easy
 
 This is a very rough initial analysis and should be treated accordingly. All estimates are for (a) the heritability from common genetic variants (b) of automatically cleaned and transformed phenotypes (c) in a non-random population sample of the UK (d) estimated with a fairly simple statistical model. We expect the results will mostly be useful for generating hypotheses for follow-up (e.g. identifying trends in the estimates for categories of phenotypes, choosing phenotypes with robust statistical evidence for heritability), rather than being a definitive statement about the “true” heritability of a individual phenotype. 
 
-<br>
+<p></p>
 
 #### **Are genetic correlation results available for these phenotypes?**
 

@@ -49,25 +49,6 @@ output:
 
 <div class="well">
 
-### Available Downloads
-
-Results files for this LDSR analysis are available <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">on Dropbox</a>. Available files are:
-
-* `ukb31063_h2_topline.02Oct2019.tsv.gz`: Primary SNP heritability results for each phenotype, as reported in the [browser](h2_browser.html).
-* `ukb31063_h2_all.02Oct2019.tsv.gz`: LDSR results for all of the UKB Neale Lab GWAS, including partitioning, sex-stratified results, and alternative versions of phenotypes (e.g. biomarker dilution, non-normalized).
-
-In addition to the LDSR results, the exported sumstat files in LDSC format are also available [on Dropbox](). A manifest for easier programatic access is available [here]().
-
-LD scores, weights, and allele frequencies for the Baseline-LD v1.1 model used here are available for [download from the Alkes Price lab](https://data.broadinstitute.org/alkesgroup/LDSCORE/).
-
-Lastly, the previous results based on the Round 1 Neale Lab GWAS remain available for download <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">on Dropbox</a>, including both univariate and paritioned LDSR results. Round 1 LDSR results can be browsed [here](round1_h2_browser.html) (with the corresponding univariate results [here](round1_h2_univar_browser.html)).
-
-</div>
-
-<p></p>
-
-<div class="well">
-
 ### Additional LDSR Details
 
 * Sumstats files were extracted directly from the UKB results files rather than running `munge_sumstats.py` from [ldsc](https://github.com/bulik/ldsc). This includes directly extracting HapMap3 sites rather than using the precomputed `w_hm3.snplist` reference file.

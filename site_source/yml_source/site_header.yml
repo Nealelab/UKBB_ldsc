@@ -6,6 +6,8 @@ navbar:
   left:
     - text: "Browser"
       href: h2_browser.html
+    - text: "Downloads"
+      href: downloads.html
     - text: "Methods"
       menu:
         - text: "Overview"
