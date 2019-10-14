@@ -1,5 +1,5 @@
 ---
-title: "Round 1 UKBB SNP-Heritability Browser"
+title: "Round 1 UKB SNP-Heritability Browser"
 date: "Last updated `r format(Sys.Date())`"
 author: "Results from the [Neale Lab](credits.html)"
 output: html_document
@@ -81,11 +81,11 @@ You can search for phenotypes by:
 
 * **Description**, e.g. "height"
 * **ICD code**, e.g. "I25"
-* **ID**, i.e. the UK Biobank phenotype ID matching the [UKBB showcase](http://biobank.ctsu.ox.ac.uk/crystal/search.cgi)
+* **ID**, i.e. the UK Biobank phenotype ID matching the [UK Biobank showcase](http://biobank.ctsu.ox.ac.uk/crystal/search.cgi)
 
 Results shown here include:
 
-* **N**: The sample size in the UKBB analysis set (more info on the GWAS analysis [here](http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas))
+* **N**: The sample size in the UK Biobank analysis set (more info on the GWAS analysis [here](http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas))
 * **Prevalence** (Prev.) for binary phenotypes
 * **Intercept** (Int.): the intercept term from `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression. Values > 1 may indicate population stratification, confounding, or some other model misspecification. P-value (Int. p) corresponds to the test that the intercept is greater than 1.
 * **Heritability** ($h^2$): the SNP heritability estimate from `r ifelse(isUnivar, "univariate", "partitioned")` LD score regression. Value is given on the liability scale for binary phenotypes, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set. P-value (h2 p) corresponds to the test that the intercept is greater than 1.
