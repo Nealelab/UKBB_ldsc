@@ -1,12 +1,13 @@
 ---
-title: "Vizualizing $h^2$ results: $h^2$ and intercept"
+title: "Vizualising $h^2_g$ and intercept results"
 date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
 output: 
   html_document:
     toc: true
     toc_float: true
 params:
-  datfile: "../results/ukbb_h2part.RData"
+  datfile: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
 ---
 
 ```{r child = '_toc_fix.Rmd'}
@@ -20,171 +21,71 @@ require(plotly)
 require(DT)
 require(crosstalk)
 require(crosstool)
+require(Rmpfr)
 
 # handle params
-load(file=params$datfile)
+dat <- read.delim(file=normalizePath(params$datfile),sep='\t',header=T,stringsAsFactors=F,colClasses=c(intercept_p="character"))
 
 # setup
-dat$isBinary <- !is.na(dat$N_case)
-dat$Neff <- dat$N
-dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
+dat <- dat[dat$confidence != "none",]
 
-dat <- dat[dat$Neff > 200,]
+```
 
-dat$isNomSig_h2 <- dat$h2_p < .05
-dat$isBonfSig_h2 <- dat$h2_p < (.05/nrow(dat))
-dat$isNomSig_int <- dat$intercept_p < .05
-dat$isBonfSig_int <- dat$intercept_p < (.05/nrow(dat))
-dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$description,"</a>")
+```{r smallp_func, include=FALSE}
 
-# shared data object
-d1 <- dat[,c("phenotype","table_desc","description","prevelence","intercept","intercept_z","intercept_p","h2_liability","h2_z","h2_p","Neff","isBinary","isBonfSig_h2","isBonfSig_int")]
+# handle intercept_p as a string (due to high precision p-vals)
+pstring <- function(p, prec=3){
+
+intp_string <- as.character(p)
+intp_string[p == as.character(as.numeric(p))] <- as.character(signif(as.numeric(p),prec)[(p == as.character(as.numeric(p)))])
+highstr <- intp_string[!(p == as.character(as.numeric(p)))]
+highstr_lead <- as.character(signif(as.numeric(substr(highstr,1,6)),prec))
+highstr_exp <- sapply(highstr,function(a) strsplit(a,split="e")[[1]][2],USE.NAMES = F)
+intp_string[!(p == as.character(as.numeric(p)))] <- paste0(highstr_lead,"e",highstr_exp)
+while(any(intp_string=="1")){
+  prec <- prec+1
+  intp_string[intp_string=="1"] <- as.character(signif(as.numeric(p),prec)[intp_string=="1"])
+}
+return(intp_string)
+}
+
+
+datintercept_p <- pstring(dat$intercept_p)
+dat$int_nlogp <- as.numeric(-log10(mpfr(0.5,64)*erfc(mpfr(dat$intercept_z,64)/sqrt(mpfr(2,64)))))
 
 ```
 
 <br>
 
-### $h^2$ vs. Intercept {.tabset .tabset-fade}
-
-Use the "Data" tab to get information on points selected on the plot (including links to the phenotype page), or to select points to highlight on the plots. **Note:** You must open the Data tab prior to making the selection for this function to work.
-
-#### Estimates
-
-<div class="well">
-
-```{r int_h2, echo=FALSE}
-# setup shared data
-shared_h2 <- SharedData$new(d1)
-
-# define plot
-pp <- plot_ly(shared_h2, 
-			  x=~intercept, 
-			  y=~h2_liability, 
-			  type="scatter",
-			  mode="markers",
-			  hoverinfo="text",
-			  text = ~paste0(
-			  		    "Phenotype: ", description,
-			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
-			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
-			  			"<br>Effective N: ", Neff,
-			  			"<br>Prevalence: ", prevelence)) %>% highlight(on="plotly_selected",off='plotly_deselect', color="darkorange", selected=attrs_selected(showlegend=F), dynamic = FALSE) %>% layout(dragmode="select")
-
-# construct
-bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=T, displaylogo=F, sendData=F),
-	list(
-		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", shared_h2, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", shared_h2, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", shared_h2, ~isBonfSig_int, multiple=T)
-	)
-)
-```
-</div>
-
-#### Z scores
-
-<div class="well">
-
-```{r int_h2_z, echo=FALSE}
-# define plot
-pp <- plot_ly(shared_h2, 
-			  x=~intercept_z, 
-			  y=~h2_z, 
-			  type="scatter",
-			  mode="markers",
-			  hoverinfo="text",
-			  text = ~paste0(
-			  		    "Phenotype: ", description,
-			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
-			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
-			  			"<br>Effective N: ", Neff,
-			  			"<br>Prevalence: ", prevelence)) %>% highlight(on="plotly_selected",off='plotly_deselect', color="darkorange", selected=attrs_selected(showlegend=F), dynamic = FALSE) %>% layout(dragmode="select")
-
-# construct
-bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=T, displaylogo=F, sendData=F),
-	list(
-		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", shared_h2, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", shared_h2, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", shared_h2, ~isBonfSig_int, multiple=T)
-	)
-)
-```
-</div>
-
-#### Data
-
-<div class="well">
-
-```{r int_h2_dat, echo=FALSE}
-datatable(shared_h2, 
-		  rownames = F, 
-#		  colnames = c("phenotype","table_desc","description","prevelence","intercept","intercept_z","intercept_p","h2_liability","h2_z","h2_p","Neff","isBinary","isBonfSig_h2","isBonfSig_int"), 
-		  colnames = c("ID","Phenotype","Description","Prev.","Int.","Int.z","Int.p","h2","h2.z","h2.p","N_eff","isBinary","Sig.h2","Sig.int"),
-#		  extensions='FixedHeader', 
-		  selection="multiple",
-		  style="bootstrap", 
-		  class="display", 
-		  escape=F,
-		  options = list(scrollY="400px", scrollX=TRUE, pageLength=10, columnDefs=list(list(visible=FALSE, targets=c(2,3,5,8,11:13)))) # fixedHeader=TRUE, 
-) %>% formatSignif(columns = c(5), digits=4) %>% formatSignif(columns = c(7,8,10), digits=3) %>%  formatRound(columns=11, digits=0)
-```
-</div>
+### Overview
 
 <br>
 
+### SNP Heritability {.tabset .tabset-fade}
 
-### Intercept distribution
-
-<div class="well">
-
-```{r hist_int, echo=FALSE}
-d1 <- SharedData$new(dat)
-
-pp <- plot_ly(d1,
-			  x = ~intercept, 
-			  type = "histogram",
-			  histnorm = "probability"
-	  		)
-
-bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
-	list(
-		filter_slider("Neff", "Effective N", d1, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", d1, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", d1, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", d1, ~isBonfSig_int, multiple=T)
-	)
-)
-```
-
-</div>
-
-<br>
-
-### $h^2$ distribution
+#### $h^2_g$ Estimates
 
 <div class="well">
 
 ```{r hist_h2, echo=FALSE}
 d2 <- SharedData$new(dat)
 
-pp <- plot_ly(d2,
-			  x = ~h2_liability, 
-			  type = "histogram",
-			  histnorm = "probability"
+pp <- plot_ly(d2) %>%
+        add_histogram(
+			    x = ~h2_liability,
+			    histnorm = "probability",
+			    hoverinfo="none"
 	  		)
-
+  
+  
 bscols(widths=c(10,2),
 	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
 	list(
 		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", d2, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", d2, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", d2, ~isBonfSig_int, multiple=T)
+		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", d2, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", d2, ~source, multiple=T)
 	)
 )
 ```
@@ -193,37 +94,239 @@ bscols(widths=c(10,2),
 
 <br>
 
-### LambdaGC Ratio
+#### $h^2_g$ p-values
+
+<div class="well">
+  
+```{r qq_h2, echo=FALSE}
+
+shared_h2_3 <- SharedData$new(dat)
+
+exp_nlogp <- function(p){
+  nn <- length(p)
+  qquad <- 1:nn
+  qref <- (qquad-.5)/nn
+  idx <- rank(p)
+  return(-log10(qref[idx]))
+}
+
+nnr <- nrow(dat[dat$confidence != "none",])
+qquad <-c(1:nnr)
+qref <- ((qquad-.5)/nnr)
+ci_up <- qbeta(.975,qquad,nnr+1-qquad)
+ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
+
+pp <- plot_ly(shared_h2_3, 
+              x=~exp_nlogp(h2_p), 
+              y=~(-log10(h2_p)),
+              type="scatter",
+              mode="markers",
+              showlegend=F,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+  x=-log10(qref),
+  y=-log10(qref),
+  mode="lines",
+  showlegend=F,
+  hoverinfo = "text",
+  text = ""
+) %>% add_trace(
+  x=-log10(qref),
+  y=-log10(ci_up),
+  mode="lines",
+  line=list(color='#2ca02c'),
+  showlegend=F,
+  hoverinfo = "text",
+  text = ""
+) %>% add_trace(
+  x=-log10(qref),
+  y=-log10(ci_lo),
+  mode="lines",
+  line=list(color='#2ca02c'),
+  fill="tonexty",
+  fillcolor='rgba(44,160,44,0.2)',
+  showlegend=F,
+  hoverinfo = "text",
+  text = ""
+) %>% layout(
+  showlegend=T,
+  xaxis = list(title="Expected -log10(p-value)"),
+  yaxis = list(title="Observed -log10(p-value)")
+)
+
+bscols(widths=c(12),
+       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+)
+```
+
+<p></p>
+
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results.
+
+</div>
+
+<br>
+
+#### $h^2_g$ by Confidence
 
 <div class="well">
 
-```{r hist_ratio, echo=FALSE}
-d3 <- SharedData$new(dat[!is.na(dat$ratio) & dat$mean_chi2 > 1.002,])
+```{r hist_h2_conf, echo=FALSE}
+d2 <- SharedData$new(dat)
 
-pp <- plot_ly(d3,
-			  x = ~ratio, 
-			  type = "histogram",
-			  histnorm = "probability"
-	  		)
-
+pp <- plot_ly(d2, alpha=0.6) %>%
+        add_histogram(
+			    x = ~h2_liability,
+			    histnorm = "probability",
+			    split=~confidence
+	  		) %>%
+      layout(barmode="overlay")
+  
+  
 bscols(widths=c(10,2),
 	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", d3, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", d3, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", d3, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", d3, ~isBonfSig_int, multiple=T)
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%"),
+		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", d2, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", d2, ~source, multiple=T)
 	)
 )
-
 ```
-
-<br>
-
-**Note:** The "ratio" metric from LDSR is defined as:
-$$\frac{Intercept-1}{mean(\chi^2)-1}$$
-and is roughly an estimate of the balance between inflation in $lambda_{GC}$ (i.e. the genomic control factor) due to confounding vs. inflation from polygenic signal. Phenotypes with $mean(\chi^2) < 1.002$ are excluded. This value will be inflated if the LDSR intercept is inflated, for instance due to model misspecification.
 
 </div>
 
 <br>
+
+#### p-values by Confidence
+
+<div class="well">
+  
+```{r qq_h2_conf, echo=FALSE}
+
+exp_nlogp <- function(p){
+  nn <- length(p)
+  qquad <- 1:nn
+  qref <- (qquad-.5)/nn
+  idx <- rank(p)
+  return(-log10(qref[idx]))
+}
+
+nnr <- nrow(dat[dat$confidence != "none",])
+qquad <-c(1:nnr)
+qref <- ((qquad-.5)/nnr)
+ci_up <- qbeta(.975,qquad,nnr+1-qquad)
+ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
+
+pp <- plot_ly(dat) %>%
+        add_trace(
+              data=dat[dat$confidence=="high",],
+              x=~exp_nlogp(h2_p), 
+              y=~(-log10(h2_p)),
+              name="High Confidence",
+              type="scatter",
+              mode="markers",
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+              data=dat[dat$confidence=="medium",],
+              x=~exp_nlogp(h2_p), 
+              y=~(-log10(h2_p)),
+              name="Medium Confidence",
+              type="scatter",
+              mode="markers",
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+              data=dat[dat$confidence=="low",],
+              x=~exp_nlogp(h2_p), 
+              y=~(-log10(h2_p)),
+              name="Low Confidence",
+              type="scatter",
+              mode="markers",
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(qref),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.8)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_up),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_lo),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		fill="tonexty",
+		fillcolor='rgba(0,0,0,0.2)',
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% layout(
+  showlegend=T,
+  xaxis = list(title="Expected -log10(p-value)"),
+  yaxis = list(title="Observed -log10(p-value)")
+)
+
+bscols(widths=c(12),
+       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+)
+```
+
+<p></p>
+
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results.
+
+</div>
+
+<br>
+
+### LDSR Intercept {.tabset .tabset-fade}
+
+#### Ratio Estimates
+
+#### Intercept Estimates
+
+#### Intercept p-values
+
+### SNP Heritablity vs. Intercept {.tabset .tabset-fade}
+
+#### Estimates
+
+#### Z scores
+
+#### $h^2_g$ vs. Ratio
+
+
+
