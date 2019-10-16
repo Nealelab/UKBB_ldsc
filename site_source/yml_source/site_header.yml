@@ -24,12 +24,10 @@ navbar:
           href: viz_h2.html
         - text: "Partitioned Annotations"
           href: viz_annot.html
-        - text: "QQ Plots"
-          href: viz_qq.html
         - text: "Sample Size Scaling"
           href: viz_sampsize.html
-        - text: "Univariate LDSR"
-          href: viz_univar.html
+        - text: "Round 1 vs. Round 2"
+          href: viz_R1vR2.html
     - text: "Archive"
       menu:
         - text: "Round 1 Methods"

@@ -7,10 +7,10 @@ require("rmarkdown")
 
 # setup
 setwd("/Users/raymondwalters/Documents/Code/github/UKBB_ldsc/site_build/")
-process <- TRUE
+process <- FALSE
 round1 <- FALSE
-viz <- FALSE
-pages <- TRUE
+viz <- TRUE
+pages <- FALSE
 testing <- TRUE
 h2 <- read.delim("../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz")
 
@@ -18,6 +18,7 @@ h2 <- read.delim("../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz")
 system("cp ../site_source/yml_source/site_header.yml ./_site.yml")
 system("cat ../site_source/yml_source/site_core.yml >> _site.yml")
 system("cp ../site_source/rmd_source/index.Rmd ./")
+system("cp ../site_source/rmd_source/downloads.Rmd ./")
 system("cp ../site_source/rmd_source/methods.Rmd ./")
 system("cp ../site_source/rmd_source/h2_credits.Rmd ./")
 system("cp ../site_source/rmd_source/h2_browser.Rmd ./")
@@ -27,7 +28,7 @@ system("cp ../site_source/dt_style.css ./")
 system("cp ../site_source/rmd_source/_code_highlight_fix.Rmd ./")
 system("cp ../site_source/rmd_source/_toc_fix.Rmd ./")
 system("cp -r ../site_source/icon ./")
-system("cp -r ../results/round2_final/ukb_ord_codings_warn.txt ./")
+system("cp -r ../reference/ukb_ord_codings_warn.txt ./")
 
 if(round1){
   
@@ -49,12 +50,10 @@ if(round1){
 
 if(viz){
   system("cat ../site_source/yml_source/site_viz.yml >> _site.yml")
-  system("cp ../site_source/rmd_source/plots_home.Rmd ./")
   system("cp ../site_source/rmd_source/viz_annot.Rmd ./")
   system("cp ../site_source/rmd_source/viz_h2.Rmd ./")
-  system("cp ../site_source/rmd_source/viz_qq.Rmd ./")
   system("cp ../site_source/rmd_source/viz_sampsize.Rmd ./")
-  system("cp ../site_source/rmd_source/viz_univar.Rmd ./")
+  system("cp ../site_source/rmd_source/viz_R1vR2.Rmd ./")
 }
 
 if(process){

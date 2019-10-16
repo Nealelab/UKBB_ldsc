@@ -16,7 +16,7 @@ Building on the initial genome-wide association analyses, we’ve now estimated 
 <br>
 
 <a href="h2_browser.html" class="btn btn-primary btn-lg">Browse $h^2$</a>
-<a href="plots_home.html" class="btn btn-primary btn-lg">Explore Plots</a>
+<a href="viz_h2.html" class="btn btn-primary btn-lg">Explore Plots</a>
 <a href="downloads.html"  class="btn btn-primary btn-lg">Download Results</a>
 
 <br>
@@ -36,7 +36,7 @@ More technical descriptions are also available:
 
 <p></p>
 
-We view these results as preliminary and subject to change. They rely on uniform automated GWAS of thousands of variables, each of which can potentially be refined by subject matter experts. You can [browse the change between our Round 1 and Round 2 results here](). But we hope you’ll agree that the current results still provide an interesting and useful look at the genetics of the many diverse traits and disorders studied in the UK Biobank, and are potentially informative for highlighting phenotypes meriting further follow-up.
+We view these results as preliminary and subject to change. They rely on uniform automated GWAS of thousands of variables, each of which can potentially be refined by subject matter experts. You can [view the change between our Round 1 and Round 2 results here](viz_R1vR2.html). But we hope you’ll agree that the current results still provide an interesting and useful look at the genetics of the many diverse traits and disorders studied in the UK Biobank, and are potentially informative for highlighting phenotypes meriting further follow-up.
 
 <p></p>
 
