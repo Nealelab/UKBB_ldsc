@@ -1,5 +1,6 @@
 ---
 title: "Vizualizing $h^2$ results: Partitioned Annotations"
+author: "Results from the [Neale Lab](credits.html)"
 date: "Last updated `r format(Sys.Date())`"
 output: 
   html_document:

@@ -43,7 +43,15 @@ dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$desc
 
 <br>
 
-`r if(isUnivar){paste0("<div class=\"panel panel-warning\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Note</h3></div><div class=\"panel-body\">You are viewing results from univariate LD score regression. We recommend the <a href=\"h2_browser.html\">partitioned results</a> instead.</div></div>")}`
+```{r uni_text, include=F}
+if(isUnivar){
+  uni_text <- "univariate"
+}else{
+  uni_text <- "partitioned"
+}
+```
+
+`r paste0("<div class=\"panel panel-warning\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Note</h3></div><div class=\"panel-body\">You are viewing results from ",uni_text," LD score regression with the Round 1 GWAS. We recommend using the <a href=\"h2_browser.html\">current results</a> instead.</div></div>")`
 
 <style>
 th {

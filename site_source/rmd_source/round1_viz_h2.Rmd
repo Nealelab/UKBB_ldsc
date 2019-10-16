@@ -1,6 +1,7 @@
 ---
 title: "Vizualizing $h^2$ results: $h^2$ and intercept"
 date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
 output: 
   html_document:
     toc: true
