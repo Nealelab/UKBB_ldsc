@@ -21,7 +21,7 @@ For more info on the UK Biobank GWAS from the Neale Lab, visit [https://nealelab
 
 And our sincere thanks to the participants and researchers of the [UK Biobank](https://www.ukbiobank.ac.uk), who made this effort possible. This project completed under UK Biobank application 31063.
 
-For any questions, please **contact us at: <nealelab.ukb@gmail.com>.**
+Any and all mistakes on this site can be blamed on Raymond Walters. For any questions or feedback, please **contact us at: <nealelab.ukb@gmail.com>.**
 
 </div>
 
