@@ -1,8 +1,12 @@
 ---
 title: "Details on LD Score Regression in UK Biobank"
 date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
 output: html_document
 ---
+
+```{r child = '_code_highlight_fix.Rmd'}
+```
 
 <br>
 
