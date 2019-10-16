@@ -29,8 +29,8 @@
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-106608402-1', 'auto');
-  ga('send', 'pageview');
   ga('set', 'anonymizeIp', true);
+  ga('send', 'pageview');
 
 </script>
 
@@ -41,7 +41,7 @@
 */
 var trackOutboundLink = function(url) {
     // check if the GA object exists and that it has initialized
-    if(window.ga && ga.loaded) {
+    if(typeof ga !== 'undefined' && ga.loaded) {
         // if yes, rely on GA to follow link
         ga('send', 'event', 'outbound', 'click', url, {
             'transport': 'beacon',
