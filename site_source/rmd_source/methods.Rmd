@@ -29,17 +29,17 @@ output:
 
 * GWAS performed by the [Neale Lab](https://www.nealelab.is/uk-biobank) using [Hail](https://hail.is) on the [Google Cloud Platform](https://cloud.google.com/). [A full technical discussion](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded) on the limitations of this analysis and recommendations for intepreting the results based on the Round 1 results, as well as more general details about [our analysis of UK Biobank](http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas), are available elsewhere. Code is also available [on Github](https://github.com/Nealelab/UK_Biobank_GWAS).
 
-* GWAS summary statistics for HapMap3 sites passing QC (MAF > 0.01, INFO > 0.9, excluding multiallelics and the MHC region) in UK Biobank extracted in the proper format for [ldsc]() using [Hail](https://hail.is).
+* GWAS summary statistics for HapMap3 sites passing QC (MAF > 0.01, INFO > 0.9, excluding multiallelics and the MHC region) in UK Biobank extracted in the proper format for [ldsc](https://github.com/bulik/ldsc) using [Hail](https://hail.is).
 
 * SNP Heritability estimated using partitioned LD Score regression (LDSR; [Bulik-Sullivan et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/), [Finucane et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4626285/)) run using the [MTAG](https://github.com/omeed-maghzian/mtag) implementation of [ldsc](https://github.com/bulik/ldsc) with the Baseline-LD v1.1 model ([Gazal et al. 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6133304/)) on the [Google Cloud Platform](https://cloud.google.com/).
 
-* Restricted primary SNP heritability analysis to [one GWAS per phenotype](select_topline.html). This includes identifying sex-specific phenotypes, choice of normalization for continuous phenotypes, evaluation of the dilution fraction for biomarker phenotypes, and pruning of [FinnGen](https://www.finngen.fi/en) endpoints that are identical within current UKB data as detailed [here](select_topline.html).
+* Restricted primary SNP heritability analysis to [one GWAS per phenotype](select_topline.html). This includes identifying sex-specific phenotypes, choice of normalization for continuous phenotypes, evaluation of the dilution fraction for biomarker phenotypes, and pruning of [FinnGen](https://www.finngen.fi/en) endpoints that are identical within current UKB data as detailed [here](select_topline.html). LDSR results for all primary GWAS are available from the [SNP heritability browser](h2_browser.html).
 
 * Results for each primary GWAS evaulated for [confidence](confidence.html) based on power at potential biases as a function of sample size, the expected magnitude of the standard error on the SNP heritability estimate, and potential limitations to interpretation based on sex differences or ordinal encodings in phenotyping.
 
 * Among results with acceptable [confidence](confidence.html), tested [statistical significance](significance.html) of the LDSR SNP heritability estimate accounting for the effective multiple testing burden. More detail on the evaluation of potential thresholds for statistical significance in this analysis [here](significance.html).
 
-* Partitioning results from LDSR reported for phenotypes with strong SNP heritability results ($z > 7$). See phenome-wide [plots](plots_home.html) and access per-phenotype results from the [SNP heritability browser](h2_browser.html).
+* Partitioning results from LDSR reported for phenotypes with strong SNP heritability results ($z > 7$). See phenome-wide [plots](viz_annot.html) and access per-phenotype results from the [SNP heritability browser](h2_browser.html).
 
 * Full code for the LDSR analysis is available [on Github](https://github.com/Nealelab/UKBB_ldsc_scripts)
 
@@ -59,7 +59,7 @@ output:
 
 * Default settings were used with the exception of removing the maximum $\chi^2$ filter in order to avoid bias in phenotypes that have extremely large $\chi^2$ for loci with strong effect sizes in the large sample size of UKB.
 
-* We previously ran both univariate and partitioned heritability analyses. For the reasons written about [here](http://www.nealelab.is/blog/2017/9/20/insights-from-estimates-of-snp-heritability-for-2000-traits-and-disorders-in-uk-biobank), we’re currently presenting the partitioned heritability LDSR results as the primary analysis in the [summary browser](h2_browser.html).
+* We previously ran both univariate and partitioned heritability analyses. For the reasons written about [here](http://www.nealelab.is/blog/2017/9/20/insights-from-estimates-of-snp-heritability-for-2000-traits-and-disorders-in-uk-biobank), we’re currently presenting the partitioned heritability LDSR results as the primary analysis in the [summary browser](h2_browser.html). You can see how the current results compare to the Round 1 version [here](viz_R1vR2.html).
 
 </div>
 

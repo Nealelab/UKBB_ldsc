@@ -1,5 +1,7 @@
 ---
-title: "Available Results Files for LDSR of UK Biobank GWAS"
+title: "Results Files for LDSR of UK Biobank GWAS"
+date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
 output:
   html_document:
     toc: true
@@ -8,18 +10,16 @@ output:
     toc_depth: 3
 ---
 
+```{r child = '_toc_fix.Rmd'}
+```
+
 <br>
 
 <div class="well">
 
-# Downloads
+### Heritability Results
 
-Several results files related to the LD Score Regression analysis are available for download. We summarize the available files and provide links here.
-
-
-## Heritability Results
-
-Results files for this LDSR analysis are available <a href="https://www.dropbox.com/sh/i4kcffb5ilsktyg/AABYP5Xyg_w6Yw8RrLnYwbsLa?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/i4kcffb5ilsktyg/AABYP5Xyg_w6Yw8RrLnYwbsLa?dl=0'); return false;">on Dropbox</a>. Direct download links for each fine are below.
+Results files for this LDSR analysis are available <a href="https://www.dropbox.com/sh/i4kcffb5ilsktyg/AABYP5Xyg_w6Yw8RrLnYwbsLa?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/i4kcffb5ilsktyg/AABYP5Xyg_w6Yw8RrLnYwbsLa?dl=0'); return false;">on Dropbox</a>. Direct download links for each file are below.
 
 | File | Size | Description |
 |--------|------|----------------------------------------------------|
@@ -31,7 +31,7 @@ Note the first two files are simply a subset of the full results in `ukb31063_h2
 
 <p></p>
 
-## LDSC Sumstat Files
+### LDSC Sumstat Files
 
 In addition to the LDSR results, the exported sumstat files in LDSC format are also available [on Dropbox](). A manifest for easier programatic access is available [here](). 
 
@@ -39,13 +39,13 @@ These files are provided to facilitate running your own LDSR SNP heritability an
 
 <p></p>
 
-## Reference Files
+### Reference Files
 
 LD scores, weights, and allele frequencies for the Baseline-LD v1.1 model used here are available for [download from the Alkes Price lab](https://data.broadinstitute.org/alkesgroup/LDSCORE/).
 
 <p></p>
 
-## Full GWAS Results
+### Full GWAS Results
 
 The full GWAS results are available for download from Dropbox. A full manifest of the available files, with links and documentation, are available [here](https://docs.google.com/spreadsheets/d/1kvPoupSzsSFBNSztMzl04xMoSC3Kcx3CrjVf4yBmESU/edit#gid=227859291). 
 
@@ -53,7 +53,7 @@ For more information about the GWAS analyses, see [the Neale Lab blog](http://ww
 
 <p></p>
 
-# Previous SNP Heritability Results
+### Previous SNP Heritability Results
 
 Lastly, the previous results based on the Round 1 Neale Lab GWAS remain available for download <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">on Dropbox</a>, including both univariate and paritioned LDSR results. Round 1 LDSR results can be browsed [here](round1_h2_browser.html) (with the corresponding univariate results [here](round1_h2_univar_browser.html)).
 
