@@ -41,6 +41,8 @@ output:
 
 * Partitioning results from LDSR reported for phenotypes with strong SNP heritability results ($z > 7$). See phenome-wide [plots](viz_annot.html) and access per-phenotype results from the [SNP heritability browser](h2_browser.html).
 
+* All hertiability results are reported on the liability scale, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set. The significance of the estimate is not affected by this conversion, and the point estimate is only affected for binary phenotypes. The liablity scale value may be unreliable if the outcome was limited to a subset of individuals, or if the UK Biobank study population is not representative for this phenotype (<a href=\"https://academic.oup.com/aje/article/doi/10.1093/aje/kwx246/3883629/Comparison-of-Sociodemographic-and-Health-Related\">which is likely in many cases</a>). Observed scale $h^2_g$ estimates are available on the per-phenotype results pages accessible from the [SNP heritability browser](h2_browser.html) and are included in the [downloadable results](downloads.html).
+
 * Full code for the LDSR analysis is available [on Github](https://github.com/Nealelab/UKBB_ldsc_scripts)
 
 </div>
