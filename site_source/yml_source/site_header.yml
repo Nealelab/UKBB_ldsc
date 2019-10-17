@@ -1,6 +1,6 @@
 name: "UKBB-ldsc"
 output_dir: "../docs"
-exclude: ["analytics_header.html","./rmd_source/*","./yml_source/*"]
+exclude: ["analytics_header.html","ukbb_h2_*.Rmd"]
 navbar:
   title: "UKB Heritability"
   left:
@@ -39,12 +39,16 @@ navbar:
         - text: "Round 1 Plots"
           href: round1_plots_home.html
   right:
-    - text: "Credits"
-      href: "credits.html"
-    - text: "Github"
-      href: https://github.com/Nealelab/UKBB_ldsc
-    - text: "Neale Lab UKB"
-      href: https://www.nealelab.is/uk-biobank
+    - text: "About"
+      menu:
+      - text: "Credits"
+        href: "credits.html"
+      - text: "Site Github"
+        href: https://github.com/Nealelab/UKBB_ldsc
+      - text: "Analysis Github"
+        href: https://github.com/Nealelab/UKBB_ldsc_scripts
+      - text: "Neale Lab UKB"
+        href: https://www.nealelab.is/uk-biobank
 output:
   html_document:
     theme: default
