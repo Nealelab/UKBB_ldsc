@@ -1,12 +1,12 @@
 ---
-title: "Vizualizing $h^2$ results: Sample Size"
+title: "Relationship of LDSR Results with Sample Size"
 date: "Last updated `r format(Sys.Date())`"
 output: 
   html_document:
     toc: true
     toc_float: true
 params:
-  datfile: "../results/ukbb_h2part.RData"
+  datfile: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
 ---
 
 ```{r child = '_toc_fix.Rmd'}
@@ -20,32 +20,108 @@ require(plotly)
 require(DT)
 require(crosstalk)
 require(crosstool)
+require(htmlwidgets)
 
 # handle params
-load(file=params$datfile)
+dat <- read.delim(file=normalizePath(params$datfile),sep='\t',header=T,stringsAsFactors=F,colClasses=c(intercept_p="character"))
 
 # setup
-dat$isBinary <- !is.na(dat$N_case)
-dat$Neff <- dat$N
-dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
-
-dat <- dat[dat$Neff > 200,]
-
-dat$isNomSig_h2 <- dat$h2_p < .05
-dat$isBonfSig_h2 <- dat$h2_p < (.05/nrow(dat))
-dat$isNomSig_int <- dat$intercept_p < .05
-dat$isBonfSig_int <- dat$intercept_p < (.05/nrow(dat))
-dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$description,"</a>")
-
+# color scales
 dat$h2_liab <- dat$h2_liability
 dat$h2_liab[dat$h2_liab < 0] <- 0
 dat$h2_liab[dat$h2_liab > .5] <- 0.5
 
+# for power curves
+dat$Neff_sq <- (dat$Neff)^2
+mod1 <- lm((1/h2_liability_se^2) ~ Neff + Neff_sq -1,data=dat, weights = 1/Neff^3)
+llmod <- loess((1/h2_liability_se^2) ~ Neff, data = dat, span=0.2)
+dat$pred_h2liab_se <- 1/sqrt(llmod$fitted)
+
+# for plot prettiness
+dat$prevalence[!is.na(dat$prevalence)] <- signif(dat$prevalence[!is.na(dat$prevalence)], 4)
+dat$confidence <- factor(dat$confidence, levels=c("high","medium","low","none"), labels = c("High Confidence","Medium Confidence","Low Confidence","No Confidence"))
+dat$h2_sig <- factor(dat$h2_sig, levels=c("z7","z4","nominal","nonsig"), labels = c("z7","z4","nominal","non-significant"))
+
+# for clickable data points
+dat$description <- paste0("[",dat$phenotype,"] ",dat$description)
+dat$urls <- paste0("h2_summary_",dat$phenotype,".html")
+
+# https://stackoverflow.com/questions/56084819/open-link-on-datapoint-click-with-plotly-in-r-shiny 
+js <- "
+function(el, x) {
+  el.on('plotly_click', function(d) {
+    if(d.event.button === 0){
+      var point = d.points[0];
+      var url = point.data.customdata[point.pointIndex];
+      window.location.href = url;
+    }
+  })
+}"
+
+plotly_colors <- c(
+    '#1f77b4',  # muted blue
+    '#ff7f0e',  # safety orange
+    '#2ca02c',  # cooked asparagus green
+    '#d62728',  # brick red
+    '#9467bd',  # muted purple
+    '#8c564b',  # chestnut brown
+    '#e377c2',  # raspberry yogurt pink
+    '#7f7f7f',  # middle gray
+    '#bcbd22',  # curry yellow-green
+    '#17becf'   # blue-teal
+)
+
 ```
+
+```{r smallp_func, include=FALSE}
+
+# handle intercept_p as a string (due to high precision p-vals)
+pstring <- function(p, prec=3){
+
+intp_string <- as.character(p)
+intp_string[p == as.character(as.numeric(p))] <- as.character(signif(as.numeric(p),prec)[(p == as.character(as.numeric(p)))])
+highstr <- intp_string[!(p == as.character(as.numeric(p)))]
+highstr_lead <- as.character(signif(as.numeric(substr(highstr,1,6)),prec))
+highstr_exp <- sapply(highstr,function(a) strsplit(a,split="e")[[1]][2],USE.NAMES = F)
+intp_string[!(p == as.character(as.numeric(p)))] <- paste0(highstr_lead,"e",highstr_exp)
+while(any(intp_string=="1")){
+  prec <- prec+1
+  intp_string[intp_string=="1"] <- as.character(signif(as.numeric(p),prec)[intp_string=="1"])
+}
+return(intp_string)
+}
+
+
+dat$intercept_p <- pstring(dat$intercept_p)
+dat$int_nlogp <- as.numeric(-log10(mpfr(0.5,64)*erfc(mpfr(dat$intercept_z,64)/sqrt(mpfr(2,64)))))
+
+```
+
 
 <br>
 
-### $h^2$ vs Effective N
+### Overview
+
+<div class="well">
+
+The large sample size of UK Biobank, coupled with the large number of phenotypes only completed by a subset of participants and the number of rarer binary phenotypes with lower statistical power, provides and excellent opportunity to observe how LDSR results behave across GWAS sample sizes. We consider that relationship here, including providing [estimated approximate power curves](#power) for detecting $h^2_g$ in LD Score regression ([more details in Methods](confidence.html#min-n)).
+
+In looking at these trends we largely focus on effective sample, defined for binary phenotypes as
+
+$$N_{eff} = \frac{1}{\frac{1}{N_{cases}}+\frac{1}{N_{controls}}}$$
+and as the standard sample size for non-binary phenotypes. We expect this effective N to better capture statistical power for rare binary phenotypes. We compare how $N$ and $N_{eff}$ relate to the significance of $h^2_g$ results below.
+
+</div>
+
+<br>
+
+### Observed SNP Heritabilty
+
+The relationship between the SNP heritability estimate and sample size is of interest given we [previously observed evidence](http://www.nealelab.is/blog/2017/9/20/insights-from-estimates-of-snp-heritability-for-2000-traits-and-disorders-in-uk-biobank) that $h^2_g$ estimates may be downwardly biased at low sample sizes. We've revisited that question in our evaluation of [confidence](confidence.html) in the current results, and reproduce the relevant figures here.
+
+#### Estimates {.tabset .tabset-fade}
+
+##### Effective N
 
 <div class="well">
 
@@ -60,77 +136,154 @@ pp <- plot_ly(shared_neff,
 			  y=~h2_liability, 
 			  type="scatter",
 			  mode="markers",
+			  customdata=~urls,
+        color=~confidence,
+        colors=plotly_colors[1:4],
 			  hoverinfo="text",
 			  text = ~paste0(
 			  		    "Phenotype: ", description,
-			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
-			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",
+			  			"<br>Liability SNP h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
 			  			"<br>Effective N: ", Neff,
-			  			"<br>Prevalence: ", prevelence)) %>%
+			  			"<br>Prevalence: ", prevalence)) %>%
 	add_trace(x=ll$x[order(ll$x)],
 			  y=ll$fitted[order(ll$x)],
 			  showlegend=F,
 			  mode="lines",
+			  line=list(color='rgba(0,0,0,0.3)'),
 			  hoverinfo="text",
-			  text="")
+			  text="") %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=T, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", shared_neff, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", shared_neff, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", shared_neff, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", shared_neff, ~isBonfSig_int, multiple=T)
+		filter_slider("n", "Total N", shared_neff, ~n, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", shared_neff, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", shared_neff, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", shared_neff, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", shared_neff, ~source, multiple=T)
 	)
 )
 ```
+
+<p></p>
+
+*Note:* Gray line is loess fit of liability scale $h^2_g$ as a function of effective sample size. Colors indicate our confidence rating as [described in the Methods section](confidence.html).
 
 </div>
 
 <br> 
 
-### $h^2$ z-score vs Effective N
+##### Total N
 
 <div class="well">
 
-```{r neff_z, echo=FALSE}
+```{r total_n, echo=FALSE}
 # define plot
-shared_neff_z <- SharedData$new(dat)
+shared_ntot <- SharedData$new(dat)
 
-pp <- plot_ly(shared_neff_z,
-			  x=~Neff, 
-			  y=~h2_z, 
+pp <- plot_ly(shared_ntot, 
+			  x=~n, 
+			  y=~h2_liability, 
 			  type="scatter",
 			  mode="markers",
-			  color=~h2_liab,
-			  colors=c("blue","darkorange"),
+			  customdata=~urls,
+			  color=~confidence,
+        colors=plotly_colors[1:4],
 			  hoverinfo="text",
 			  text = ~paste0(
 			  		    "Phenotype: ", description,
-			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
-			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",
+			  			"<br>Liability SNP h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
 			  			"<br>Effective N: ", Neff,
-			  			"<br>Prevalence: ", prevelence))
+			  			"<br>Prevalence: ", prevalence)) %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", shared_neff_z, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", shared_neff_z, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", shared_neff_z, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", shared_neff_z, ~isBonfSig_int, multiple=T)
+		filter_slider("Neff", "Effective N", shared_ntot, ~Neff, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", shared_ntot, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", shared_ntot, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", shared_ntot, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", shared_ntot, ~source, multiple=T)
 	)
 )
 ```
 
+<p></p>
+
+*Note:* Colors indicate our confidence rating as [described in the Methods section](confidence.html).
+
 </div>
 
-<br> 
+<br>
+
+##### Split by Intercept
+
+<div class="well">
+
+```{r alpha_dec, echo=F}
+
+dat2 <- dat[dat$confidence!="No Confidence",]
+
+dat2$alpha <- (dat2$intercept-1)/dat2$n
+
+pp <- plot_ly(dat2,
+              x=~Neff,
+              y=~h2_liability,
+              type="scatter",
+              mode="markers",
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",
+                "<br>Liability SNP h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+                "<br>Effective N: ", Neff)) %>%
+  layout(
+    xaxis = list(title="Neff", range=c(0,200000)),
+    yaxis = list(title="Liability SNP h2", range=c(-.2,.4))
+  )
+
+qq <- quantile(dat2$alpha,probs = seq(0,1,.1))
+for(i in 1:10){
+  ll <- loess(h2_liability ~ Neff, data=dat2[(dat2$alpha >= qq[i]) & (dat2$alpha <= qq[i+1]),],span=0.5)
+  pp <- pp %>% add_trace(
+          x=ll$x[order(ll$x)],
+          y=ll$fitted[order(ll$x)],
+          showlegend=T,
+          mode="lines",
+          hoverinfo="text",
+          text="",
+          name=paste0("Dec",i," [",signif(qq[i],1),",",signif(qq[i+1],1),"]"))
+}
+
+bscols(widths=c(12),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+rm(ll)
+
+```
+
+<p></p>
+
+*Note:* Plot restricted to $N_{eff} <$ 200,000 and $h^2_g$ between -0.2 and 0.4 for visibility. 
+
+Under the expectation of the LDSR model that the intercept equals $1 + N\alpha$, we estimate $\alpha = \frac{\text{intercept}-1}{n}$ as the amount of confounding or model misspecification adjusted for sample size. Compared to the ratio, this quantity shouldn't depending on the amount of polygenic signal contributing to the mean $\chi^2$. Then among phenotypes with at least some [confidence](confidence.html) in the LDSR results, we split the phenotypes according to deciles of the estimated $\alpha$ and fit loess curves for the relationship between effective sample size $N_{eff}$ and estimated SNP hertiability $h^2_g$. Read more about this analysis [in the Methods section](confidence.html#neff-bias).
+
+</div>
+
+<br>
 
 
-### $h^2$ inverse SE vs Effective N
+#### Significance and Precision {.tabset .tabset-fade}
+
+As with most statistics, we expect potentially stronger significance and more precise estimates of the SNP heritability as the GWAS sample size increases. As shown below we generally observe that trend, but also note that phenotypes with higher $h^2_g$ estimates tend to have less precise estimates. One possible explanation is that the regression weights used by LDSR are iterated with the $h^2_g$ estimates and optimized assuming an infinitesimal model, and so LDSR estimates may become less efficient as causal variants become more sparse and have stronger effects.
+
+We can also confirm here our expectation that the power of LDSR depends primarily on the effective sample size, rather than total sample size or the prevalence.
+
+##### Inverse SE
 
 <div class="well">
 
@@ -143,66 +296,284 @@ pp <- plot_ly(shared_neff_se,
 			  y=~1/h2_liability_se, 
 			  type="scatter",
 			  mode="markers",
+			  customdata=~urls,
 			  color=~h2_liab,
 			  colors=c("blue","darkorange"),
 			  hoverinfo="text",
 			  text = ~paste0(
 			  		    "Phenotype: ", description,
-			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
-			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",
+			  			"<br>Liability SNP h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
 			  			"<br>Effective N: ", Neff,
-			  			"<br>Prevalence: ", prevelence))
+			  			"<br>Prevalence: ", prevalence)) %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", shared_neff_se, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", shared_neff_se, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", shared_neff_se, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", shared_neff_se, ~isBonfSig_int, multiple=T)
+		filter_slider("n", "Total N", shared_neff_se, ~n, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", shared_neff_se, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", shared_neff_se, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", shared_neff_se, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", shared_neff_se, ~source, multiple=T)
 	)
 )
 ```
+
+<p></p>
+
+*Note:* Colors reflect the magnitude of the $h^2_g$ estimate truncated to values between 0 and 0.5.
 
 </div>
 
 <br> 
 
-### $h^2$ vs N Cases
+##### Z by Total N
+
+<div class="well">
+
+```{r total_n_z, echo=FALSE}
+# define plot
+shared_ntot <- SharedData$new(dat)
+
+pp <- plot_ly(shared_ntot, 
+			  x=~n, 
+			  y=~h2_z, 
+			  type="scatter",
+			  mode="markers",
+			  customdata=~urls,
+			  color=~sqrt(Neff),
+        colors=c("blue","darkorange"),
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",
+			  			"<br>Liability SNP h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevalence)) %>% onRender(js)
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_ntot, ~Neff, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", shared_ntot, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", shared_ntot, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", shared_ntot, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", shared_ntot, ~source, multiple=T)
+	)
+)
+```
+
+<p></p>
+
+*Note:* Colors are proportional to effective sample size $N_{eff}$. The utility of using $N_{eff}$ instead of total N as a measure of power is especially evident when restricting this plot to binary variables using the filters on the right.
+
+</div>
+
+<br>
+
+##### Z by Neff and Prevalence
 
 <div class="well">
 
 ```{r n_case, echo=FALSE, warnings=FALSE}
 # define plot
-shared_ncas <- SharedData$new(dat)
-
-N_cases <- dat$N_case
-N_cases[is.na(N_cases)] <- dat$N[is.na(N_cases)]
+dat$prev <- sapply(dat$prevalence,function(a) min(c(a,1-a)))
+shared_ncas <- SharedData$new(dat[!is.na(dat$n_cases),])
 
 pp <- plot_ly(shared_ncas, 
-			  x=N_cases, 
-			  y=~h2_liability, 
+			  x=~Neff, 
+			  y=~h2_z, 
 			  type="scatter",
 			  mode="markers",
+			  customdata=~urls,
+			  color=~prev,
+			  colors=c("blue","darkorange"),
 			  hoverinfo="text",
 			  text = ~paste0(
 			  		    "Phenotype: ", description,
-			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
-			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",
+			  			"<br>Liability SNP h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
 			  			"<br>Effective N: ", Neff,
-			  			"<br>Prevalence: ", prevelence))
+			  			"<br>Prevalence: ", prevalence)) %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", shared_ncas, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", shared_ncas, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", shared_ncas, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", shared_ncas, ~isBonfSig_int, multiple=T)
+		filter_slider("n", "Total N", shared_ncas, ~n, step=100, width="100%",round=T),
+		filter_select("confidence","Confidence", shared_ncas, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", shared_ncas, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", shared_ncas, ~source, multiple=T)
 	)
 )
+```
+
+<p></p>
+
+*Note:* Plot restricted to binary variables. For visibility, the prevalence depicted in the color scaling is the smaller of `{prevalence, 1-prevalence}`. We observe no clear relationship between prevalence and the Z score for $h^2_g$ at a given effective N (i.e. within vertical bands of the plot); restricting to higher or lower total N using the filters on the right does not change this result.
+
+</div>
+
+<br>
+
+
+### Estimated Power Curves {.tabset .tabset-fade #power}
+
+As discussed when [evaluating confidence in the LDSR results](confidence.html), we can model the expected standard error of LDSR SNP heritability estimates as a function of effective sample size, and use that predicted standard error to provide a rough estimate of LDSR's statistical power to detect $h^2_g > 0$ as a function of $h^2_g$ and effective sample size.
+
+Note that these power curves are a rough estimate, and are specific to estimation with the baseline-LD v1.1 model used in the current analysis. They also do not account for the above relationship between $h^2_g$ and the standard error that may relate to the genetic architecture of the phenotype. 
+
+Nevertheless these curves may be useful to get a ballpark estimate of the effective GWAS sample size required to detect significant SNP heritability (p < .05), robustly estimate genetic correlations (z > 4), or robustly test annotations in partitioned heritability (z > 7).
+
+#### p < .05
+
+<div class="well">
+
+```{r pow_nominal, echo=F}
+
+pow_pred_points <- dat[order(dat$Neff),c("Neff","pred_h2liab_se")]
+qq <- c(seq(1,nrow(pow_pred_points)-1,10),nrow(pow_pred_points))
+pow_pred_points <- pow_pred_points[qq,]
+
+### set up plot with a range of h2 values
+alph <- .05
+pp1 <- plot_ly(pow_pred_points,
+               x=~Neff,
+               y=~pnorm(qnorm(alph,lower=F), mean = .3/pred_h2liab_se, sd=1, lower.tail = F),
+               type="scatter",
+               mode="lines",
+               name="SNP h2 = 0.3",
+               showlegend=T,
+               hoverinfo="none"
+      ) %>% add_trace(
+              x=~Neff,
+              y=~pnorm(qnorm(alph,lower=F), mean = .2/pred_h2liab_se, sd=1, lower.tail = F),
+              mode="lines",
+              name="SNP h2 = 0.2"
+      ) %>% add_trace(
+              x=~Neff,
+              y=~pnorm(qnorm(alph,lower=F), mean = .1/pred_h2liab_se, sd=1, lower.tail = F),
+              mode="lines",
+              name="SNP h2 = 0.1"
+      ) %>% add_trace(
+              x=~Neff,
+              y=~pnorm(qnorm(alph,lower=F), mean = .05/pred_h2liab_se, sd=1, lower.tail = F),
+              mode="lines",
+              name="SNP h2 = 0.05"              
+      ) %>% layout(
+        xaxis = list(title = "Effective N", range=c(0,80000)),
+        yaxis = list(title= "Estimated Power", range=c(0,1),
+        margin=list(b=65))
+      )
+
+bscols(widths=c(12),
+       config(pp1, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+
+```
+
+</div>
+
+<br>
+
+#### z > 4
+
+<div class="well">
+
+```{r pow_z4, echo=F}
+
+pow_pred_points <- dat[order(dat$Neff),c("Neff","pred_h2liab_se")]
+qq <- c(seq(1,nrow(pow_pred_points)-1,10),nrow(pow_pred_points))
+pow_pred_points <- pow_pred_points[qq,]
+
+### set up plot with a range of h2 values
+alph <- pnorm(-4)
+pp1 <- plot_ly(pow_pred_points,
+               x=~Neff,
+               y=~pnorm(qnorm(alph,lower=F), mean = .3/pred_h2liab_se, sd=1, lower.tail = F),
+               type="scatter",
+               mode="lines",
+               name="SNP h2 = 0.3",
+               showlegend=T,
+               hoverinfo="none"
+      ) %>% add_trace(
+              x=~Neff,
+              y=~pnorm(qnorm(alph,lower=F), mean = .2/pred_h2liab_se, sd=1, lower.tail = F),
+              mode="lines",
+              name="SNP h2 = 0.2"
+      ) %>% add_trace(
+              x=~Neff,
+              y=~pnorm(qnorm(alph,lower=F), mean = .1/pred_h2liab_se, sd=1, lower.tail = F),
+              mode="lines",
+              name="SNP h2 = 0.1"
+      ) %>% add_trace(
+              x=~Neff,
+              y=~pnorm(qnorm(alph,lower=F), mean = .05/pred_h2liab_se, sd=1, lower.tail = F),
+              mode="lines",
+              name="SNP h2 = 0.05"              
+      ) %>% layout(
+        xaxis = list(title = "Effective N", range=c(0,140000)),
+        yaxis = list(title= "Estimated Power", range=c(0,1),
+        margin=list(b=65))
+      )
+
+bscols(widths=c(12),
+       config(pp1, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+
+```
+
+</div>
+
+<br>
+
+#### z > 7
+
+<div class="well">
+
+```{r pow_z7, echo=F}
+
+pow_pred_points <- dat[order(dat$Neff),c("Neff","pred_h2liab_se")]
+qq <- c(seq(1,nrow(pow_pred_points)-1,10),nrow(pow_pred_points))
+pow_pred_points <- pow_pred_points[qq,]
+
+### set up plot with a range of h2 values
+alph <- pnorm(-7)
+pp1 <- plot_ly(pow_pred_points,
+               x=~Neff,
+               y=~pnorm(qnorm(alph,lower=F), mean = .3/pred_h2liab_se, sd=1, lower.tail = F),
+               type="scatter",
+               mode="lines",
+               name="SNP h2 = 0.3",
+               showlegend=T,
+               hoverinfo="none"
+      ) %>% add_trace(
+              x=~Neff,
+              y=~pnorm(qnorm(alph,lower=F), mean = .2/pred_h2liab_se, sd=1, lower.tail = F),
+              mode="lines",
+              name="SNP h2 = 0.2"
+      ) %>% add_trace(
+              x=~Neff,
+              y=~pnorm(qnorm(alph,lower=F), mean = .1/pred_h2liab_se, sd=1, lower.tail = F),
+              mode="lines",
+              name="SNP h2 = 0.1"
+      ) %>% add_trace(
+              x=~Neff,
+              y=~pnorm(qnorm(alph,lower=F), mean = .05/pred_h2liab_se, sd=1, lower.tail = F),
+              mode="lines",
+              name="SNP h2 = 0.05"              
+      ) %>% layout(
+        xaxis = list(title = "Effective N", range=c(0,250000)),
+        yaxis = list(title= "Estimated Power", range=c(0,1),
+        margin=list(b=65))
+      )
+
+bscols(widths=c(12),
+       config(pp1, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+
 ```
 
 </div>
@@ -210,41 +581,153 @@ bscols(widths=c(10,2),
 <br>
 
 
-### $h^2$ vs Total N
+### Intercept {.tabset .tabset-fade}
+
+We may also be interested in the behavior of the LDSR intercept term across sample sizes. When the true intercept is non-null (due to confounding in the GWAS or misspecification of the LDSR model) we expect the intercept the scale linearly with sample size. In constrast, we don't expect a relationship between sample size and the ratio estimate. Reassuringly, we see no clear sample size trend in the ratio here.
+
+#### Intercept
 
 <div class="well">
 
-```{r total_n, echo=FALSE}
+```{r neff_int, echo=FALSE}
+# define plot
+shared_neff <- SharedData$new(dat)
+
+ll <- loess(intercept ~ Neff, data=dat)
+
+pp <- plot_ly(shared_neff, 
+			  x=~Neff, 
+			  y=~intercept, 
+			  type="scatter",
+			  mode="markers",
+			  customdata=~urls,
+        color=~confidence,
+        colors=plotly_colors[1:4],
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",
+			  			"<br>Liability SNP h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevalence)) %>%
+	add_trace(x=ll$x[order(ll$x)],
+			  y=ll$fitted[order(ll$x)],
+			  showlegend=F,
+			  mode="lines",
+			  line=list(color='rgba(0,0,0,0.3)'),
+			  hoverinfo="text",
+			  text="") %>% onRender(js)
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+	list(
+		filter_slider("n", "Total N", shared_neff, ~n, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", shared_neff, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", shared_neff, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", shared_neff, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", shared_neff, ~source, multiple=T)
+	)
+)
+```
+
+<p></p>
+
+*Note:* Gray line is loess fit of the LDSR intercept as a function of effective sample size. Colors indicate our confidence rating as [described in the Methods section](confidence.html).
+
+</div>
+
+<br> 
+
+#### Intercept Z score
+
+<div class="well">
+
+```{r neff_int_z, echo=FALSE}
 # define plot
 shared_ntot <- SharedData$new(dat)
 
 pp <- plot_ly(shared_ntot, 
-			  x=~N, 
-			  y=~h2_liability, 
+			  x=~Neff, 
+			  y=~intercept_z, 
 			  type="scatter",
 			  mode="markers",
+			  customdata=~urls,
+			  color=~confidence,
+        colors=plotly_colors[1:4],
 			  hoverinfo="text",
 			  text = ~paste0(
 			  		    "Phenotype: ", description,
-			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
-			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",
+			  			"<br>Liability SNP h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
 			  			"<br>Effective N: ", Neff,
-			  			"<br>Prevalence: ", prevelence))
+			  			"<br>Prevalence: ", prevalence)) %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", shared_ntot, ~Neff, step=100, width="100%"),
-		filter_select("isBinary","Binary Pheno.", shared_ntot, ~isBinary, multiple=T),
-		filter_select("isBonfSig_h2","Signif. h2", shared_ntot, ~isBonfSig_h2, multiple=T),
-		filter_select("isBonfSig_int","Signif. Int.", shared_ntot, ~isBonfSig_int, multiple=T)
+		filter_slider("n", "Total N", shared_ntot, ~n, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", shared_ntot, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", shared_ntot, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", shared_ntot, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", shared_ntot, ~source, multiple=T)
 	)
 )
 ```
+
+<p></p>
+
+*Note:* Colors indicate our confidence rating as [described in the Methods section](confidence.html).
+
 </div>
 
 <br>
 
+#### Intercept Ratio
 
+<div class="well">
+
+```{r neff_ratio, echo=FALSE}
+# define plot
+shared_rat <- SharedData$new(dat[dat$confidence!="No Confidence" & dat$mean_chi2 > 1,])
+
+pp <- plot_ly(shared_rat, 
+			  x=~Neff, 
+			  y=~ratio, 
+			  type="scatter",
+			  mode="markers",
+			  customdata=~urls,
+			  color=~confidence,
+        colors=plotly_colors[1:4],
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",
+			  			"<br>Liability SNP h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevalence)) %>% onRender(js)
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+	list(
+		filter_slider("n", "Total N", shared_rat, ~n, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", shared_rat, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", shared_rat, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", shared_rat, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", shared_rat, ~source, multiple=T)
+	)
+)
+```
+
+<p></p>
+
+*Note:* Ratio estimates restricted to phenotypes with mean $\chi^2 > 1$. Clearer results are observed by restricting to `high` confidence results, continuous phenotypes, and/or higher effective sample sizes using the filter on the right. Colors indicate our confidence rating as [described in the Methods section](confidence.html). The LDSR ratio estimate is:
+
+$$\frac{\text{intercept}-1}{\text{mean}(\chi^2)-1}$$
+
+</div>
+
+<br>
 
