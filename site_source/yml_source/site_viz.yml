@@ -5,7 +5,7 @@
   viz_sampsize.html:
     src: "viz_sampsize.Rmd"
     params:
-      datfile: "../results/round1/ukbb_h2part.RData"
+      datfile: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
   viz_annot.html:
     src: "viz_annot.Rmd"
     params:
