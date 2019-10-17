@@ -1,5 +1,5 @@
 ---
-title: "Partitioned SNP-Annotations"
+title: "Partitioned LDSR SNP Heritability Results"
 date: "Last updated `r format(Sys.Date())`"
 author: "Results from the [Neale Lab](credits.html)"
 output: 
@@ -21,12 +21,29 @@ require(plotly)
 require(DT)
 require(crosstalk)
 require(crosstool)
+require(htmlwidgets)
 
 # handle params
 dat <- read.delim(file=normalizePath(params$datfile),sep='\t',header=T,stringsAsFactors=F,colClasses=c(intercept_p="character"))
 
 # setup
 dat <- dat[dat$h2_sig=="z7",]
+
+# for clickable data points
+dat$description <- paste0("[",dat$phenotype,"] ",dat$description)
+dat$urls <- paste0("h2_summary_",dat$phenotype,".html")
+
+# https://stackoverflow.com/questions/56084819/open-link-on-datapoint-click-with-plotly-in-r-shiny 
+js <- "
+function(el, x) {
+  el.on('plotly_click', function(d) {
+    if(d.event.button === 0){
+      var point = d.points[0];
+      var url = point.data.customdata[point.pointIndex];
+      window.location.href = url;
+    }
+  })
+}"
 
 ```
 
@@ -46,7 +63,7 @@ Partitioned SNP heritability results from LD score regression with the baseline-
 * coefficient $\tau$: increase in per-SNP heritability associated with the given annotation conditional on all other annotations in the model
 * enrichment: marginal increase in per-SNP heritability for SNPs in the given annotation (i.e. summed across any overlapping annotations)
 
-For easier comparison of coefficient tau across phenotypes, we report here the value after normalization for the total estimated SNP-heritability of the phenotype, $\tau^*$. The full results file [available for download](downloads.html) reports the unstandardized value. Separate results are reported for the continuous annotations, as described below.
+For easier comparison of coefficient tau across phenotypes, we report here the value after normalization for the total estimated SNP heritability of the phenotype, $\tau^*$. The full results file [available for download](downloads.html) reports the unstandardized value. Separate results are reported for the continuous annotations, as described below.
 
 Reported partitioning results are limited to phenotypes with strongly significant $h^2$ after Bonferroni correction ($z > 7$) and `medium` or `high` confidence. See the Methods pages for more detail on the [confidence ratings](confidence.html) and [significance thresholds](significance.html). From the annotations in the Baseline-LD model, we omit results for the base annotation, 10 MAF bin annotations, and the 26 buffer annotations (extending 500-bp around the baseline functional annotations) since they are primarily intended as statistical controls rather than for direct inference. Results for these annotations are included in the full results file [available for download](downloads.html).
 
@@ -63,7 +80,7 @@ Reported partitioning results are limited to phenotypes with strongly significan
 ```{r qq_coef, echo=FALSE}
 
 # shared data object
-d3 <- dat[,c("phenotype","description","prevalence","Neff","variable_type","confidence","source","intercept","h2_liability","intercept_p","h2_p","Coding_UCSC..Coefficient_p","Conserved_LindbladToh..Coefficient_p","CTCF_Hoffman..Coefficient_p","DGF_ENCODE..Coefficient_p","DHS_peaks_Trynka..Coefficient_p","DHS_Trynka..Coefficient_p","Enhancer_Andersson..Coefficient_p","Enhancer_Hoffman..Coefficient_p","FetalDHS_Trynka..Coefficient_p","H3K27ac_Hnisz..Coefficient_p","H3K27ac_PGC2..Coefficient_p","H3K4me1_peaks_Trynka..Coefficient_p","H3K4me1_Trynka..Coefficient_p","H3K4me3_peaks_Trynka..Coefficient_p","H3K4me3_Trynka..Coefficient_p","H3K9ac_peaks_Trynka..Coefficient_p","H3K9ac_Trynka..Coefficient_p","Intron_UCSC..Coefficient_p","PromoterFlanking_Hoffman..Coefficient_p","Promoter_UCSC..Coefficient_p","Repressed_Hoffman..Coefficient_p","SuperEnhancer_Hnisz..Coefficient_p","TFBS_ENCODE..Coefficient_p","Transcr_Hoffman..Coefficient_p","TSS_Hoffman..Coefficient_p","UTR_3_UCSC..Coefficient_p","UTR_5_UCSC..Coefficient_p","WeakEnhancer_Hoffman..Coefficient_p","Super_Enhancer_Vahedi..Coefficient_p","Typical_Enhancer_Vahedi..Coefficient_p","GERP.RSsup4..Coefficient_p")]
+d3 <- dat[,c("phenotype","description","prevalence","Neff","variable_type","confidence","source","intercept","h2_liability","intercept_p","h2_p","Coding_UCSC..Coefficient_p","Conserved_LindbladToh..Coefficient_p","CTCF_Hoffman..Coefficient_p","DGF_ENCODE..Coefficient_p","DHS_peaks_Trynka..Coefficient_p","DHS_Trynka..Coefficient_p","Enhancer_Andersson..Coefficient_p","Enhancer_Hoffman..Coefficient_p","FetalDHS_Trynka..Coefficient_p","H3K27ac_Hnisz..Coefficient_p","H3K27ac_PGC2..Coefficient_p","H3K4me1_peaks_Trynka..Coefficient_p","H3K4me1_Trynka..Coefficient_p","H3K4me3_peaks_Trynka..Coefficient_p","H3K4me3_Trynka..Coefficient_p","H3K9ac_peaks_Trynka..Coefficient_p","H3K9ac_Trynka..Coefficient_p","Intron_UCSC..Coefficient_p","PromoterFlanking_Hoffman..Coefficient_p","Promoter_UCSC..Coefficient_p","Repressed_Hoffman..Coefficient_p","SuperEnhancer_Hnisz..Coefficient_p","TFBS_ENCODE..Coefficient_p","Transcr_Hoffman..Coefficient_p","TSS_Hoffman..Coefficient_p","UTR_3_UCSC..Coefficient_p","UTR_5_UCSC..Coefficient_p","WeakEnhancer_Hoffman..Coefficient_p","Super_Enhancer_Vahedi..Coefficient_p","Typical_Enhancer_Vahedi..Coefficient_p","GERP.RSsup4..Coefficient_p","urls")]
 
 prank <- apply(d3[,12:42],2,function(a) as.numeric(rank(a)))
 colnames(prank) <- paste0(colnames(prank),"_rank")
@@ -73,7 +90,7 @@ names(d3b)[1] <- "phenotype"
 d3bm <- melt(d3b,c("phenotype"),value.name="rank", variable.name="var1")
 d3bm$annot <- gsub("..Coefficient_p_rank","",d3bm$var1)
 
-d3m <- melt(d3[,c(1,2,4,8:11,12:42)],c("phenotype","description","h2_liability","h2_p","intercept","intercept_p","Neff"),value.name="pval", variable.name="var2")
+d3m <- melt(d3[,c(1,2,4,8:11,12:42,43)],c("phenotype","description","h2_liability","h2_p","intercept","intercept_p","Neff","urls"),value.name="pval", variable.name="var2")
 d3m$annot <- gsub("..Coefficient_p","",d3m$var2)
 
 foo <- aggregate(pval~annot,data=d3m,min)
@@ -104,6 +121,7 @@ pp <- plot_ly(df2, height=600) %>%
 			  split=~annot,
 			  type="scatter",
 			  mode="markers",
+			  customdata=~urls,
 			  hoverinfo="text",
 			  text = ~paste0(
 			  		    "Phenotype: ", description,
@@ -141,10 +159,10 @@ pp <- plot_ly(df2, height=600) %>%
 	  			 xaxis = list(title="Expected -log10(p-value)"),
 	  			 yaxis = list(title="Observed -log10(p-value)", range=c(0,29)),
 	  			 legend = list(traceorder="normal")
-	  )
+	  ) %>% onRender(js)
 
 bscols(widths=c(12),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
 )
 ```
 
@@ -178,7 +196,7 @@ dtmp <- dtmp[,-grep("Nucleotide",names(dtmp))]
 dtmp <- dtmp[,-grep("Backgrd",names(dtmp))]
 dtmp <- dtmp[,-grep("Recomb_Rate",names(dtmp))]
 dtmp <- dtmp[,-grep("extend.500",names(dtmp))]
-dtmp <- dtmp[,!(names(dtmp) %in% c("description","n","n_cases","n_controls","prevalence","mean_chi2","lambdaGC","intercept","ratio","h2_observed","sex","dilute","gwas_file","n_missing","phen_stem","isBinary","keep","notes","isNotPrimary","isBadPower","isLowNeff","isMidNeff","isExtremeSE","isHighSE","isSexBias","isBadOrdinal","isNumericOrdinal","conf_simple","h2_sig"))]
+dtmp <- dtmp[,!(names(dtmp) %in% c("description","n","n_cases","n_controls","prevalence","mean_chi2","lambdaGC","intercept","ratio","h2_observed","sex","dilute","gwas_file","n_missing","phen_stem","isBinary","keep","notes","isNotPrimary","isBadPower","isLowNeff","isMidNeff","isExtremeSE","isHighSE","isSexBias","isBadOrdinal","isNumericOrdinal","conf_simple","h2_sig","urls"))]
 
 dd <- melt(dtmp,c("phenotype","Neff","variable_type","confidence","source","h2_liability"),variable.name = "annot1",value.name="Coefficient")
 dd$annot <- gsub("..Coefficient","",dd$annot1)
@@ -196,9 +214,9 @@ pp <- plot_ly(d3, height=600) %>%
 		layout(showlegend=F, yaxis=list(exponentformat="e", title = "Coefficient tau*"), margin=list(b=150,l=100), xaxis=list(title="Annotation", tickangle=-30), legend=list(traceorder="normal"))
 
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", d3, ~Neff, step=100, width="100%"),
+		filter_slider("Neff", "Effective N", d3, ~Neff, step=100, width="100%",round=T),
 		filter_select("variable_type","Var. Type", d3, ~variable_type, multiple=T),
 		filter_select("confidence","Confidence", d3, ~confidence, multiple=T),
 		filter_select("source","Dataset", d3, ~source, multiple=T)
@@ -219,7 +237,7 @@ bscols(widths=c(10,2),
 ```{r qq_enrich, echo=FALSE}
 
 # shared data object
-d3 <- dat[,c("phenotype","description","prevalence","Neff","variable_type","confidence","source","intercept","h2_liability","intercept_p","h2_p","Coding_UCSC..Enrichment_p","Conserved_LindbladToh..Enrichment_p","CTCF_Hoffman..Enrichment_p","DGF_ENCODE..Enrichment_p","DHS_peaks_Trynka..Enrichment_p","DHS_Trynka..Enrichment_p","Enhancer_Andersson..Enrichment_p","Enhancer_Hoffman..Enrichment_p","FetalDHS_Trynka..Enrichment_p","H3K27ac_Hnisz..Enrichment_p","H3K27ac_PGC2..Enrichment_p","H3K4me1_peaks_Trynka..Enrichment_p","H3K4me1_Trynka..Enrichment_p","H3K4me3_peaks_Trynka..Enrichment_p","H3K4me3_Trynka..Enrichment_p","H3K9ac_peaks_Trynka..Enrichment_p","H3K9ac_Trynka..Enrichment_p","Intron_UCSC..Enrichment_p","PromoterFlanking_Hoffman..Enrichment_p","Promoter_UCSC..Enrichment_p","Repressed_Hoffman..Enrichment_p","SuperEnhancer_Hnisz..Enrichment_p","TFBS_ENCODE..Enrichment_p","Transcr_Hoffman..Enrichment_p","TSS_Hoffman..Enrichment_p","UTR_3_UCSC..Enrichment_p","UTR_5_UCSC..Enrichment_p","WeakEnhancer_Hoffman..Enrichment_p","Super_Enhancer_Vahedi..Enrichment_p","Typical_Enhancer_Vahedi..Enrichment_p","GERP.RSsup4..Enrichment_p")]
+d3 <- dat[,c("phenotype","description","prevalence","Neff","variable_type","confidence","source","intercept","h2_liability","intercept_p","h2_p","Coding_UCSC..Enrichment_p","Conserved_LindbladToh..Enrichment_p","CTCF_Hoffman..Enrichment_p","DGF_ENCODE..Enrichment_p","DHS_peaks_Trynka..Enrichment_p","DHS_Trynka..Enrichment_p","Enhancer_Andersson..Enrichment_p","Enhancer_Hoffman..Enrichment_p","FetalDHS_Trynka..Enrichment_p","H3K27ac_Hnisz..Enrichment_p","H3K27ac_PGC2..Enrichment_p","H3K4me1_peaks_Trynka..Enrichment_p","H3K4me1_Trynka..Enrichment_p","H3K4me3_peaks_Trynka..Enrichment_p","H3K4me3_Trynka..Enrichment_p","H3K9ac_peaks_Trynka..Enrichment_p","H3K9ac_Trynka..Enrichment_p","Intron_UCSC..Enrichment_p","PromoterFlanking_Hoffman..Enrichment_p","Promoter_UCSC..Enrichment_p","Repressed_Hoffman..Enrichment_p","SuperEnhancer_Hnisz..Enrichment_p","TFBS_ENCODE..Enrichment_p","Transcr_Hoffman..Enrichment_p","TSS_Hoffman..Enrichment_p","UTR_3_UCSC..Enrichment_p","UTR_5_UCSC..Enrichment_p","WeakEnhancer_Hoffman..Enrichment_p","Super_Enhancer_Vahedi..Enrichment_p","Typical_Enhancer_Vahedi..Enrichment_p","GERP.RSsup4..Enrichment_p","urls")]
 
 prank <- apply(d3[,12:42],2,function(a) as.numeric(rank(a)))
 colnames(prank) <- paste0(colnames(prank),"_rank")
@@ -229,7 +247,7 @@ names(d3b)[1] <- "phenotype"
 d3bm <- melt(d3b,c("phenotype"),value.name="rank", variable.name="var1")
 d3bm$annot <- gsub("..Enrichment_p_rank","",d3bm$var1)
 
-d3m <- melt(d3[,c(1,2,4,8:11,12:42)],c("phenotype","description","h2_liability","h2_p","intercept","intercept_p","Neff"),value.name="pval", variable.name="var2")
+d3m <- melt(d3[,c(1,2,4,8:11,12:42,43)],c("phenotype","description","h2_liability","h2_p","intercept","intercept_p","Neff","urls"),value.name="pval", variable.name="var2")
 d3m$annot <- gsub("..Enrichment_p","",d3m$var2)
 
 foo <- aggregate(pval~annot,data=d3m,min)
@@ -260,6 +278,7 @@ pp <- plot_ly(df2, height=600) %>%
 			  split=~annot,
 			  type="scatter",
 			  mode="markers",
+			  customdata=~urls,
 			  hoverinfo="text",
 			  text = ~paste0(
 			  		    "Phenotype: ", description,
@@ -297,10 +316,10 @@ pp <- plot_ly(df2, height=600) %>%
 	  			 xaxis = list(title="Expected -log10(p-value)"),
 	  			 yaxis = list(title="Observed -log10(p-value)", range=c(0,29)),
 	  			 legend = list(traceorder="normal")
-	  )
+	  ) %>% onRender(js)
 
 bscols(widths=c(12),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
 )
 ```
 
@@ -334,7 +353,7 @@ dtmp <- dtmp[,-grep("Nucleotide",names(dtmp))]
 dtmp <- dtmp[,-grep("Backgrd",names(dtmp))]
 dtmp <- dtmp[,-grep("Recomb_Rate",names(dtmp))]
 dtmp <- dtmp[,-grep("extend.500",names(dtmp))]
-dtmp <- dtmp[,!(names(dtmp) %in% c("description","n","n_cases","n_controls","prevalence","mean_chi2","lambdaGC","intercept","ratio","h2_observed","sex","dilute","gwas_file","n_missing","phen_stem","isBinary","keep","notes","isNotPrimary","isBadPower","isLowNeff","isMidNeff","isExtremeSE","isHighSE","isSexBias","isBadOrdinal","isNumericOrdinal","conf_simple","h2_sig"))]
+dtmp <- dtmp[,!(names(dtmp) %in% c("description","n","n_cases","n_controls","prevalence","mean_chi2","lambdaGC","intercept","ratio","h2_observed","sex","dilute","gwas_file","n_missing","phen_stem","isBinary","keep","notes","isNotPrimary","isBadPower","isLowNeff","isMidNeff","isExtremeSE","isHighSE","isSexBias","isBadOrdinal","isNumericOrdinal","conf_simple","h2_sig","urls"))]
 
 dd <- melt(dtmp,c("phenotype","Neff","variable_type","confidence","source","h2_liability"),variable.name = "annot1",value.name="Enrichment")
 dd$annot <- gsub("..Enrichment","",dd$annot1)
@@ -352,9 +371,9 @@ pp <- plot_ly(d3, height=600) %>%
 		layout(showlegend=F, yaxis=list(exponentformat="e", title = "Enrichment"), margin=list(b=150,l=100), xaxis=list(title="Annotation", tickangle=-30), legend=list(traceorder="normal"))
 
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", d3, ~Neff, step=100, width="100%"),
+		filter_slider("Neff", "Effective N", d3, ~Neff, step=100, width="100%",round=T),
 		filter_select("variable_type","Var. Type", d3, ~variable_type, multiple=T),
 		filter_select("confidence","Confidence", d3, ~confidence, multiple=T),
 		filter_select("source","Dataset", d3, ~source, multiple=T)
@@ -381,7 +400,7 @@ For continuous annotations, coefficient values are not directly comparable betwe
 ```{r qq_coef_cont, echo=FALSE}
 
 # shared data object
-d3 <- dat[,c("phenotype","description","prevalence","Neff","variable_type","confidence","source","intercept","h2_liability","intercept_p","h2_p","Backgrd_Selection_Stat..Coefficient_p","CpG_Content_50kb..Coefficient_p","GERP.NS..Coefficient_p","MAF_Adj_LLD_AFR..Coefficient_p","MAF_Adj_Predicted_Allele_Age..Coefficient_p","Nucleotide_Diversity_10kb..Coefficient_p","Recomb_Rate_10kb..Coefficient_p")]
+d3 <- dat[,c("phenotype","description","prevalence","Neff","variable_type","confidence","source","intercept","h2_liability","intercept_p","h2_p","Backgrd_Selection_Stat..Coefficient_p","CpG_Content_50kb..Coefficient_p","GERP.NS..Coefficient_p","MAF_Adj_LLD_AFR..Coefficient_p","MAF_Adj_Predicted_Allele_Age..Coefficient_p","Nucleotide_Diversity_10kb..Coefficient_p","Recomb_Rate_10kb..Coefficient_p","urls")]
 
 prank <- apply(d3[,12:18],2,function(a) as.numeric(rank(a)))
 colnames(prank) <- paste0(colnames(prank),"_rank")
@@ -391,7 +410,7 @@ names(d3b)[1] <- "phenotype"
 d3bm <- melt(d3b,c("phenotype"),value.name="rank", variable.name="var1")
 d3bm$annot <- gsub("..Coefficient_p_rank","",d3bm$var1)
 
-d3m <- melt(d3[,c(1,2,4,8:11,12:18)],c("phenotype","description","h2_liability","h2_p","intercept","intercept_p","Neff"),value.name="pval", variable.name="var2")
+d3m <- melt(d3[,c(1,2,4,8:11,12:18,19)],c("phenotype","description","h2_liability","h2_p","intercept","intercept_p","Neff","urls"),value.name="pval", variable.name="var2")
 d3m$annot <- gsub("..Coefficient_p","",d3m$var2)
 foo <- aggregate(pval~annot,data=d3m,min)
 d3m$annot <- factor(d3m$annot, levels = foo$annot[order(foo$pval)])
@@ -421,6 +440,7 @@ pp <- plot_ly(df2, height=600) %>%
 			  split=~annot,
 			  type="scatter",
 			  mode="markers",
+			  customdata=~urls,
 			  hoverinfo="text",
 			  text = ~paste0(
 			  		    "Phenotype: ", description,
@@ -458,10 +478,10 @@ pp <- plot_ly(df2, height=600) %>%
 	  			 xaxis = list(title="Expected -log10(p-value)"),
 	  			 yaxis = list(title="Observed -log10(p-value)", range=c(0,29)),
 	  			 legend = list(traceorder="normal")
-	  )
+	  ) %>% onRender(js)
 
 bscols(widths=c(12),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
 )
 ```
 
@@ -493,7 +513,7 @@ dtmp2 <- dtmp2[,-grep("base",names(dtmp2))]
 dtmp2 <- dtmp2[,-grep("MAFbin",names(dtmp2))]
 dtmp2 <- dtmp2[,-grep("extend.500",names(dtmp2))]
 dtmp2 <- dtmp2[,!(names(dtmp2) %in% levels(dd$annot1))]
-dtmp2 <- dtmp2[,!(names(dtmp2) %in% c("description","n","n_cases","n_controls","prevalence","mean_chi2","lambdaGC","intercept","ratio","h2_observed","sex","dilute","gwas_file","n_missing","phen_stem","isBinary","keep","notes","isNotPrimary","isBadPower","isLowNeff","isMidNeff","isExtremeSE","isHighSE","isSexBias","isBadOrdinal","isNumericOrdinal","conf_simple","h2_sig"))]
+dtmp2 <- dtmp2[,!(names(dtmp2) %in% c("description","n","n_cases","n_controls","prevalence","mean_chi2","lambdaGC","intercept","ratio","h2_observed","sex","dilute","gwas_file","n_missing","phen_stem","isBinary","keep","notes","isNotPrimary","isBadPower","isLowNeff","isMidNeff","isExtremeSE","isHighSE","isSexBias","isBadOrdinal","isNumericOrdinal","conf_simple","h2_sig","urls"))]
 
 dd3 <- melt(dtmp2,c("phenotype","Neff","variable_type","confidence","source","h2_liability"),variable.name = "annot1",value.name="Coefficient")
 dd3$annot <- factor(gsub("..Coefficient","",dd3$annot1), levels = foo$annot[order(foo$pval)])
@@ -511,9 +531,9 @@ pp <- plot_ly(d5) %>%
          margin=list(b=150,l=100), xaxis=list(title="Annotation", tickangle=-30))
 
 bscols(widths=c(10,2),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
        list(
-      		filter_slider("Neff", "Effective N", d5, ~Neff, step=100, width="100%"),
+      		filter_slider("Neff", "Effective N", d5, ~Neff, step=100, width="100%",round=T),
       		filter_select("variable_type","Var. Type", d5, ~variable_type, multiple=T),
       		filter_select("confidence","Confidence", d5, ~confidence, multiple=T),
       		filter_select("source","Dataset", d5, ~source, multiple=T)

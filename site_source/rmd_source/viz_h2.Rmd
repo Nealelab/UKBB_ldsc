@@ -22,13 +22,15 @@ require(DT)
 require(crosstalk)
 require(crosstool)
 require(Rmpfr)
+require(htmlwidgets)
 
 # handle params
 dat_full <- read.delim(file=normalizePath(params$datfile),sep='\t',header=T,stringsAsFactors=F,colClasses=c(intercept_p="character"))
 
 # setup
 dat <- dat_full[dat_full$confidence != "none",]
-dat$confidence <- factor(dat$confidence, levels=c("high","medium","low"))
+dat$confidence <- factor(dat$confidence, levels=c("high","medium","low"), labels = c("High Confidence","Medium Confidence","Low Confidence"))
+dat$h2_sig <- factor(dat$h2_sig, levels=c("z7","z4","nominal","nonsig"), labels = c("z7","z4","nominal","non-significant"))
 
 plotly_colors <- c(
     '#1f77b4',  # muted blue
@@ -42,6 +44,22 @@ plotly_colors <- c(
     '#bcbd22',  # curry yellow-green
     '#17becf'   # blue-teal
 )
+
+# for clickable data points
+dat$description <- paste0("[",dat$phenotype,"] ",dat$description)
+dat$urls <- paste0("h2_summary_",dat$phenotype,".html")
+
+# https://stackoverflow.com/questions/56084819/open-link-on-datapoint-click-with-plotly-in-r-shiny 
+js <- "
+function(el, x) {
+  el.on('plotly_click', function(d) {
+    if(d.event.button === 0){
+      var point = d.points[0];
+      var url = point.data.customdata[point.pointIndex];
+      window.location.href = url;
+    }
+  })
+}"
 
 ```
 
@@ -93,7 +111,7 @@ Previous plots from the Round 1 results can be found [in the Archive section](ro
 
 ### SNP Heritability {.tabset .tabset-fade}
 
-The average SNP hertiability estimate across all `r nrow(dat_full)` primary GWAS is `r round(mean(dat_full$h2_liability),3)` (median = `r round(median(dat_full$h2_liability),3)`). Average estimates increase when restricting to any [confidence](confidence.html) (mean = `r round(mean(dat$h2_liability),3)`, median = `r round(median(dat$h2_liability),3)`) or `high` confidence (mean = `r round(mean(dat$h2_liability[dat$confidence=="high"]),3)`, median = `r round(median(dat$h2_liability[dat$confidence=="high"]),3)`). Strong departure from the null hypothesis of $h^2_g=0$ is observed across phenotypes, especially among high confidence results.
+The average SNP hertiability estimate across all `r nrow(dat_full)` primary GWAS is `r round(mean(dat_full$h2_liability),3)` (median = `r round(median(dat_full$h2_liability),3)`). Average estimates increase when restricting to any [confidence](confidence.html) (mean = `r round(mean(dat$h2_liability),3)`, median = `r round(median(dat$h2_liability),3)`) or `high` confidence (mean = `r round(mean(dat$h2_liability[dat$confidence=="High Confidence"]),3)`, median = `r round(median(dat$h2_liability[dat$confidence=="High Confidence"]),3)`). Strong departure from the null hypothesis of $h^2_g=0$ is observed across phenotypes, especially among high confidence results.
 
 <p></p>
 
@@ -113,9 +131,9 @@ pp <- plot_ly(d2) %>%
   
   
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%"),
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%",round=T),
 		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
 		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
 		filter_select("significance","h2 Significance", d2, ~h2_sig, multiple=T),
@@ -155,11 +173,12 @@ pp <- plot_ly(shared_h2_3,
               y=~(-log10(h2_p)),
               type="scatter",
               mode="markers",
+              customdata=~urls,
               showlegend=F,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
                 "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
                 "<br>Effective N: ", Neff)
 ) %>% add_trace(
@@ -195,10 +214,10 @@ pp <- plot_ly(shared_h2_3,
   showlegend=T,
   xaxis = list(title="Expected -log10(p-value)"),
   yaxis = list(title="Observed -log10(p-value)")
-)
+) %>% onRender(js)
 
 bscols(widths=c(12),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
 )
 ```
 
@@ -232,25 +251,27 @@ ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
 
 pp <- plot_ly(dat) %>%
         add_trace(
-              data=dat[dat$confidence=="high",],
+              data=dat[dat$confidence=="High Confidence",],
               x=~exp_nlogp(h2_p), 
               y=~(-log10(h2_p)),
               name="High Confidence",
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
                 "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
                 "<br>Effective N: ", Neff)
 ) %>% add_trace(
-              data=dat[dat$confidence=="medium",],
+              data=dat[dat$confidence=="Medium Confidence",],
               x=~exp_nlogp(h2_p), 
               y=~(-log10(h2_p)),
               name="Medium Confidence",
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
@@ -258,12 +279,13 @@ pp <- plot_ly(dat) %>%
                 "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
                 "<br>Effective N: ", Neff)
 ) %>% add_trace(
-              data=dat[dat$confidence=="low",],
+              data=dat[dat$confidence=="Low Confidence",],
               x=~exp_nlogp(h2_p), 
               y=~(-log10(h2_p)),
               name="Low Confidence",
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
@@ -304,10 +326,10 @@ pp <- plot_ly(dat) %>%
   xaxis = list(title="Expected -log10(p-value)"),
   yaxis = list(title="Observed -log10(p-value)"),
   legend = list(traceorder="normal")
-)
+) %>% onRender(js)
 
 bscols(widths=c(12),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
 )
 ```
 
@@ -341,9 +363,9 @@ pp <- plot_ly(d2) %>%
   
   
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%"),
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%",round=T),
 		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
 		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
 		filter_select("source","Dataset", d2, ~source, multiple=T)
@@ -377,9 +399,9 @@ pp <- plot_ly(d2) %>%
   
   
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%"),
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%",round=T),
 		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
 		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
 		filter_select("source","Dataset", d2, ~source, multiple=T)
@@ -418,11 +440,12 @@ pp <- plot_ly(shared_h2_3,
               y=~int_nlogp,
               type="scatter",
               mode="markers",
+              customdata=~urls,
               showlegend=F,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
                 "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
                 "<br>Effective N: ", Neff)
 ) %>% add_trace(
@@ -458,10 +481,10 @@ pp <- plot_ly(shared_h2_3,
   showlegend=T,
   xaxis = list(title="Expected -log10(p-value)"),
   yaxis = list(title="Observed -log10(p-value)")
-)
+) %>% onRender(js)
 
 bscols(widths=c(12),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
 )
 ```
 
@@ -496,25 +519,27 @@ ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
 
 pp <- plot_ly(dat) %>%
         add_trace(
-              data=dat[dat$confidence=="high",],
+              data=dat[dat$confidence=="High Confidence",],
               x=~exp_nlogp(-intercept_z), 
               y=~int_nlogp,
               name="High Confidence",
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
                 "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
                 "<br>Effective N: ", Neff)
 ) %>% add_trace(
-              data=dat[dat$confidence=="medium",],
+              data=dat[dat$confidence=="Medium Confidence",],
               x=~exp_nlogp(-intercept_z), 
               y=~int_nlogp,
               name="Medium Confidence",
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
@@ -522,12 +547,13 @@ pp <- plot_ly(dat) %>%
                 "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
                 "<br>Effective N: ", Neff)
 ) %>% add_trace(
-              data=dat[dat$confidence=="low",],
+              data=dat[dat$confidence=="Low Confidence",],
               x=~exp_nlogp(-intercept_z), 
               y=~int_nlogp,
               name="Low Confidence",
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
@@ -566,11 +592,12 @@ pp <- plot_ly(dat) %>%
 ) %>% layout(
   showlegend=T,
   xaxis = list(title="Expected -log10(p-value)"),
-  yaxis = list(title="Observed -log10(p-value)")
-)
+  yaxis = list(title="Observed -log10(p-value)"),
+  legend = list(traceorder="normal")
+) %>% onRender(js)
 
 bscols(widths=c(12),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
 )
 ```
 
@@ -598,21 +625,22 @@ pp <- plot_ly(d2,
               y=~h2_liability,
               type="scatter",
               mode="markers",
+              customdata=~urls,
               color=~confidence,
               colors=plotly_colors[1:3],
               showlegend=T,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
                 "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
                 "<br>Effective N: ", Neff)
-)
+) %>% onRender(js)
 
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%"),
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%",round=T),
 		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
 		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
 		filter_select("source","Dataset", d2, ~source, multiple=T)
@@ -622,7 +650,7 @@ bscols(widths=c(10,2),
 
 <p></p>
 
-*Note:* Clearer results are observed by restricting to `high` confidence results, continuous variables, and/or higher effective sample size using the filter on the right. 
+*Note:* Clearer results are observed by restricting to `high` confidence results, continuous variables, and/or higher effective sample size using the filter on the right. Colors indicate our confidence rating as [described in the Methods section](confidence.html).
 
 </div>
 
@@ -640,27 +668,32 @@ pp <- plot_ly(d3,
               y=~h2_z,
               type="scatter",
               mode="markers",
+              customdata=~urls,
               color=~confidence,
               colors=plotly_colors[1:3],
               showlegend=T,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
                 "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
                 "<br>Effective N: ", Neff)
-)
+) %>% onRender(js)
 
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", d3, ~Neff, step=100, width="100%"),
+		filter_slider("Neff", "Effective N", d3, ~Neff, step=100, width="100%",round=T),
 		filter_select("variable_type","Var. Type", d3, ~variable_type, multiple=T),
 		filter_select("confidence","Confidence", d3, ~confidence, multiple=T),
 		filter_select("source","Dataset", d3, ~source, multiple=T)
 	)
 )
 ```
+
+<p></p>
+
+*Note:* Colors indicate our confidence rating as [described in the Methods section](confidence.html).
 
 </div>
 
@@ -678,21 +711,22 @@ pp <- plot_ly(d4,
               y=~h2_liability,
               type="scatter",
               mode="markers",
+              customdata=~urls,
               color=~confidence,
               colors=plotly_colors[1:3],
               showlegend=T,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
                 "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
                 "<br>Effective N: ", Neff)
-)
+) %>% onRender(js)
 
 bscols(widths=c(10,2),
-	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
 	list(
-		filter_slider("Neff", "Effective N", d4, ~Neff, step=100, width="100%"),
+		filter_slider("Neff", "Effective N", d4, ~Neff, step=100, width="100%",round=T),
 		filter_select("variable_type","Var. Type", d4, ~variable_type, multiple=T),
 		filter_select("confidence","Confidence", d4, ~confidence, multiple=T),
 		filter_select("source","Dataset", d4, ~source, multiple=T)
@@ -702,7 +736,7 @@ bscols(widths=c(10,2),
 
 <p></p>
 
-*Note:* Ratio estimates restricted to phenotypes with mean $\chi^2 > 1$. Clearer results are observed by restricting to `high` confidence results, continuous phenotypes, and/or higher effective sample sizes using the filter on the right. The LDSR ratio estimate is:
+*Note:* Ratio estimates restricted to phenotypes with mean $\chi^2 > 1$. Clearer results are observed by restricting to `high` confidence results, continuous phenotypes, and/or higher effective sample sizes using the filter on the right. Colors indicate our confidence rating as [described in the Methods section](confidence.html). The LDSR ratio estimate is:
 
 $$\frac{\text{intercept}-1}{\text{mean}(\chi^2)-1}$$
 

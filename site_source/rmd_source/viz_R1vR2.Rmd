@@ -1,5 +1,5 @@
 ---
-title: "Comparing Round 1 and Round 2"
+title: "Comparing Round 1 and Round 2 LDSR Results"
 date: "Last updated `r format(Sys.Date())`"
 author: "Results from the [Neale Lab](credits.html)"
 output: 
@@ -45,6 +45,7 @@ require(DT)
 require(crosstalk)
 require(crosstool)
 require(Rmpfr)
+require(htmlwidgets)
 
 # handle params
 load(file=normalizePath(params$datfile1))
@@ -53,8 +54,6 @@ rm(dat)
 names(dat1) <- gsub("intercept","round1_intercept",names(dat1))
 names(dat1) <- gsub("h2","round1_h2",names(dat1))
 names(dat1) <- gsub("ratio","round1_ratio",names(dat1))
-# round 1 continuous vars were all irnt
-dat1$phenotype[is.na(dat1$N_case)] <- paste0(dat1$phenotype[is.na(dat1$N_case)],"_irnt")
 
 # fix tiny int p-value
 dat1$round1_intercept_p <- format(mpfr(2,64)*pnorm(mpfr(dat1$round1_intercept_z,64),lower=F), max.digits=15, scientific=T)
@@ -69,12 +68,33 @@ names(dat2) <- gsub("h2","round2_h2",names(dat2))
 names(dat2) <- gsub("ratio","round2_ratio",names(dat2))
 dat2$round2_intercept_p <- pstring(dat2$round2_intercept_p)
 
+# specify irnt where needed
+# since round 1 continuous vars were all irnt, but doesn't apply to ordinal phens
+d1irnt <- paste0(dat1$phenotype,"_irnt")
+d1irnt_idx <- (!(dat1$phenotype %in% dat2$phenotype)) & (d1irnt %in% dat2$phenotype)
+dat1$phenotype[d1irnt_idx] <- d1irnt[d1irnt_idx]
+
 dat <- merge(dat1,dat2,by="phenotype")
 
 # setup extra fields
-dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$description,"</a>")
 dat$r2_int_nlogp <- as.numeric(-log10(mpfr(0.5,64)*erfc(mpfr(dat$round2_intercept_z,64)/sqrt(mpfr(2,64)))))
 dat$r1_int_nlogp <- as.numeric(-log10(mpfr(0.5,64)*erfc(mpfr(dat$round1_intercept_z,64)/sqrt(mpfr(2,64)))))
+
+# for clickable data points
+dat$description <- paste0("[",dat$phenotype,"] ",dat$description)
+dat$urls <- paste0("h2_summary_",dat$phenotype,".html")
+
+# https://stackoverflow.com/questions/56084819/open-link-on-datapoint-click-with-plotly-in-r-shiny 
+js <- "
+function(el, x) {
+  el.on('plotly_click', function(d) {
+    if(d.event.button === 0){
+      var point = d.points[0];
+      var url = point.data.customdata[point.pointIndex];
+      window.location.href = url;
+    }
+  })
+}"
 ```
 
 <br>
@@ -105,6 +125,7 @@ pp <- plot_ly(shared_int2,
               y = ~round2_ratio,
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
@@ -117,13 +138,13 @@ pp <- plot_ly(shared_int2,
                 mode="lines",
                 hoverinfo="none",
                 showlegend=F
-            )
+            ) %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
        list(
-      		filter_slider("Neff", "Effective N", shared_int2, ~Neff, step=100, width="100%"),
+      		filter_slider("Neff", "Effective N", shared_int2, ~Neff, step=100, width="100%",round=T),
       		filter_select("variable_type","Var. Type", shared_int2, ~variable_type, multiple=T),
       		filter_select("confidence","Confidence", shared_int2, ~confidence, multiple=T),
       		filter_select("source","Dataset", shared_int2, ~source, multiple=T)
@@ -134,7 +155,7 @@ bscols(widths=c(10,2),
 
 <p></p>
 
-*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results.
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results. Trend is clearer when filtering to higher effective sample size using the slider on the right.
 
 </div>
 
@@ -154,6 +175,7 @@ pp <- plot_ly(shared_int,
               y=~round2_intercept, 
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
@@ -166,13 +188,13 @@ pp <- plot_ly(shared_int,
                 mode="lines",
                 hoverinfo="none",
                 showlegend=F
-            )
+            ) %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
        list(
-      		filter_slider("Neff", "Effective N", shared_int, ~Neff, step=100, width="100%"),
+      		filter_slider("Neff", "Effective N", shared_int, ~Neff, step=100, width="100%",round=T),
       		filter_select("variable_type","Var. Type", shared_int, ~variable_type, multiple=T),
       		filter_select("confidence","Confidence", shared_int, ~confidence, multiple=T),
       		filter_select("source","Dataset", shared_int, ~source, multiple=T)
@@ -215,6 +237,7 @@ pp <- plot_ly(shared_int3,
               y=~r1_int_nlogp,
               type="scatter",
               mode="markers",
+              customdata=~urls,
               showlegend=T,
               name="Round 1",
               hoverinfo="text",
@@ -228,6 +251,7 @@ pp <- plot_ly(shared_int3,
               y=~r2_int_nlogp,
               type="scatter",
               mode="markers",
+              customdata=~urls,
               showlegend=T,
               name="Round 2",
               hoverinfo="text",
@@ -265,10 +289,10 @@ pp <- plot_ly(shared_int3,
               showlegend=T,
               xaxis = list(title="Expected -log10(p-value)"),
               yaxis = list(title="Observed -log10(p-value)")
-          )
+          ) %>% onRender(js)
 
 bscols(widths=c(12),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
 )
 ```
 
@@ -298,24 +322,25 @@ pp <- plot_ly(shared_h2,
               y=~round2_h2_liability, 
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>Round 1 SNP-h2: ", round(round1_h2_liability,5), " (p=",signif(round1_h2_p, 3),")",
-                "<br>Round 2 SNP-h2: ", round(round2_h2_liability,5), " (p=",signif(round2_h2_p, 3),")",
+                "<br>Round 1 Liability SNP h2: ", round(round1_h2_liability,5), " (p=",signif(round1_h2_p, 3),")",
+                "<br>Round 2 Liability SNP h2: ", round(round2_h2_liability,5), " (p=",signif(round2_h2_p, 3),")",
                 "<br>Round 2 Effective N: ", Neff)) %>% add_trace(
                   x=~round1_h2_liability,
                   y=~round1_h2_liability,
                   mode="lines",
                   hoverinfo="none",
                   showlegend=F
-                )
+                ) %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
        list(
-      		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%"),
+      		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%",round=T),
       		filter_select("variable_type","Var. Type", shared_h2, ~variable_type, multiple=T),
       		filter_select("confidence","Confidence", shared_h2, ~confidence, multiple=T),
       		filter_select("source","Dataset", shared_h2, ~source, multiple=T)
@@ -325,7 +350,7 @@ bscols(widths=c(10,2),
 
 <p></p>
 
-*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results.
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results. Trend is clearer when filtering to higher effective sample size using the slider on the right.
 
 
 </div>
@@ -359,19 +384,21 @@ pp <- plot_ly(shared_h2_3,
               y=~(-log10(round1_h2_p)),
               type="scatter",
               mode="markers",
+              customdata=~urls,
               showlegend=T,
               name="Round 1",
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>Round 1 h2: ", round(round1_h2_liability,5), " (p=",signif(round1_h2_p, 3),")",
-                "<br>Round 2 h2: ", round(round2_h2_liability,5), " (p=",signif(round2_h2_p, 3),")",
+                "<br>Round 1 Liability SNP h2: ", round(round1_h2_liability,5), " (p=",signif(round1_h2_p, 3),")",
+                "<br>Round 2 Liability SNP h2: ", round(round2_h2_liability,5), " (p=",signif(round2_h2_p, 3),")",
                 "<br>Round 2 Effective N: ", Neff)
 ) %>% add_trace(
   x=~exp_nlogp(round2_h2_p), 
   y=~(-log10(round2_h2_p)),
   type="scatter",
   mode="markers",
+  customdata=~urls,
   showlegend=T,
   name="Round 2",
   hoverinfo="text",
@@ -409,10 +436,10 @@ pp <- plot_ly(shared_h2_3,
   showlegend=T,
   xaxis = list(title="Expected -log10(p-value)"),
   yaxis = list(title="Observed -log10(p-value)")
-)
+) %>% onRender(js)
 
 bscols(widths=c(12),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
 )
 ```
 
@@ -442,24 +469,25 @@ pp <- plot_ly(shared_h2,
               y=~round2_h2_liability_se, 
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
-                "<br>Round 1 SNP-h2: ", round(round1_h2_liability,5), " (se=",signif(round1_h2_liability_se, 3),")",
-                "<br>Round 2 SNP-h2: ", round(round2_h2_liability,5), " (se=",signif(round2_h2_liability_se, 3),")",
+                "<br>Round 1 Liability SNP h2: ", round(round1_h2_liability,5), " (se=",signif(round1_h2_liability_se, 3),")",
+                "<br>Round 2 Liability SNP h2: ", round(round2_h2_liability,5), " (se=",signif(round2_h2_liability_se, 3),")",
                 "<br>Round 2 Effective N: ", Neff)) %>% add_trace(
                   x=~round1_h2_liability_se,
                   y=~round1_h2_liability_se,
                   mode="lines",
                   hoverinfo="none",
                   showlegend=F
-                )
+                ) %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
        list(
-      		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%"),
+      		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%",round=T),
       		filter_select("variable_type","Var. Type", shared_h2, ~variable_type, multiple=T),
       		filter_select("confidence","Confidence", shared_h2, ~confidence, multiple=T),
       		filter_select("source","Dataset", shared_h2, ~source, multiple=T)
@@ -489,6 +517,7 @@ pp <- plot_ly(shared_int4,
               y=~round2_intercept_se, 
               type="scatter",
               mode="markers",
+              customdata=~urls,
               hoverinfo="text",
               text = ~paste0(
                 "Phenotype: ", description,
@@ -501,13 +530,13 @@ pp <- plot_ly(shared_int4,
                 mode="lines",
                 hoverinfo="none",
                 showlegend=F
-            )
+            ) %>% onRender(js)
 
 # construct
 bscols(widths=c(10,2),
-       config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
        list(
-      		filter_slider("Neff", "Effective N", shared_int4, ~Neff, step=100, width="100%"),
+      		filter_slider("Neff", "Effective N", shared_int4, ~Neff, step=100, width="100%",round=T),
       		filter_select("variable_type","Var. Type", shared_int4, ~variable_type, multiple=T),
       		filter_select("confidence","Confidence", shared_int4, ~confidence, multiple=T),
       		filter_select("source","Dataset", shared_int4, ~source, multiple=T)
