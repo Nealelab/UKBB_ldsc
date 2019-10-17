@@ -31,14 +31,6 @@ Note the first two files are simply a subset of the full results in `ukb31063_h2
 
 <p></p>
 
-### LDSC Sumstat Files
-
-In addition to the LDSR results, the exported sumstat files in LDSC format are also available [on Dropbox](). A manifest for easier programatic access is available [here](). 
-
-These files are provided to facilitate running your own LDSR SNP heritability analyses with different models or for genetic correlation analyses. For genetic correlations between the heritable phenotypes in this UKB GWAS, visit [ukbb-rg.hail.is](https://ukbb-rg.hail.is/)
-
-<p></p>
-
 ### Reference Files
 
 LD scores, weights, and allele frequencies for the Baseline-LD v1.1 model used here are available for [download from the Alkes Price lab](https://data.broadinstitute.org/alkesgroup/LDSCORE/).

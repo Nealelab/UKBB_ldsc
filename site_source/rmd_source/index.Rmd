@@ -68,12 +68,6 @@ Yes! The full GWAS results are [available for download](https://docs.google.com/
 
 <p></p>
 
-#### **Can I download just the LDSC-formatted sumstats files without dealing with the full GWAS results?**
-
-Yes! Sumstats files are available [on Dropbox](). See [this manifest]() for easy searching and programmatic access to the file downloads. 
-
-<p></p>
-
 #### **How should I interpret these heritability results?**
 
 *Very carefully.* For starters, we’ve written a couple of primers that cover the concept of heritability and common misconceptions ([Heritability 101](http://www.nealelab.is/blog/2017/9/13/heritability-101-what-is-heritability)) and the specific type of heritability that’s being estimated in this analysis ([Heritability 201](http://www.nealelab.is/blog/2017/9/13/heritability-201-types-of-heritability-and-how-we-estimate-it)). A longer discussion of the many limitations of this analysis is included in our more technical description of the project ([Heritability 501](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded)).
@@ -84,7 +78,7 @@ This is a very rough initial analysis and should be treated accordingly. All est
 
 #### **Are genetic correlation results available for these phenotypes?**
 
-Yes! You can browse genetic correlations between the significantly heritable phenotypes at [https://ukbb-rg.hail.is/](https://ukbb-rg.hail.is/). You can also download the LDSC-formatted sumstats files for your own genetic correlation analyses [here](). Round 1 results are also available for genetic correlation analyses through [LD Hub](http://ldsc.broadinstitute.org/).
+Yes! You can browse genetic correlations between the significantly heritable phenotypes at [https://ukbb-rg.hail.is/](https://ukbb-rg.hail.is/). Round 1 results are also available for genetic correlation analyses through [LD Hub](http://ldsc.broadinstitute.org/).
 
 </div>
 
