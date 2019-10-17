@@ -234,7 +234,7 @@ if(doPartition){
   	  ) 
   
   bscols(widths=c(12),
-  config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+  config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
   )
 
 }
@@ -296,7 +296,7 @@ if(doPartition){
   	  ) 
   
   bscols(widths=c(12),
-  config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+  config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
   )
 }
 
