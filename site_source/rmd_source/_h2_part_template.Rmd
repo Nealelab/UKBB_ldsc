@@ -8,6 +8,7 @@ params:
   pheno: "20003_1140909368"
   dat_topline: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
   dat_part: "../results/round2_final/ukb31063_h2_z4.02Oct2019.tsv.gz"
+  dat_manifest: "../results/round2_final/ukb31063_ldsc_sumstat_manifest.tsv.gz"
 title: "SNP Heritability for Phenotype `r params$pheno`"
 ---
 
@@ -20,12 +21,17 @@ require(reshape2)
 # handle params
 phen <- as.character(params$pheno)
 h2 <- read.delim(normalizePath(params$dat_topline),header=TRUE,sep='\t',stringsAsFactors=F,colClasses=c(intercept_p="character"))
+manif <- read.delim(normalizePath(params$dat_manif),header=TRUE,sep='\t',stringsAsFactors=F)
 
 # setup
 dat_sub <- h2[which(as.character(h2$phenotype)==phen),]
+manif_sub <- manif[(as.character(manif$phenotype)==phen) & manif$is_primary_gwas,]
 
 ukcode <- strsplit(phen,"_")[[1]][1]
 phen_stem <- ifelse(grepl("_irnt",phen) | grepl("_raw",phen), ukcode, phen)
+
+sumstat_dl <- gsub("dl=0","dl=1",manif_sub$ldsc_sumstat_dropbox)
+gwas_dl <- gsub("dl=0","dl=1",manif_sub$gwas_dropbox)
 
 isICD <- (as.character(dat_sub$source)=="icd10")
 if(isICD){
@@ -318,7 +324,14 @@ All results are from partitioned heritability analysis of this phenotype using L
 
 #### Downloads
 
-Download the full LDSR results for this phenotype (along with all of the other GWASed phenotypes), including SNP heritability and partitioning results, from the [downloads page](downloads.html).
+* **Full GWAS results (large file):** `r paste0("<a href='",gwas_dl,"'  onclick=\"trackOutboundLink('",gwas_dl,"'); return false;\"><code>",manif_sub$gwas_file,"</code></a>")`
+* **LDSR-formatted summary statistics:** `r paste0("<a href='",sumstat_dl,"'  onclick=\"trackOutboundLink('",sumstat_dl,"'); return false;\"><code>",manif_sub$ldsc_sumstat_file,"</code></a>")`
+* **LDSR $h^2_g$ and intercepts for all primary GWAS:** <a href="https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1'); return false;">`ukb31063_h2_topline.02Oct2019.tsv.gz`</a>
+`r if(doPartition){paste0("* **LDSR partitioning for significantly heritable phenotypes:** <a href=\"https://www.dropbox.com/s/gu9ueqdulze9c9x/ukb31063_h2_z4.02Oct2019.tsv.gz?dl=1\" onclick=\"trackOutboundLink('https://www.dropbox.com/s/gu9ueqdulze9c9x/ukb31063_h2_z4.02Oct2019.tsv.gz?dl=1'); return false;\"><code>ukb31063_h2_z4.02Oct2019.tsv.gz</code></a>")}`
+
+See the <a href="https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing" onclick="trackOutboundLink('https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing'); return false;">full manifest of LDSR sumstats files</a> for sumstats for other GWAS of this phenotype, where applicable.
+
+See the [Downloads page](downloads.html) for more information.
 
 <p></p>
 

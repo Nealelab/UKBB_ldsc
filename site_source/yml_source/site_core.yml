@@ -4,8 +4,10 @@
     src: "methods.Rmd"
   downloads.html:
     src: "downloads.Rmd"
+    params:
+      datfile: "../results/round2_final/ukb31063_ldsc_sumstat_manifest.tsv.gz"
   credits.html:
-    src: "h2_credits.Rmd"
+    src: "credits.Rmd"
   h2_browser.html:
     src: "h2_browser.Rmd"
     params:
