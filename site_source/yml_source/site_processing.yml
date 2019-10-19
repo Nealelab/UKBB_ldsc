@@ -1,0 +1,33 @@
+  select_topline.html:
+    src: "_ukbb_h2_select_topline.Rmd"
+    params:
+      h2file: "../results/round2_final/ukb31063.h2.baseline1-1.gwas_v2.full_results.02Oct2019.tsv.gz"
+      cormat_bothsex: "../reference/both_sexes_resid_corrmat.csv"
+      ns_bothsex: "../reference/both_sexes_pairwise_complete_ns.csv"
+      outdir: "../results/round2_raw"
+  confidence.html:
+    src: "_ukbb_h2_process_confidence.Rmd"
+    params:
+      datfile: "../results/round2_raw/h2_topline_temp.tsv.gz"
+      fulldatfile: "../results/round2_raw/bothsexes_h2_topline_temp.tsv.gz"
+      fulldatmfile: "../results/round2_raw/male_h2_topline_temp.tsv.gz"  
+      fulldatffile: "../results/round2_raw/female_h2_topline_temp.tsv.gz"
+      sexnfile: "../results/round2_raw/h2_topline_sex_ns_temp.tsv.gz"
+      onesexnfile: "../results/round2_raw/h2_topline_onesex_ns_temp.tsv.gz"
+      datadict: "../reference/Data_Dictionary_Showcase.csv"
+      ordwarn: "../reference/ukb_ord_codings_warn.txt"
+      outdir: "../results/round2_raw"
+      imagedir: "images"
+  significance.html:
+    src: "_ukbb_h2_process_significance.Rmd"
+    params:
+      datfile: "../results/round2_raw/h2_topline_conf_temp.tsv.gz"
+      cormat_bothsex: "../reference/both_sexes_resid_corrmat.csv"
+      cormat_male: "../reference/male_resid_corrmat.csv"
+      cormat_female: "../reference/female_resid_corrmat.csv"
+      ns_bothsex: "../reference/both_sexes_pairwise_complete_ns.csv"
+      ns_male: "../reference/male_pairwise_complete_ns.csv"
+      ns_female: "../reference/female_pairwise_complete_ns.csv"
+      outdir: "../results/round2_final"
+      outdate: "XXMonYYYY"
+      writeout: False

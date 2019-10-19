@@ -1,0 +1,17 @@
+  viz_h2.html:
+    src: "viz_h2.Rmd"
+    params:
+      datfile: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
+  viz_sampsize.html:
+    src: "viz_sampsize.Rmd"
+    params:
+      datfile: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
+  viz_annot.html:
+    src: "viz_annot.Rmd"
+    params:
+      datfile: "../results/round2_final/ukb31063_h2_z4.02Oct2019.tsv.gz"
+  viz_R1vR2.html:
+    src: "viz_R1vR2.Rmd"
+    params:
+      datfile1: "../results/round1/ukbb_h2part.RData"
+      datfile2: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"

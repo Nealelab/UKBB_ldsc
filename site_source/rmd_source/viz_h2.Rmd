@@ -1,0 +1,746 @@
+---
+title: "Visualising $h^2_g$ and intercept results"
+date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+params:
+  datfile: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
+---
+
+```{r child = '_toc_fix.Rmd'}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(reshape2)
+require(ggplot2)
+require(plotly)
+require(DT)
+require(crosstalk)
+require(crosstool)
+require(Rmpfr)
+require(htmlwidgets)
+
+# handle params
+dat_full <- read.delim(file=normalizePath(params$datfile),sep='\t',header=T,stringsAsFactors=F,colClasses=c(intercept_p="character"))
+
+# setup
+dat <- dat_full[dat_full$confidence != "none",]
+dat$confidence <- factor(dat$confidence, levels=c("high","medium","low"), labels = c("High Confidence","Medium Confidence","Low Confidence"))
+dat$h2_sig <- factor(dat$h2_sig, levels=c("z7","z4","nominal","nonsig"), labels = c("z7","z4","nominal","non-significant"))
+
+plotly_colors <- c(
+    '#1f77b4',  # muted blue
+    '#ff7f0e',  # safety orange
+    '#2ca02c',  # cooked asparagus green
+    '#d62728',  # brick red
+    '#9467bd',  # muted purple
+    '#8c564b',  # chestnut brown
+    '#e377c2',  # raspberry yogurt pink
+    '#7f7f7f',  # middle gray
+    '#bcbd22',  # curry yellow-green
+    '#17becf'   # blue-teal
+)
+
+# for clickable data points
+dat$description <- paste0("[",dat$phenotype,"] ",dat$description)
+dat$urls <- paste0("h2_summary_",dat$phenotype,".html")
+
+# https://stackoverflow.com/questions/56084819/open-link-on-datapoint-click-with-plotly-in-r-shiny 
+js <- "
+function(el, x) {
+  el.on('plotly_click', function(d) {
+    if(d.event.button === 0){
+      var point = d.points[0];
+      var url = point.data.customdata[point.pointIndex];
+      window.location.href = url;
+    }
+  })
+}"
+
+```
+
+```{r smallp_func, include=FALSE}
+
+# handle intercept_p as a string (due to high precision p-vals)
+pstring <- function(p, prec=3){
+
+intp_string <- as.character(p)
+intp_string[p == as.character(as.numeric(p))] <- as.character(signif(as.numeric(p),prec)[(p == as.character(as.numeric(p)))])
+highstr <- intp_string[!(p == as.character(as.numeric(p)))]
+highstr_lead <- as.character(signif(as.numeric(substr(highstr,1,6)),prec))
+highstr_exp <- sapply(highstr,function(a) strsplit(a,split="e")[[1]][2],USE.NAMES = F)
+intp_string[!(p == as.character(as.numeric(p)))] <- paste0(highstr_lead,"e",highstr_exp)
+while(any(intp_string=="1")){
+  prec <- prec+1
+  intp_string[intp_string=="1"] <- as.character(signif(as.numeric(p),prec)[intp_string=="1"])
+}
+return(intp_string)
+}
+
+
+dat$intercept_p <- pstring(dat$intercept_p)
+dat$int_nlogp <- as.numeric(-log10(mpfr(0.5,64)*erfc(mpfr(dat$intercept_z,64)/sqrt(mpfr(2,64)))))
+
+```
+
+<br>
+
+### Overview
+
+<div class="well">
+
+The plots here are designed to allow browsing overall trends in the SNP heritability and intercepts results from LD Score regression of the [Neale Lab GWAS](https://www.nealelab.is/uk-biobank). Individual phenotype results can be viewed in the [browser](h2_browser.html). 
+
+All plots below are restricted to results with at least some confidence in the LDSR results, and report SNP heritability on the liabulit scale. See the [Methods](details.html) section for more information on our [selection of GWAS phenotypes](select_topline.html), [confidence ratings](confidence.html) for the LDSR results, and [significance thresholds](significance.html).
+
+In addition to the plots below, additional visualizations are available for considering:
+
+* [Partitioned SNP heritability results](viz_annot.html)
+* [The impact of sample size](viz_sampsize.html)
+* [Comparison of these results to the Round 1 GWAS](viz_R1vR2.html)
+
+Previous plots from the Round 1 results can be found [in the Archive section](round1_plots_home.html).
+
+</div>
+
+<br>
+
+### SNP Heritability {.tabset .tabset-fade}
+
+The average SNP hertiability estimate across all `r nrow(dat_full)` primary GWAS is `r round(mean(dat_full$h2_liability),3)` (median = `r round(median(dat_full$h2_liability),3)`). Average estimates increase when restricting to any [confidence](confidence.html) (mean = `r round(mean(dat$h2_liability),3)`, median = `r round(median(dat$h2_liability),3)`) or `high` confidence (mean = `r round(mean(dat$h2_liability[dat$confidence=="High Confidence"]),3)`, median = `r round(median(dat$h2_liability[dat$confidence=="High Confidence"]),3)`). Strong departure from the null hypothesis of $h^2_g=0$ is observed across phenotypes, especially among high confidence results.
+
+<p></p>
+
+#### SNP Heritability Estimates
+
+<div class="well">
+
+```{r hist_h2, echo=FALSE}
+d2 <- SharedData$new(dat)
+
+pp <- plot_ly(d2) %>%
+        add_histogram(
+			    x = ~h2_liability,
+			    histnorm = "probability",
+			    hoverinfo="none"
+	  		)
+  
+  
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
+		filter_select("significance","h2 Significance", d2, ~h2_sig, multiple=T),
+		filter_select("source","Dataset", d2, ~source, multiple=T)
+	)
+)
+```
+
+</div>
+
+<br>
+
+#### SNP Heritability p-values
+
+<div class="well">
+  
+```{r qq_h2, echo=FALSE}
+
+shared_h2_3 <- SharedData$new(dat)
+
+exp_nlogp <- function(p){
+  nn <- length(p)
+  qquad <- 1:nn
+  qref <- (qquad-.5)/nn
+  idx <- rank(p)
+  return(-log10(qref[idx]))
+}
+
+nnr <- nrow(dat[dat$confidence != "none",])
+qquad <-c(1:nnr)
+qref <- ((qquad-.5)/nnr)
+ci_up <- qbeta(.975,qquad,nnr+1-qquad)
+ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
+
+pp <- plot_ly(shared_h2_3, 
+              x=~exp_nlogp(h2_p), 
+              y=~(-log10(h2_p)),
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              showlegend=F,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(qref),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.8)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_up),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_lo),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		fill="tonexty",
+		fillcolor='rgba(0,0,0,0.2)',
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% layout(
+  showlegend=T,
+  xaxis = list(title="Expected -log10(p-value)"),
+  yaxis = list(title="Observed -log10(p-value)")
+) %>% onRender(js)
+
+bscols(widths=c(12),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+```
+
+<p></p>
+
+*Note:* The displayed 95% confidence bands assume tests are independent across phenotypes and do not account for multiple testing across annotations.
+
+</div>
+
+<br>
+
+#### p-values by Confidence
+
+<div class="well">
+  
+```{r qq_h2_conf, echo=FALSE}
+
+exp_nlogp <- function(p){
+  nn <- length(p)
+  qquad <- 1:nn
+  qref <- (qquad-.5)/nn
+  idx <- rank(p)
+  return(-log10(qref[idx]))
+}
+
+nnr <- nrow(dat[dat$confidence != "none",])
+qquad <-c(1:nnr)
+qref <- ((qquad-.5)/nnr)
+ci_up <- qbeta(.975,qquad,nnr+1-qquad)
+ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
+
+pp <- plot_ly(dat) %>%
+        add_trace(
+              data=dat[dat$confidence=="High Confidence",],
+              x=~exp_nlogp(h2_p), 
+              y=~(-log10(h2_p)),
+              name="High Confidence",
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+              data=dat[dat$confidence=="Medium Confidence",],
+              x=~exp_nlogp(h2_p), 
+              y=~(-log10(h2_p)),
+              name="Medium Confidence",
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+              data=dat[dat$confidence=="Low Confidence",],
+              x=~exp_nlogp(h2_p), 
+              y=~(-log10(h2_p)),
+              name="Low Confidence",
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(qref),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.8)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_up),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_lo),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		fill="tonexty",
+		fillcolor='rgba(0,0,0,0.2)',
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% layout(
+  showlegend=T,
+  xaxis = list(title="Expected -log10(p-value)"),
+  yaxis = list(title="Observed -log10(p-value)"),
+  legend = list(traceorder="normal")
+) %>% onRender(js)
+
+bscols(widths=c(12),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+```
+
+<p></p>
+
+*Note:* The displayed 95% confidence bands assume tests are independent across phenotypes within confidence rating and do not account for multiple testing across annotations. Read more about the confidence ratings [here](confidence.html).
+
+</div>
+
+<br>
+
+### LDSR Intercept {.tabset .tabset-fade}
+
+Relative GWAS confounding or LDSR model misspecification is limited across the phenotypes, with a median intercept ratio of `r median(dat_full$ratio)`. Intercepts remain statistically significant for many phenotypes, including many `high` confidence phenotypes. Outlier intercept values > 1.2 are observed for home and birth location, height, and certain biomarkers.
+
+<p></p>
+
+#### Ratio Estimates
+
+<div class="well">
+
+```{r hist_rat, echo=FALSE}
+d2 <- SharedData$new(dat[dat$mean_chi2 > 1,])
+
+pp <- plot_ly(d2) %>%
+        add_histogram(
+			    x = ~ratio,
+			    histnorm = "probability",
+			    hoverinfo="none"
+	  		)
+  
+  
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
+		filter_select("source","Dataset", d2, ~source, multiple=T)
+	)
+)
+```
+
+<p></p>
+
+*Note:* Ratio estimates restricted to phenotypes with mean $\chi^2 > 1$. Clearer results are observed by restricting to `high` confidence results and/or higher effective sample size using the filter on the right. The LDSR ratio estimate is:
+
+$$\frac{\text{intercept}-1}{\text{mean}(\chi^2)-1}$$
+
+</div>
+
+<br>
+
+#### Intercept Estimates
+
+<div class="well">
+
+```{r hist_int, echo=FALSE}
+d2 <- SharedData$new(dat)
+
+pp <- plot_ly(d2) %>%
+        add_histogram(
+			    x = ~intercept,
+			    histnorm = "probability",
+			    hoverinfo="none"
+	  		)
+  
+  
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
+		filter_select("source","Dataset", d2, ~source, multiple=T)
+	)
+)
+```
+
+</div>
+
+<br>
+
+#### Int. p-values
+
+<div class="well">
+  
+```{r qq_int, echo=FALSE}
+
+shared_h2_3 <- SharedData$new(dat)
+
+exp_nlogp <- function(p){
+  nn <- length(p)
+  qquad <- 1:nn
+  qref <- (qquad-.5)/nn
+  idx <- rank(p)
+  return(-log10(qref[idx]))
+}
+
+nnr <- nrow(dat[dat$confidence != "none",])
+qquad <-c(1:nnr)
+qref <- ((qquad-.5)/nnr)
+ci_up <- qbeta(.975,qquad,nnr+1-qquad)
+ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
+
+pp <- plot_ly(shared_h2_3, 
+              x=~exp_nlogp(-intercept_z), 
+              y=~int_nlogp,
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              showlegend=F,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(qref),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.8)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_up),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_lo),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		fill="tonexty",
+		fillcolor='rgba(0,0,0,0.2)',
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% layout(
+  showlegend=T,
+  xaxis = list(title="Expected -log10(p-value)"),
+  yaxis = list(title="Observed -log10(p-value)")
+) %>% onRender(js)
+
+bscols(widths=c(12),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+```
+
+
+<p></p>
+
+*Note:* The displayed 95% confidence bands assume tests are independent across phenotypes and do not account for multiple testing across annotations.
+
+</div>
+
+<br>
+
+#### Int. p-values by Confidence
+
+<div class="well">
+  
+```{r qq_int_conf, echo=FALSE}
+
+exp_nlogp <- function(p){
+  nn <- length(p)
+  qquad <- 1:nn
+  qref <- (qquad-.5)/nn
+  idx <- rank(p)
+  return(-log10(qref[idx]))
+}
+
+nnr <- nrow(dat[dat$confidence != "none",])
+qquad <-c(1:nnr)
+qref <- ((qquad-.5)/nnr)
+ci_up <- qbeta(.975,qquad,nnr+1-qquad)
+ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
+
+pp <- plot_ly(dat) %>%
+        add_trace(
+              data=dat[dat$confidence=="High Confidence",],
+              x=~exp_nlogp(-intercept_z), 
+              y=~int_nlogp,
+              name="High Confidence",
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+              data=dat[dat$confidence=="Medium Confidence",],
+              x=~exp_nlogp(-intercept_z), 
+              y=~int_nlogp,
+              name="Medium Confidence",
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+              data=dat[dat$confidence=="Low Confidence",],
+              x=~exp_nlogp(-intercept_z), 
+              y=~int_nlogp,
+              name="Low Confidence",
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(qref),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.8)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_up),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_lo),
+		type="scatter",
+		mode="lines",
+		line=list(color='rgba(0,0,0,0.3)'),
+		fill="tonexty",
+		fillcolor='rgba(0,0,0,0.2)',
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+) %>% layout(
+  showlegend=T,
+  xaxis = list(title="Expected -log10(p-value)"),
+  yaxis = list(title="Observed -log10(p-value)"),
+  legend = list(traceorder="normal")
+) %>% onRender(js)
+
+bscols(widths=c(12),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+```
+
+<p></p>
+
+*Note:* The displayed 95% confidence bands assume tests are independent across phenotypes within confidence rating and do not account for multiple testing across annotations. Read more about the confidence ratings [here](confidence.html).
+
+</div>
+
+<br>
+
+### SNP Heritablity vs. Intercept {.tabset .tabset-fade}
+
+Among `medium` and `high` confidence phenotypes, there's a positive relationship between the $h^2_g$ estimate and the intercept estimate. This trend may indicate some degree of model misspecification in the paritioned LDSR model. Sample size may also be a factor if $h^2_g$ is biased at some sample sizes, but comparison of $h^2_g$ to the intercept ratio shows a similar trend towards non-zero ratios where $h^2_g$ is large.
+
+#### Estimates
+
+<div class="well">
+
+```{r h2_int, echo=FALSE}
+d2 <- SharedData$new(dat)
+
+pp <- plot_ly(d2, 
+              x=~intercept, 
+              y=~h2_liability,
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              color=~confidence,
+              colors=plotly_colors[1:3],
+              showlegend=T,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% onRender(js)
+
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", d2, ~Neff, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", d2, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", d2, ~confidence, multiple=T),
+		filter_select("source","Dataset", d2, ~source, multiple=T)
+	)
+)
+```
+
+<p></p>
+
+*Note:* Clearer results are observed by restricting to `high` confidence results, continuous variables, and/or higher effective sample size using the filter on the right. Colors indicate our confidence rating as [described in the Methods section](confidence.html).
+
+</div>
+
+<br>
+
+#### Z scores
+
+<div class="well">
+
+```{r h2_int_z, echo=FALSE}
+d3 <- SharedData$new(dat)
+
+pp <- plot_ly(d3, 
+              x=~intercept_z, 
+              y=~h2_z,
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              color=~confidence,
+              colors=plotly_colors[1:3],
+              showlegend=T,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% onRender(js)
+
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", d3, ~Neff, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", d3, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", d3, ~confidence, multiple=T),
+		filter_select("source","Dataset", d3, ~source, multiple=T)
+	)
+)
+```
+
+<p></p>
+
+*Note:* Colors indicate our confidence rating as [described in the Methods section](confidence.html).
+
+</div>
+
+<br>
+
+#### SNP Heritability vs. Ratio
+
+<div class="well">
+
+```{r h2_ratio, echo=FALSE}
+d4 <- SharedData$new(dat[dat$mean_chi2 > 1,])
+
+pp <- plot_ly(d4, 
+              x=~ratio, 
+              y=~h2_liability,
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              color=~confidence,
+              colors=plotly_colors[1:3],
+              showlegend=T,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Liability SNP h2: ", round(h2_liability,5), " (p=",signif(h2_p, 3),")",
+                "<br>Intercept: ", round(intercept,5), " (p=",intercept_p,")",                
+                "<br>Effective N: ", Neff)
+) %>% onRender(js)
+
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", d4, ~Neff, step=100, width="100%",round=T),
+		filter_select("variable_type","Var. Type", d4, ~variable_type, multiple=T),
+		filter_select("confidence","Confidence", d4, ~confidence, multiple=T),
+		filter_select("source","Dataset", d4, ~source, multiple=T)
+	)
+)
+```
+
+<p></p>
+
+*Note:* Ratio estimates restricted to phenotypes with mean $\chi^2 > 1$. Clearer results are observed by restricting to `high` confidence results, continuous phenotypes, and/or higher effective sample sizes using the filter on the right. Colors indicate our confidence rating as [described in the Methods section](confidence.html). The LDSR ratio estimate is:
+
+$$\frac{\text{intercept}-1}{\text{mean}(\chi^2)-1}$$
+
+</div>
+
+<br>
+

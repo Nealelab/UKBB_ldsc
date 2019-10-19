@@ -1,0 +1,342 @@
+---
+date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
+output: 
+  html_document:
+    smart: false
+params:
+  pheno: "20003_1140909368"
+  dat_topline: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
+  dat_part: "../results/round2_final/ukb31063_h2_z4.02Oct2019.tsv.gz"
+  dat_manifest: "../results/round2_final/ukb31063_ldsc_sumstat_manifest.tsv.gz"
+title: "SNP Heritability for Phenotype `r params$pheno`"
+---
+
+```{r setup, include=FALSE}
+require(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+require(plotly)
+require(reshape2)
+
+# handle params
+phen <- as.character(params$pheno)
+h2 <- read.delim(normalizePath(params$dat_topline),header=TRUE,sep='\t',stringsAsFactors=F,colClasses=c(intercept_p="character"))
+manif <- read.delim(normalizePath(params$dat_manif),header=TRUE,sep='\t',stringsAsFactors=F)
+
+# setup
+dat_sub <- h2[which(as.character(h2$phenotype)==phen),]
+manif_sub <- manif[(as.character(manif$phenotype)==phen) & manif$is_primary_gwas,]
+
+ukcode <- strsplit(phen,"_")[[1]][1]
+phen_stem <- ifelse(grepl("_irnt",phen) | grepl("_raw",phen), ukcode, phen)
+
+sumstat_dl <- gsub("dl=0","dl=1",manif_sub$ldsc_sumstat_dropbox)
+gwas_dl <- gsub("dl=0","dl=1",manif_sub$gwas_dropbox)
+
+isICD <- (as.character(dat_sub$source)=="icd10")
+if(isICD){
+  ukb_url = "http://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41202"
+  ukcode = "41202"
+}else if(as.character(dat_sub$source)=="finngen"){
+  ukb_url = NA
+}else{
+	ukb_url = paste0("http://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=",ukcode)
+}
+
+doPartition <- (!is.na(dat_sub$h2_sig) & dat_sub$h2_sig == "z7")
+isSig <- (!is.na(dat_sub$h2_sig) & (dat_sub$h2_sig == "z7" | dat_sub$h2_sig == "z4"))
+
+format_bigint <- function(n){
+	formatC(n,format="f",big.mark=',',drop0trailing=T)
+}
+
+
+# handle intercept_p as a string (due to high precision p-vals)
+prec <- 3
+intp_string <- dat_sub$intercept_p
+if(intp_string==as.character(as.numeric(intp_string))){
+  intp_string <- as.character(signif(as.numeric(dat_sub$intercept_p),prec))
+}else{
+  highstr_lead <- as.character(signif(as.numeric(substr(intp_string,1,6)),prec))
+  highstr_exp <- strsplit(intp_string,split="e")[[1]][2]
+  intp_string <- paste0(highstr_lead,"e",highstr_exp)
+}
+while(intp_string=="1"){
+  prec <- prec+1
+  intp_string <- as.character(signif(as.numeric(dat_sub$intercept_p),prec))
+}
+
+```
+
+```{r plotly_dummy, echo=F, warnings=F, message=F,include=F}
+# to catch initial plotly package messages
+plot_ly(x=rnorm(2),y=rnorm(2),type="scatter",mode="markers")
+```
+
+<br>
+
+<div class="panel panel-info">
+<div class="panel-body">
+### **Phenotype:** `r dat_sub$description`
+
+`r if(dat_sub$source=="finngen"){
+  paste0("This phenotype is defined based on ICD10 codes to match an endpoint defined by [FinnGen](https://www.finngen.fi/en).")
+}else if(isICD){
+  paste0("This phenotype can be found as part of the ICD code listings on the UK Biobank Showcase for [code ",ukcode,"](",ukb_url,").")
+}else{
+  paste0("This phenotype can be found on the UK Biobank Showcase for [code ",ukcode,"](",ukb_url,").")
+}`
+Neale Lab GWAS results are available for `r format_bigint(dat_sub$n)` unrelated individuals of European ancestry. This is a `r if(dat_sub$isBinary){paste0("binary phenotype with ",format_bigint(dat_sub$n_cases)," cases and ",format_bigint(dat_sub$n_controls)," controls.")}else if(dat_sub$variable_type=="ordinal"){paste0("ordinal phenotype.")}else if(dat_sub$variable_type=="continuous_irnt"){paste0("continuous phenotype that has been rank normalized.")}else if(dat_sub$variable_type=="continuous_raw"){paste0("continuous phenotype.")}` 
+
+</div></div>
+
+`r if(as.character(dat_sub$confidence)=="none"){paste0("<br><div class=\"panel panel-danger\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Warning: Lack of confidence</h3></div><div class=\"panel-body\">This phenotype has insufficient sample size ($N_{eff}=",round(dat_sub$Neff),"$) for us to have any confidence in the results. Estimates are likely highly unstable. For that reason, we do not report enrichment results from partitioning (though they remain available in the [full results file download](downloads.html)) and we recommend you avoid making any strong inferences from these results. Read more about our confidence criteria [here](confidence.html).</div></div>")}`
+
+`r if(as.character(dat_sub$confidence)=="low"){paste0("<br><div class=\"panel panel-warning\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Warning: Low confidence</h3></div><div class=\"panel-body\"> Our confidence rating for this phenotype is <strong>low</strong>. Estimates are likely unstable. For that reason, we do not report enrichment results from partitioning (though they remain available in the [full results file download](downloads.html)) and we recommend you avoid making any strong inferences from these results. Read more about our confidence criteria [here](confidence.html).</div></div>")}`
+
+<br>
+
+<div class="panel panel-primary">
+<div class="panel-heading"><h3 class="panel-title">Primary Results</h3></div>
+<div class="panel-body">
+
+#### **Estimated SNP heritability:** `r sprintf("%0.4f",dat_sub$h2_liability)` (se=`r sprintf("%0.3g",dat_sub$h2_liability_se)`, p=`r ifelse(dat_sub$h2_p>=.9995,sprintf("%0.4g",dat_sub$h2_p),sprintf("%0.3g",dat_sub$h2_p))`)
+
+```{r sig_text, include=FALSE}
+
+if(is.na(as.character(dat_sub$h2_sig))){
+  sig_txt <- "none (insufficient confidence)"
+}else if(as.character(dat_sub$h2_sig)=="nonsig"){
+  sig_txt <- "not significant"
+}else if(as.character(dat_sub$h2_sig)=="nominal"){
+  sig_txt <- "nominally significant before multiple testing correction"
+}else if(as.character(dat_sub$h2_sig)=="z4"){
+  sig_txt <- "significant after multiple testing correction"
+}else if(as.character(dat_sub$h2_sig)=="z7"){
+  sig_txt <- "strongly significant after multiple testing correction"
+}
+
+```
+
+#### **[Significance level](significance.html):** `r paste0(sig_txt)`
+
+#### **[Confidence rating](confidence.html):** `r dat_sub$confidence`
+
+`r if(!identical(as.character(dat_sub$confidence),"high")){
+  conf_reasons <- NULL
+  if(isTRUE(dat_sub$isBadPower)){
+    conf_reasons <- paste0(conf_reasons,"\n","* Insufficient statistical power for meaningful estimation")
+  }
+  if(isTRUE(dat_sub$isLowNeff)){
+    conf_reasons <- paste0(conf_reasons,"\n","* Potentially biased estimates at low effective sample size")
+  }  
+  if(isTRUE(dat_sub$isMidNeff)){
+    conf_reasons <- paste0(conf_reasons,"\n","* Possible modest biases or instability of estimates at moderate sample size")
+  }  
+  if(isTRUE(dat_sub$isisExtremeSE)){
+    conf_reasons <- paste0(conf_reasons,"\n","* Extremely high standard error, likely reflecting a lack of polygenicity")
+  }  
+  if(isTRUE(dat_sub$isHighSE)){
+    conf_reasons <- paste0(conf_reasons,"\n","* Unexpectedly large standard error, likely reflecting limited polygenicity reducing model efficiency")
+  }  
+  if(isTRUE(dat_sub$isSexBias)){
+    conf_reasons <- paste0(conf_reasons,"\n","* Sex bias in the phenotype may impact interpretability")
+  }  
+  if(isTRUE(dat_sub$isBadOrdinal)){
+    conf_reasons <- paste0(conf_reasons,"\n","* Poor encoding of ordinal phenotype harms interpretability")
+  }
+  if(isTRUE(dat_sub$isNumericOrdinal)){
+    conf_reasons <- paste0(conf_reasons,"\n","* Ordinal encoding of underlying numeric phenotype may affect interpretation")
+  }
+  paste0("Our confidence in the LD Score regression result for this phenotype is reduced due to:",'\n',conf_reasons)
+}`
+
+`r if(dat_sub$isBinary){paste0("<p></p>\n*Note:* SNP heritability for this binary outcome is reported on the liability scale, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set (",sprintf("%0.3g",dat_sub$prevalence),"). This may be unreliable if the outcome was limited to a subset of individuals, or if the UK Biobank study population is not representative for this phenotype (<a href=\"https://academic.oup.com/aje/article/doi/10.1093/aje/kwx246/3883629/Comparison-of-Sociodemographic-and-Health-Related\">which is likely in many cases</a>). The estimated **observed-scale heritability** is: ", sprintf("%0.4f",dat_sub$h2_observed)," (se=",sprintf("%0.3g",dat_sub$h2_observed_se),").")}`
+
+***
+
+#### **Confounding and model misspecification**
+
+In addition to SNP heritability, LD score regression also estimates an intercept term that indexes population stratification, other counfounding, and potential misspecification in the partitioned LD score model for the distribution of genetic effects genome-wide. 
+
+* **Intercept:** `r round(dat_sub$intercept,4)` (se=`r sprintf("%0.3g",dat_sub$intercept_se)`, p=`r intp_string`)
+* **Mean $\chi^2$:** `r round(dat_sub$mean_chi2,4)`
+* **Ratio:** `r sprintf("%0.4f",dat_sub$ratio)` (se=`r sprintf("%0.4f",dat_sub$ratio_se)`)
+* **$\lambda_{GC}$:** `r round(dat_sub$lambdaGC,4)`
+
+Intercept values near 1 indicate little or no confounding. The reported LDSR ratio compares the intercept estimate and the mean $\chi^2$ statistic to provide a rough index for how much of the polygenic signal in the GWAS may be due to confounding rather than genetic effects (assuming the LD score model is well specified). Note that the intercept, mean $\chi^2$, and genomic control $\lambda_{GC}$ are all expected to scale with sample size, making the ratio better suited for comparisons between different GWAS. 
+
+`r if(isSig){paste0("***")}`
+
+`r if(isSig){paste0("#### **Correlations**")}`
+
+`r if(isSig){paste0("Genetic correlations and phenotypic correlations comparing this phenotype to other significantly heritable phenotypes from the Neale Lab UK Biobank GWAS can be found at: [**ukbb-rg.hail.is**](https://ukbb-rg.hail.is/rg_summary_",phen_stem,".html)")}`
+
+</div></div>
+
+<br>
+
+`r if(!doPartition & as.character(dat_sub$confidence) %in% c("medium","high")){paste0("<br><div class=\"panel panel-info\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Insufficient power for partitioning</h3></div><div class=\"panel-body\">We omit results for enrichment of specific annotations in the partitioned heritability model here when the overall SNP heritability is not strongly significant ($z < 7$) as recommended by [Finucane et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4626285/). Partitioned results for this phenotype are available in the [full results file download](downloads.html), but we caution that the analysis is likely to be underpowered and unstable.</div></div>")}`
+
+`r if(doPartition){paste0("<div class=\"panel panel-primary\"><div class=\"panel-heading\"><h3 class=\"panel-title\">Partitioned Heritability</h3></div><div class=\"panel-body\">")}`
+
+`r if(doPartition){paste0("#### Significance of categorical annotations")}`
+
+```{r part_coef_p, echo=FALSE}
+
+if(doPartition){
+  
+  h2_part <- read.delim(normalizePath(params$dat_part),header=TRUE,sep='\t',stringsAsFactors=F,colClasses=c(intercept_p="character"))
+  dat_sub2 <- h2_part[which(h2_part$phenotype==phen),]
+
+  coef_p_cols <- names(dat_sub2)[grep("..Coefficient_p",names(dat_sub2))]
+  
+  # remove continuous annotations
+  coef_p_cols <- coef_p_cols[-grep("base",coef_p_cols)]
+  coef_p_cols <- coef_p_cols[-grep(".extend.500",coef_p_cols)]
+  coef_p_cols <- coef_p_cols[-grep("MAF",coef_p_cols)]
+  coef_p_cols <- coef_p_cols[-grep("Recomb",coef_p_cols)]
+  coef_p_cols <- coef_p_cols[-grep("GERP.NS",coef_p_cols)]
+  coef_p_cols <- coef_p_cols[-grep("Backgrd",coef_p_cols)]
+  coef_p_cols <- coef_p_cols[-grep("CpG",coef_p_cols)]
+  coef_p_cols <- coef_p_cols[-grep("Diversity",coef_p_cols)]
+  
+  dtmp <- dat_sub2[,c("phenotype",coef_p_cols)]
+  df <- reshape2::melt(dtmp,id.vars = "phenotype")
+  df$logp <- -log10(df$value)
+  df$variable <- sapply(df$variable,function(a) strsplit(as.character(a), split="\\.\\.")[[1]][1])
+  
+  # define barplot
+  pp <- plot_ly(df) %>%
+  			add_trace(
+  			  x=~variable,
+  			  y=~logp,
+  			  hoverinfo="text",
+  			  text=~paste0("Annotation: ",variable,
+  			  		   "<br>p-value: ", signif(value, 3)),
+  			  type="bar",
+  			  name="p-value for coefficient"
+  	  ) %>% add_trace(
+  	  		x=~variable, 
+  	  		y=rep(-log10(.05/38),nrow(df)), 
+  	  		type="scatter",
+  	  		mode="lines",
+  	  		hoverinfo="text",
+  			text="",
+  	  		name="Bonferroni significance"
+  	  ) %>% add_trace(
+  	  		x=~variable, 
+  	  		y=rep(-log10(.05),nrow(df)), 
+  	  		type="scatter",
+  	  		mode="lines",
+  	  		hoverinfo="text",
+  			text="",
+  	  		name="Nominal significance"
+  	  ) %>% layout(
+  	  			 showlegend=F,
+  	  			 xaxis = list(title="Annotation", tickangle=-30),
+  	  			 yaxis = list(title="-log10(p-value)",side='left', range=c(0,max(max(df$logp),3.2))),
+  	  			 margin=list(b=150,l=100)
+  	  ) 
+  
+  bscols(widths=c(12),
+  config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+  )
+
+}
+```
+
+`r if(doPartition){paste0("Two-sided test of the tau coefficient for the named annotation conditional on the rest of the baseline-LD v1.1 model. The orange line indicates Bonferroni-corrected significance across 38 annotations of interest for this phenotype ($p <$ 1.3e-3). The green line indicates nominal significance ($p <$ .05). Bonferroni correction excludes the base annotation, 10 MAF bin annotations, and the 26 buffer annotations (extending 500-bp around the baseline functional annotations) since they are primarily intended as statistical controls rather than for direct inference. Note this does not account for multiple testing across phenotypes.")}`
+
+`r if(doPartition){paste0("<br>")}`
+
+`r if(doPartition){paste0("#### Significance of continuous annotations")}`
+
+```{r part_coef_cont_p, echo=FALSE, warning=FALSE}
+if(doPartition){
+
+  coef_p_cols2 <- names(dat_sub2)[grep("..Coefficient_p",names(dat_sub2))]
+  
+  # remove continuous annotations
+  coef_p_cols2 <- coef_p_cols2[-grep("base",coef_p_cols2)]
+  coef_p_cols2 <- coef_p_cols2[-grep(".extend.500",coef_p_cols2)]
+  coef_p_cols2 <- coef_p_cols2[-grep("MAFbin",coef_p_cols2)]
+  coef_p_cols2 <- coef_p_cols2[!(coef_p_cols2 %in% coef_p_cols)]
+  
+  dtmp2 <- dat_sub2[,c("phenotype",coef_p_cols2)]
+  df2 <- reshape2::melt(dtmp2,id.vars = "phenotype")
+  
+  df2$variable <- sapply(df2$variable,function(a) strsplit(as.character(a), split="\\.\\.")[[1]][1])
+  
+  # define barplot
+  pp <- plot_ly(df2) %>%
+  			add_trace(
+  			  x=~variable,
+  			  y=~-log10(value),
+  			  hoverinfo="text",
+  			  text=~paste0("Annotation: ",variable,
+  			  		   "<br>p-value: ", signif(value, 3)),
+  			  type="bar",
+  			  name="p-value for coefficient"
+  	  ) %>% add_trace(
+  	  		x=~variable, 
+  	  		y=rep(-log10(.05/38),nrow(df2)), 
+  	  		type="scatter",
+  	  		mode="lines",
+  	  		hoverinfo="text",
+  			text="",
+  	  		name="Bonferroni significance"
+  	  ) %>% add_trace(
+  	  		x=~variable, 
+  	  		y=rep(-log10(.05),nrow(df2)), 
+  	  		type="scatter",
+  	  		mode="lines",
+  	  		hoverinfo="text",
+  			text="",
+  	  		name="Nominal significance"
+  	  ) %>% layout(
+  	  			 showlegend=F,
+  	  			 xaxis = list(title="Annotation", tickangle=-30),
+  	  			 yaxis = list(title="-log10(p-value)",side='left', range=c(0,max(max(-log10(df2$value)),3.2))),
+  	  			 margin=list(b=150,l=100)
+  	  ) 
+  
+  bscols(widths=c(12),
+  config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+  )
+}
+
+```
+
+`r if(doPartition){paste0("Two-sided test of the tau coefficient for the named annotation conditional on the rest of the baseline-LD v1.1 model. The orange line indicates Bonferroni-corrected significance across 38 annotations of interest for this phenotype ($p <$ 1.3e-3). The green line indicates nominal significance ($p <$ .05). Bonferroni correction excludes the base annotation, 10 MAF bin annotations, and the 26 buffer annotations (extending 500-bp around the baseline functional annotations) since they are primarily intended as statistical controls rather than for direct inference. Note this does not account for multiple testing across phenotypes.")}`
+
+`r if(doPartition){paste0("</div></div>")}`
+
+`r if(doPartition | as.character(dat_sub$confidence) %in% c("medium","high")){paste0("<br>")}`
+
+<div class="well">
+
+#### Methods
+
+All results are from partitioned heritability analysis of this phenotype using LD score regression ([Bulik-Sullivan et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/), [github repo](https://github.com/bulik/ldsc)) with 75 annotations as described by [Gazal et al. 2017](http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html) (also on [biorxiv](http://www.biorxiv.org/content/early/2017/04/03/082024)). See [Methods](`methods.html`) for more information on the underlying GWAS and LDSR analysis. You can also read more about the [confidence criteria](confidence.html) and the [significance thresholds](significance.html).
+
+<p></p>
+
+#### Downloads
+
+* **Full GWAS results (large file):** `r paste0("<a href='",gwas_dl,"'  onclick=\"trackOutboundLink('",gwas_dl,"'); return false;\"><code>",manif_sub$gwas_file,"</code></a>")`
+* **LDSR-formatted summary statistics:** `r paste0("<a href='",sumstat_dl,"'  onclick=\"trackOutboundLink('",sumstat_dl,"'); return false;\"><code>",manif_sub$ldsc_sumstat_file,"</code></a>")`
+* **LDSR $h^2_g$ and intercepts for all primary GWAS:** <a href="https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1'); return false;">`ukb31063_h2_topline.02Oct2019.tsv.gz`</a>
+`r if(doPartition){paste0("* **LDSR partitioning for significantly heritable phenotypes:** <a href=\"https://www.dropbox.com/s/gu9ueqdulze9c9x/ukb31063_h2_z4.02Oct2019.tsv.gz?dl=1\" onclick=\"trackOutboundLink('https://www.dropbox.com/s/gu9ueqdulze9c9x/ukb31063_h2_z4.02Oct2019.tsv.gz?dl=1'); return false;\"><code>ukb31063_h2_z4.02Oct2019.tsv.gz</code></a>")}`
+
+See the <a href="https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing" onclick="trackOutboundLink('https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing'); return false;">full manifest of LDSR sumstats files</a> for sumstats for other GWAS of this phenotype, where applicable.
+
+See the [Downloads page](downloads.html) for more information.
+
+<p></p>
+
+#### Credits
+
+See the full team behind these results [here](credits.html).
+
+</div>

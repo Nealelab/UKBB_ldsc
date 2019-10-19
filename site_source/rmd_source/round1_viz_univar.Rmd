@@ -1,0 +1,379 @@
+---
+title: "Visualizing $h^2$ results: Univariate LDSR"
+date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+params:
+  datfile1: "../results/ukbb_h2part.RData"
+  datfile2: "../results/ukbb_h2univar.RData"
+---
+
+```{r child = '_toc_fix.Rmd'}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(reshape2)
+require(ggplot2)
+require(plotly)
+require(DT)
+require(crosstalk)
+require(crosstool)
+
+# handle params
+load(file=params$datfile1)
+dat1 <- dat[,c("phenotype","description","N","N_case","N_control","prevelence","mean_chi2","lambdaGC","intercept","intercept_z","intercept_p","ratio","h2_liability","h2_z","h2_p")]
+names(dat1) <- gsub("intercept","partitioned_intercept",names(dat1))
+names(dat1) <- gsub("h2","partitioned_h2",names(dat1))
+names(dat1) <- gsub("ratio","partitioned_ratio",names(dat1))
+
+load(file=params$datfile2)
+dat2 <- dat[,c("phenotype","intercept","intercept_z","intercept_p","ratio","h2_liability","h2_z","h2_p")]
+names(dat2) <- gsub("intercept","univariate_intercept",names(dat2))
+names(dat2) <- gsub("h2","univariate_h2",names(dat2))
+names(dat2) <- gsub("ratio","univariate_ratio",names(dat2))
+
+rm(dat)
+dat <- merge(dat1,dat2,by="phenotype")
+
+# setup
+dat$isBinary <- !is.na(dat$N_case)
+dat$Neff <- dat$N
+dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
+
+dat <- dat[dat$Neff > 200,]
+
+dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$description,"</a>")
+
+```
+
+<br>
+
+### Overview
+
+<div class="well">
+
+Comparison of our primary $h^2$ results from partitioned LDSR to results from univariate LDSR with default settings. These differ in two key ways:
+
+* **Reference panel:** Univariate 1000 Genomes European LD scores (i.e. precomputed `./eur_w_ld`) vs. BaselineLD v1.1 LD scores from 1000 Genomes Europeans, as described in [Gazal et al. 2017](http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html) (also on [biorxiv](http://www.biorxiv.org/content/early/2017/04/03/082024))
+* **Max chi^2 filtering:** Default settings with "two-step" estimation (limiting intercept estimation to regression with $\chi^2 < 30$ before estimating $h^2$ in regression with the intercept fixed to the first stage estimate) vs. one-step estimation with no $\chi^2$ filter
+
+</div>
+
+<br>
+
+### Intercept Comparison {.tabset .tabset-fade}
+
+#### Estimates
+
+<div class="well">
+
+```{r comp_int, echo=FALSE}
+# setup shared data
+shared_int <- SharedData$new(dat)
+
+# define plot
+pp <- plot_ly(shared_int, 
+			  x=~univariate_intercept, 
+			  y=~partitioned_intercept, 
+			  type="scatter",
+			  mode="markers",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Univariate Int.: ", round(univariate_intercept,5), " (p=",signif(univariate_intercept_p, 3),")",
+			  			"<br>Partitioned Int.: ", round(partitioned_intercept,5), " (p=",signif(partitioned_intercept_p, 3),")",
+			  			"<br>Effective N: ", Neff)) %>% add_trace(
+			  			x=~univariate_intercept,
+			  			y=~univariate_intercept,
+			  			mode="lines",
+			  			hoverinfo="none",
+			  			showlegend=F
+			  			)
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_int, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_int, ~isBinary, multiple=T)
+	)
+)
+```
+</div>
+
+#### Ratio of Estimates
+
+<div class="well">
+
+```{r hist_int, echo=FALSE}
+shared_int2 <- SharedData$new(dat)
+
+pp <- plot_ly(shared_int2,
+			  x = ~(partitioned_intercept/univariate_intercept), 
+			  type = "histogram",
+			  histnorm = "probability"
+	  		) %>% layout(xaxis=list(title="Partitioned Int. / Univariate Int."), yaxis=list(title="Frequency"))
+
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_int2, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_int2, ~isBinary, multiple=T)
+	)
+)
+```
+
+</div>
+
+
+#### Significance
+
+<div class="well">
+
+```{r qq_int, echo=FALSE}
+
+shared_int3 <- SharedData$new(dat)
+
+exp_nlogp <- function(p){
+	nn <- length(p)
+	qquad <- 1:nn
+	qref <- (qquad-.5)/nn
+	idx <- rank(p)
+	return(-log10(qref[idx]))
+}
+
+qquad <-c(1:nrow(dat))
+qref <- ((qquad-.5)/nrow(dat))
+ci_up <- qbeta(.975,qquad,nrow(dat)+1-qquad)
+ci_lo <- qbeta(.025,qquad,nrow(dat)+1-qquad)
+
+pp <- plot_ly(shared_int3, 
+			  x=~exp_nlogp(univariate_intercept_p), 
+			  y=~(-log10(univariate_intercept_p)),
+			  type="scatter",
+			  mode="markers",
+			  showlegend=T,
+			  name="Univariate",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Univariate Int.: ", round(univariate_intercept,5), " (p=",signif(univariate_intercept_p, 3),")",
+			  			"<br>Partitioned Int.: ", round(partitioned_intercept,5), " (p=",signif(partitioned_intercept_p, 3),")",
+			  			"<br>Effective N: ", Neff)
+	) %>% add_trace(
+		x=~exp_nlogp(partitioned_intercept_p), 
+			  y=~(-log10(partitioned_intercept_p)),
+			  type="scatter",
+			  mode="markers",
+			  showlegend=T,
+			  name="Partitioned",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Univariate Int.: ", round(univariate_intercept,5), " (p=",signif(univariate_intercept_p, 3),")",
+			  			"<br>Partitioned Int.: ", round(partitioned_intercept,5), " (p=",signif(partitioned_intercept_p, 3),")",
+			  			"<br>Effective N: ", Neff)
+	) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(qref),
+		mode="lines",
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+	) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_up),
+		mode="lines",
+		line=list(color='#2ca02c'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+	) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_lo),
+		mode="lines",
+		line=list(color='#2ca02c'),
+		fill="tonexty",
+		fillcolor='rgba(44,160,44,0.2)',
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+	) %>% layout(
+	  			 showlegend=T,
+	  			 xaxis = list(title="Expected -log10(p-value)"),
+	  			 yaxis = list(title="Observed -log10(p-value)")
+	  )
+
+bscols(widths=c(12),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+)
+```
+
+</div>
+
+<br>
+
+### $h^2$ Comparison {.tabset .tabset-fade}
+
+#### Estimates
+
+<div class="well">
+
+```{r comp_h2, echo=FALSE}
+# setup shared data
+shared_h2 <- SharedData$new(dat)
+
+# define plot
+pp <- plot_ly(shared_h2, 
+			  x=~univariate_h2_liability, 
+			  y=~partitioned_h2_liability, 
+			  type="scatter",
+			  mode="markers",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Univariate h2: ", round(univariate_h2_liability,5), " (p=",signif(univariate_h2_p, 3),")",
+			  			"<br>Partitioned h2: ", round(partitioned_h2_liability,5), " (p=",signif(partitioned_h2_p, 3),")",
+			  			"<br>Effective N: ", Neff)) %>% add_trace(
+			  			x=~univariate_h2_liability,
+			  			y=~univariate_h2_liability,
+			  			mode="lines",
+			  			hoverinfo="none",
+			  			showlegend=F
+			  			)
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_h2, ~isBinary, multiple=T)
+	)
+)
+```
+
+<br>
+
+**Note:** Restrict to effective N > 10,000 for a clearer pattern of results.
+
+
+</div>
+
+#### Ratio of Estimates
+
+<div class="well">
+
+```{r hist_h2, echo=FALSE}
+shared_h2_2 <- SharedData$new(dat[dat$Neff > 10000,])
+
+pp <- plot_ly(shared_h2_2,
+			  x = ~(partitioned_h2_liability/univariate_h2_liability), 
+			  type = "histogram",
+			  histnorm = "probability"
+	  		) %>% layout(xaxis=list(title="Partitioned h2 / Univariate h2"), yaxis=list(title="Frequency"))
+
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_h2_2, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_h2_2, ~isBinary, multiple=T)
+	)
+)
+```
+
+<br>
+
+**Note:** To improve resolution this plot is restricted to phenotypes with effective N > 10,000.
+
+</div>
+
+#### Significance
+
+<div class="well">
+
+```{r qq_h2, echo=FALSE}
+
+shared_h2_3 <- SharedData$new(dat)
+
+exp_nlogp <- function(p){
+	nn <- length(p)
+	qquad <- 1:nn
+	qref <- (qquad-.5)/nn
+	idx <- rank(p)
+	return(-log10(qref[idx]))
+}
+
+qquad <-c(1:nrow(dat))
+qref <- ((qquad-.5)/nrow(dat))
+ci_up <- qbeta(.975,qquad,nrow(dat)+1-qquad)
+ci_lo <- qbeta(.025,qquad,nrow(dat)+1-qquad)
+
+pp <- plot_ly(shared_h2_3, 
+			  x=~exp_nlogp(univariate_h2_p), 
+			  y=~(-log10(univariate_h2_p)),
+			  type="scatter",
+			  mode="markers",
+			  showlegend=T,
+			  name="Univariate",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Univariate h2: ", round(univariate_h2_liability,5), " (p=",signif(univariate_h2_p, 3),")",
+			  			"<br>Partitioned h2: ", round(partitioned_h2_liability,5), " (p=",signif(partitioned_h2_p, 3),")",
+			  			"<br>Effective N: ", Neff)
+	) %>% add_trace(
+		x=~exp_nlogp(partitioned_h2_p), 
+			  y=~(-log10(partitioned_h2_p)),
+			  type="scatter",
+			  mode="markers",
+			  showlegend=T,
+			  name="Partitioned",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Univariate h2: ", round(univariate_h2_liability,5), " (p=",signif(univariate_h2_p, 3),")",
+			  			"<br>Partitioned h2: ", round(partitioned_h2_liability,5), " (p=",signif(partitioned_h2_p, 3),")",
+			  			"<br>Effective N: ", Neff)
+	) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(qref),
+		mode="lines",
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+	) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_up),
+		mode="lines",
+		line=list(color='#2ca02c'),
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+	) %>% add_trace(
+		x=-log10(qref),
+		y=-log10(ci_lo),
+		mode="lines",
+		line=list(color='#2ca02c'),
+		fill="tonexty",
+		fillcolor='rgba(44,160,44,0.2)',
+		showlegend=F,
+		hoverinfo = "text",
+		text = ""
+	) %>% layout(
+	  			 showlegend=T,
+	  			 xaxis = list(title="Expected -log10(p-value)"),
+	  			 yaxis = list(title="Observed -log10(p-value)")
+	  )
+
+bscols(widths=c(12),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F)
+)
+```
+
+</div>
+
+<br>

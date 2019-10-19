@@ -1,0 +1,59 @@
+name: "UKBB-ldsc"
+output_dir: "../docs"
+exclude: ["analytics_header.html","ukbb_h2_*","h2_part_template.html"]
+navbar:
+  title: "UKB Heritability"
+  left:
+    - text: "Browser"
+      href: h2_browser.html
+    - text: "Downloads"
+      href: downloads.html
+    - text: "Methods"
+      menu:
+        - text: "Overview"
+          href: details.html
+        - text: "Selecting Primary GWAS"
+          href: select_topline.html
+        - text: "Confidence Criteria"
+          href: confidence.html
+        - text: "Significance Thresholds"
+          href: significance.html
+    - text: "Plots"
+      menu:
+        - text: "Heritability and Intercept"
+          href: viz_h2.html
+        - text: "Partitioned Annotations"
+          href: viz_annot.html
+        - text: "Sample Size Scaling"
+          href: viz_sampsize.html
+        - text: "Round 1 vs. Round 2"
+          href: viz_R1vR2.html
+    - text: "Archive"
+      menu:
+        - text: "Round 1 Methods"
+          href: round1_details.html
+        - text: "Round 1 Browser"
+          href: round1_h2_browser.html
+        - text: "Round 1 Univariate Browser"
+          href: round1_h2_univar_browser.html
+        - text: "Round 1 Plots"
+          href: round1_plots_home.html
+  right:
+    - text: "About"
+      menu:
+      - text: "Credits"
+        href: "credits.html"
+      - text: "Site Github"
+        href: https://github.com/Nealelab/UKBB_ldsc
+      - text: "Analysis Github"
+        href: https://github.com/Nealelab/UKBB_ldsc_scripts
+      - text: "Neale Lab UKB"
+        href: https://www.nealelab.is/uk-biobank
+output:
+  html_document:
+    theme: default
+    highlight: null
+    css: ["sandflat.min.css","dt_style.css"]
+    includes:
+      in_header: analytics_header.html
+output_files:

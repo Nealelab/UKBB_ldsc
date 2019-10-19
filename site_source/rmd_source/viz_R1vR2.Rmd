@@ -1,0 +1,553 @@
+---
+title: "Comparing Round 1 and Round 2 LDSR Results"
+date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+params:
+  datfile1: "../results/round1/ukbb_h2part.RData"
+  datfile2: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
+---
+
+```{r child = '_toc_fix.Rmd'}
+```
+
+```{r smallp_func, include=FALSE}
+
+# handle intercept_p as a string (due to high precision p-vals)
+pstring <- function(p, prec=3){
+
+intp_string <- as.character(p)
+intp_string[p == as.character(as.numeric(p))] <- as.character(signif(as.numeric(p),prec)[(p == as.character(as.numeric(p)))])
+highstr <- intp_string[!(p == as.character(as.numeric(p)))]
+highstr_lead <- as.character(signif(as.numeric(substr(highstr,1,6)),prec))
+highstr_exp <- sapply(highstr,function(a) strsplit(a,split="e")[[1]][2],USE.NAMES = F)
+intp_string[!(p == as.character(as.numeric(p)))] <- paste0(highstr_lead,"e",highstr_exp)
+while(any(intp_string=="1")){
+  prec <- prec+1
+  intp_string[intp_string=="1"] <- as.character(signif(as.numeric(p),prec)[intp_string=="1"])
+}
+return(intp_string)
+}
+
+
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(reshape2)
+require(ggplot2)
+require(plotly)
+require(DT)
+require(crosstalk)
+require(crosstool)
+require(Rmpfr)
+require(htmlwidgets)
+
+# handle params
+load(file=normalizePath(params$datfile1))
+dat1 <- dat[,c("phenotype","N","N_case","N_control","prevelence","mean_chi2","lambdaGC","intercept","intercept_se","intercept_z","intercept_p","ratio","h2_liability","h2_liability_se","h2_z","h2_p")]
+rm(dat)
+names(dat1) <- gsub("intercept","round1_intercept",names(dat1))
+names(dat1) <- gsub("h2","round1_h2",names(dat1))
+names(dat1) <- gsub("ratio","round1_ratio",names(dat1))
+
+# fix tiny int p-value
+dat1$round1_intercept_p <- format(mpfr(2,64)*pnorm(mpfr(dat1$round1_intercept_z,64),lower=F), max.digits=15, scientific=T)
+dat1$round1_intercept_p <- pstring(dat1$round1_intercept_p)
+
+
+
+dat2 <- read.delim(file=normalizePath(params$datfile2),sep='\t',header=T,stringsAsFactors=F,colClasses=c(intercept_p="character"))
+dat2 <- dat2[,c("phenotype","description","intercept","intercept_se","intercept_z","intercept_p","ratio","h2_liability","h2_liability_se","h2_z","h2_p","confidence","n","Neff","n_cases","n_controls","isBinary","variable_type","source")]
+names(dat2) <- gsub("intercept","round2_intercept",names(dat2))
+names(dat2) <- gsub("h2","round2_h2",names(dat2))
+names(dat2) <- gsub("ratio","round2_ratio",names(dat2))
+dat2$round2_intercept_p <- pstring(dat2$round2_intercept_p)
+
+# specify irnt where needed
+# since round 1 continuous vars were all irnt, but doesn't apply to ordinal phens
+d1irnt <- paste0(dat1$phenotype,"_irnt")
+d1irnt_idx <- (!(dat1$phenotype %in% dat2$phenotype)) & (d1irnt %in% dat2$phenotype)
+dat1$phenotype[d1irnt_idx] <- d1irnt[d1irnt_idx]
+
+dat <- merge(dat1,dat2,by="phenotype")
+
+# setup extra fields
+dat$r2_int_nlogp <- as.numeric(-log10(mpfr(0.5,64)*erfc(mpfr(dat$round2_intercept_z,64)/sqrt(mpfr(2,64)))))
+dat$r1_int_nlogp <- as.numeric(-log10(mpfr(0.5,64)*erfc(mpfr(dat$round1_intercept_z,64)/sqrt(mpfr(2,64)))))
+
+# for clickable data points
+dat$description <- paste0("[",dat$phenotype,"] ",dat$description)
+dat$urls <- paste0("h2_summary_",dat$phenotype,".html")
+
+# https://stackoverflow.com/questions/56084819/open-link-on-datapoint-click-with-plotly-in-r-shiny 
+js <- "
+function(el, x) {
+  el.on('plotly_click', function(d) {
+    if(d.event.button === 0){
+      var point = d.points[0];
+      var url = point.data.customdata[point.pointIndex];
+      window.location.href = url;
+    }
+  })
+}"
+```
+
+<br>
+
+### Overview
+
+<div class="well">
+
+Comparison of our current primary results from partitioned LDSR of the [Round 2 Neale Lab GWAS](http://www.nealelab.is/uk-biobank) to previous results from paritioned LDSR of [Round 1 GWAS](http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank). Both results use the Baseline LD v1.1 model. The Round 2 GWAS results use a slightly broader sample set than 'white British' and incorporate additional covariates ([more detail on github](https://github.com/Nealelab/UK_Biobank_GWAS)).
+
+</div>
+
+<br>
+
+### Intercept {.tabset .tabset-fade}
+
+Since the sample sizes are different, we focus here on comparison of the ratio. Smaller ratios in the current results from Round 2 GWAS suggest reduced confounding, likely due to the expanded set of covariates. P-values for the intercept estimates are similarly less significant in the Round 2 results.
+
+#### LDSR Ratios
+
+<div class="well">
+  
+```{r int_ratio, echo=FALSE}
+shared_int2 <- SharedData$new(dat[!is.na(dat$round1_ratio) & !is.na(dat$round2_ratio) & dat$confidence != "none",])
+
+pp <- plot_ly(shared_int2,
+              x = ~round1_ratio,
+              y = ~round2_ratio,
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Round 1 Ratio: ", round(round1_ratio,3), " (Int.=",round(round1_intercept,4), ", p=",round1_intercept_p,")",
+              "<br>Round 2 Ratio: ", round(round2_ratio,3), " (Int.=",round(round2_intercept,4), ", p=",round2_intercept_p,")",
+              "<br>Round 2 Effective N: ", Neff)
+            ) %>% add_trace(
+                x=~round1_ratio,
+                y=~round1_ratio,
+                mode="lines",
+                hoverinfo="none",
+                showlegend=F
+            ) %>% onRender(js)
+
+# construct
+bscols(widths=c(10,2),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+       list(
+      		filter_slider("Neff", "Effective N", shared_int2, ~Neff, step=100, width="100%",round=T),
+      		filter_select("variable_type","Var. Type", shared_int2, ~variable_type, multiple=T),
+      		filter_select("confidence","Confidence", shared_int2, ~confidence, multiple=T),
+      		filter_select("source","Dataset", shared_int2, ~source, multiple=T)
+       )
+)
+
+```
+
+<p></p>
+
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results. Trend is clearer when filtering to higher effective sample size using the slider on the right.
+
+</div>
+
+<br>
+
+#### Intercept estimates
+  
+<div class="well">
+  
+```{r comp_int, echo=FALSE}
+# setup shared data
+shared_int <- SharedData$new(dat[dat$confidence != "none",])
+
+# define plot
+pp <- plot_ly(shared_int, 
+              x=~round1_intercept, 
+              y=~round2_intercept, 
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Round 1 Int.: ", round(round1_intercept,5), " (p=",round1_intercept_p,")",
+                "<br>Round 2 Int.: ", round(round2_intercept,5), " (p=",round2_intercept_p,")",
+                "<br>Round 2 Effective N: ", Neff)
+            ) %>% add_trace(
+                x=~round1_intercept,
+                y=~round1_intercept,
+                mode="lines",
+                hoverinfo="none",
+                showlegend=F
+            ) %>% onRender(js)
+
+# construct
+bscols(widths=c(10,2),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+       list(
+      		filter_slider("Neff", "Effective N", shared_int, ~Neff, step=100, width="100%",round=T),
+      		filter_select("variable_type","Var. Type", shared_int, ~variable_type, multiple=T),
+      		filter_select("confidence","Confidence", shared_int, ~confidence, multiple=T),
+      		filter_select("source","Dataset", shared_int, ~source, multiple=T)
+       )
+)
+```
+
+<p></p>
+
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results.
+
+</div>
+
+<br>
+  
+#### Intercept p-values
+  
+<div class="well">
+  
+```{r qq_int, echo=FALSE}
+
+shared_int3 <- SharedData$new(dat[dat$confidence != "none",])
+
+exp_nlogp <- function(p){
+  nn <- length(p)
+  qquad <- 1:nn
+  qref <- (qquad-.5)/nn
+  idx <- rank(p)
+  return(-log10(qref[idx]))
+}
+
+nnr <- nrow(dat[dat$confidence != "none",])
+qquad <-c(1:nnr)
+qref <- ((qquad-.5)/nnr)
+ci_up <- qbeta(.975,qquad,nnr+1-qquad)
+ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
+
+pp <- plot_ly(shared_int3, 
+              x=~exp_nlogp(-round1_intercept_z), 
+              y=~r1_int_nlogp,
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              showlegend=T,
+              name="Round 1",
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Round 1 Int.: ", round(round1_intercept,5), " (p=",round1_intercept_p,")",
+                "<br>Round 2 Int.: ", round(round2_intercept,5), " (p=",round2_intercept_p,")",
+                "<br>Round 2 Effective N: ", Neff)
+          ) %>% add_trace(
+              x=~exp_nlogp(-round2_intercept_z), 
+              y=~r2_int_nlogp,
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              showlegend=T,
+              name="Round 2",
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Round 1 Int.: ", round(round1_intercept,5), " (p=",round1_intercept_p,")",
+                "<br>Round 2 Int.: ", round(round2_intercept,5), " (p=",round2_intercept_p,")",
+                "<br>Round 2 Effective N: ", Neff)
+          ) %>% add_trace(
+              x=-log10(qref),
+              y=-log10(qref),
+              mode="lines",
+              showlegend=F,
+              hoverinfo = "text",
+              text = ""
+          ) %>% add_trace(
+              x=-log10(qref),
+              y=-log10(ci_up),
+              mode="lines",
+              line=list(color='#2ca02c'),
+              showlegend=F,
+              hoverinfo = "text",
+              text = ""
+          ) %>% add_trace(
+              x=-log10(qref),
+              y=-log10(ci_lo),
+              mode="lines",
+              line=list(color='#2ca02c'),
+              fill="tonexty",
+              fillcolor='rgba(44,160,44,0.2)',
+              showlegend=F,
+              hoverinfo = "text",
+              text = ""
+          ) %>% layout(
+              showlegend=T,
+              xaxis = list(title="Expected -log10(p-value)"),
+              yaxis = list(title="Observed -log10(p-value)")
+          ) %>% onRender(js)
+
+bscols(widths=c(12),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+```
+
+<p></p>
+
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results.
+
+</div>
+
+<br>
+
+### SNP Heritability {.tabset .tabset-fade}
+
+SNP heritability results are highly concordant between Round 1 and Round 2. SNP heritability is increased for a handful of phenotypes where the updated GWAS covariates are likely to have strong effects. P-values for the Round 2 SNP heritability results are slightly stronger in the increased sample size.
+  
+#### SNP Heritability Estimates
+  
+<div class="well">
+  
+```{r comp_h2, echo=FALSE}
+# setup shared data
+shared_h2 <- SharedData$new(dat[dat$confidence != "none",])
+
+# define plot
+pp <- plot_ly(shared_h2, 
+              x=~round1_h2_liability, 
+              y=~round2_h2_liability, 
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Round 1 Liability SNP h2: ", round(round1_h2_liability,5), " (p=",signif(round1_h2_p, 3),")",
+                "<br>Round 2 Liability SNP h2: ", round(round2_h2_liability,5), " (p=",signif(round2_h2_p, 3),")",
+                "<br>Round 2 Effective N: ", Neff)) %>% add_trace(
+                  x=~round1_h2_liability,
+                  y=~round1_h2_liability,
+                  mode="lines",
+                  hoverinfo="none",
+                  showlegend=F
+                ) %>% onRender(js)
+
+# construct
+bscols(widths=c(10,2),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+       list(
+      		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%",round=T),
+      		filter_select("variable_type","Var. Type", shared_h2, ~variable_type, multiple=T),
+      		filter_select("confidence","Confidence", shared_h2, ~confidence, multiple=T),
+      		filter_select("source","Dataset", shared_h2, ~source, multiple=T)
+       )
+)
+```
+
+<p></p>
+
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results. Trend is clearer when filtering to higher effective sample size using the slider on the right.
+
+
+</div>
+
+<br>
+
+#### SNP Heritability p-values
+  
+<div class="well">
+  
+```{r qq_h2, echo=FALSE}
+
+shared_h2_3 <- SharedData$new(dat[dat$confidence != "none",])
+
+exp_nlogp <- function(p){
+  nn <- length(p)
+  qquad <- 1:nn
+  qref <- (qquad-.5)/nn
+  idx <- rank(p)
+  return(-log10(qref[idx]))
+}
+
+nnr <- nrow(dat[dat$confidence != "none",])
+qquad <-c(1:nnr)
+qref <- ((qquad-.5)/nnr)
+ci_up <- qbeta(.975,qquad,nnr+1-qquad)
+ci_lo <- qbeta(.025,qquad,nnr+1-qquad)
+
+pp <- plot_ly(shared_h2_3, 
+              x=~exp_nlogp(round1_h2_p), 
+              y=~(-log10(round1_h2_p)),
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              showlegend=T,
+              name="Round 1",
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Round 1 Liability SNP h2: ", round(round1_h2_liability,5), " (p=",signif(round1_h2_p, 3),")",
+                "<br>Round 2 Liability SNP h2: ", round(round2_h2_liability,5), " (p=",signif(round2_h2_p, 3),")",
+                "<br>Round 2 Effective N: ", Neff)
+) %>% add_trace(
+  x=~exp_nlogp(round2_h2_p), 
+  y=~(-log10(round2_h2_p)),
+  type="scatter",
+  mode="markers",
+  customdata=~urls,
+  showlegend=T,
+  name="Round 2",
+  hoverinfo="text",
+  text = ~paste0(
+    "Phenotype: ", description,
+    "<br>Round 1 h2: ", round(round1_h2_liability,5), " (p=",signif(round1_h2_p, 3),")",
+    "<br>Round 2 h2: ", round(round2_h2_liability,5), " (p=",signif(round2_h2_p, 3),")",
+    "<br>Round 2Effective N: ", Neff)
+) %>% add_trace(
+  x=-log10(qref),
+  y=-log10(qref),
+  mode="lines",
+  showlegend=F,
+  hoverinfo = "text",
+  text = ""
+) %>% add_trace(
+  x=-log10(qref),
+  y=-log10(ci_up),
+  mode="lines",
+  line=list(color='#2ca02c'),
+  showlegend=F,
+  hoverinfo = "text",
+  text = ""
+) %>% add_trace(
+  x=-log10(qref),
+  y=-log10(ci_lo),
+  mode="lines",
+  line=list(color='#2ca02c'),
+  fill="tonexty",
+  fillcolor='rgba(44,160,44,0.2)',
+  showlegend=F,
+  hoverinfo = "text",
+  text = ""
+) %>% layout(
+  showlegend=T,
+  xaxis = list(title="Expected -log10(p-value)"),
+  yaxis = list(title="Observed -log10(p-value)")
+) %>% onRender(js)
+
+bscols(widths=c(12),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F)
+)
+```
+
+<p></p>
+
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results.
+
+</div>
+
+<br>
+
+### Precision  {.tabset .tabset-fade}
+
+We can compare the standard errors (SEs) of the estimates between Round 1 and Round 2 to evaulate how much precision was gained from the expanded sample size in Round 2. We observe generally smaller SEs for the SNP heritability and slightly increased SEs for the intercept.
+
+#### SNP Heritability SEs
+
+<div class="well">
+
+```{r comp_h2_se, echo=FALSE}
+# setup shared data
+shared_h2 <- SharedData$new(dat[dat$confidence != "none",])
+
+# define plot
+pp <- plot_ly(shared_h2, 
+              x=~round1_h2_liability_se, 
+              y=~round2_h2_liability_se, 
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Round 1 Liability SNP h2: ", round(round1_h2_liability,5), " (se=",signif(round1_h2_liability_se, 3),")",
+                "<br>Round 2 Liability SNP h2: ", round(round2_h2_liability,5), " (se=",signif(round2_h2_liability_se, 3),")",
+                "<br>Round 2 Effective N: ", Neff)) %>% add_trace(
+                  x=~round1_h2_liability_se,
+                  y=~round1_h2_liability_se,
+                  mode="lines",
+                  hoverinfo="none",
+                  showlegend=F
+                ) %>% onRender(js)
+
+# construct
+bscols(widths=c(10,2),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+       list(
+      		filter_slider("Neff", "Effective N", shared_h2, ~Neff, step=100, width="100%",round=T),
+      		filter_select("variable_type","Var. Type", shared_h2, ~variable_type, multiple=T),
+      		filter_select("confidence","Confidence", shared_h2, ~confidence, multiple=T),
+      		filter_select("source","Dataset", shared_h2, ~source, multiple=T)
+       )
+)
+```
+
+<p></p>
+
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results.
+
+</div>
+
+<br>
+
+#### Intercept SEs
+
+<div class="well">
+
+```{r comp_int_se, echo=FALSE}
+# setup shared data
+shared_int4 <- SharedData$new(dat[dat$confidence != "none",])
+
+# define plot
+pp <- plot_ly(shared_int4, 
+              x=~round1_intercept_se, 
+              y=~round2_intercept_se, 
+              type="scatter",
+              mode="markers",
+              customdata=~urls,
+              hoverinfo="text",
+              text = ~paste0(
+                "Phenotype: ", description,
+                "<br>Round 1 Int.: ", round(round1_intercept,5), " (se=",signif(round1_intercept_se,3),")",
+                "<br>Round 2 Int.: ", round(round2_intercept,5), " (se=",signif(round2_intercept_se,3),")",
+                "<br>Round 2 Effective N: ", Neff)
+            ) %>% add_trace(
+                x=~round1_intercept_se,
+                y=~round1_intercept_se,
+                mode="lines",
+                hoverinfo="none",
+                showlegend=F
+            ) %>% onRender(js)
+
+# construct
+bscols(widths=c(10,2),
+       config(pp, collaborate = F, showLink=F, displayModeBar="hover", displaylogo=F, sendData=F),
+       list(
+      		filter_slider("Neff", "Effective N", shared_int4, ~Neff, step=100, width="100%",round=T),
+      		filter_select("variable_type","Var. Type", shared_int4, ~variable_type, multiple=T),
+      		filter_select("confidence","Confidence", shared_int4, ~confidence, multiple=T),
+      		filter_select("source","Dataset", shared_int4, ~source, multiple=T)
+       )
+)
+```
+
+<p></p>
+
+*Note:* Comparison limited to phenotypes with at least some [confidence](confidence.html) in the Round 2 results.
+
+</div>
+
+<br>

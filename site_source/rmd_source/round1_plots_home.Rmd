@@ -1,0 +1,33 @@
+---
+title: "Vizualizing LDSR results"
+date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(reshape2)
+require(ggplot2)
+require(plotly)
+require(DT)
+require(crosstalk)
+require(crosstool)
+
+```
+
+<br>
+
+<div class="well">
+
+### Overview
+
+To assist with exploring results for >2,000 traits, we've developed a set of interactive plots 
+
+* [$h^2$ and intercept estimates](round1_viz_h2.html)
+* [Partitioned annotation effect sizes](round1_viz_annot.html)
+* [QQ plots of $h^2$ and intercept significance](round1_viz_qq.html)
+* [Relationship of estimates with sample size](round1_viz_sampsize.html)
+* [Comparison of univariate and partitioned LDSR](round1_viz_univar.html)
+
+</div>

@@ -1,0 +1,251 @@
+---
+title: "Vizualizing $h^2$ results: Sample Size"
+date: "Last updated `r format(Sys.Date())`"
+author: "Results from the [Neale Lab](credits.html)"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+params:
+  datfile: "../results/ukbb_h2part.RData"
+---
+
+```{r child = '_toc_fix.Rmd'}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(reshape2)
+require(ggplot2)
+require(plotly)
+require(DT)
+require(crosstalk)
+require(crosstool)
+
+# handle params
+load(file=params$datfile)
+
+# setup
+dat$isBinary <- !is.na(dat$N_case)
+dat$Neff <- dat$N
+dat$Neff[dat$isBinary] <- round( (4/((1/dat$N_case)+(1/dat$N_control)))[dat$isBinary], 2)
+
+dat <- dat[dat$Neff > 200,]
+
+dat$isNomSig_h2 <- dat$h2_p < .05
+dat$isBonfSig_h2 <- dat$h2_p < (.05/nrow(dat))
+dat$isNomSig_int <- dat$intercept_p < .05
+dat$isBonfSig_int <- dat$intercept_p < (.05/nrow(dat))
+dat$table_desc <- paste0("<a href='h2_summary_",dat$phenotype,".html'>",dat$description,"</a>")
+
+dat$h2_liab <- dat$h2_liability
+dat$h2_liab[dat$h2_liab < 0] <- 0
+dat$h2_liab[dat$h2_liab > .5] <- 0.5
+
+```
+
+<br>
+
+### $h^2$ vs Effective N
+
+<div class="well">
+
+```{r neff, echo=FALSE}
+# define plot
+shared_neff <- SharedData$new(dat)
+
+ll <- loess(h2_liability ~ Neff, data=dat)
+
+pp <- plot_ly(shared_neff, 
+			  x=~Neff, 
+			  y=~h2_liability, 
+			  type="scatter",
+			  mode="markers",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
+			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevelence)) %>%
+	add_trace(x=ll$x[order(ll$x)],
+			  y=ll$fitted[order(ll$x)],
+			  showlegend=F,
+			  mode="lines",
+			  hoverinfo="text",
+			  text="")
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=T, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_neff, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_neff, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", shared_neff, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", shared_neff, ~isBonfSig_int, multiple=T)
+	)
+)
+```
+
+</div>
+
+<br> 
+
+### $h^2$ z-score vs Effective N
+
+<div class="well">
+
+```{r neff_z, echo=FALSE}
+# define plot
+shared_neff_z <- SharedData$new(dat)
+
+pp <- plot_ly(shared_neff_z,
+			  x=~Neff, 
+			  y=~h2_z, 
+			  type="scatter",
+			  mode="markers",
+			  color=~h2_liab,
+			  colors=c("blue","darkorange"),
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
+			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevelence))
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_neff_z, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_neff_z, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", shared_neff_z, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", shared_neff_z, ~isBonfSig_int, multiple=T)
+	)
+)
+```
+
+</div>
+
+<br> 
+
+
+### $h^2$ inverse SE vs Effective N
+
+<div class="well">
+
+```{r neff_se, echo=FALSE}
+# define plot
+shared_neff_se <- SharedData$new(dat)
+
+pp <- plot_ly(shared_neff_se,
+			  x=~Neff, 
+			  y=~1/h2_liability_se, 
+			  type="scatter",
+			  mode="markers",
+			  color=~h2_liab,
+			  colors=c("blue","darkorange"),
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
+			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevelence))
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_neff_se, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_neff_se, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", shared_neff_se, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", shared_neff_se, ~isBonfSig_int, multiple=T)
+	)
+)
+```
+
+</div>
+
+<br> 
+
+### $h^2$ vs N Cases
+
+<div class="well">
+
+```{r n_case, echo=FALSE, warnings=FALSE}
+# define plot
+shared_ncas <- SharedData$new(dat)
+
+N_cases <- dat$N_case
+N_cases[is.na(N_cases)] <- dat$N[is.na(N_cases)]
+
+pp <- plot_ly(shared_ncas, 
+			  x=N_cases, 
+			  y=~h2_liability, 
+			  type="scatter",
+			  mode="markers",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
+			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevelence))
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_ncas, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_ncas, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", shared_ncas, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", shared_ncas, ~isBonfSig_int, multiple=T)
+	)
+)
+```
+
+</div>
+
+<br>
+
+
+### $h^2$ vs Total N
+
+<div class="well">
+
+```{r total_n, echo=FALSE}
+# define plot
+shared_ntot <- SharedData$new(dat)
+
+pp <- plot_ly(shared_ntot, 
+			  x=~N, 
+			  y=~h2_liability, 
+			  type="scatter",
+			  mode="markers",
+			  hoverinfo="text",
+			  text = ~paste0(
+			  		    "Phenotype: ", description,
+			  			"<br>Intercept: ", round(intercept,5), " (p=",signif(intercept_p, 3),")",
+			  			"<br>Liability h2: ", round(h2_liability,4), " (p=",signif(h2_p, 3),")",
+			  			"<br>Effective N: ", Neff,
+			  			"<br>Prevalence: ", prevelence))
+
+# construct
+bscols(widths=c(10,2),
+	config(pp, collaborate = F, showLink=F, displayModeBar=F, displaylogo=F, sendData=F),
+	list(
+		filter_slider("Neff", "Effective N", shared_ntot, ~Neff, step=100, width="100%"),
+		filter_select("isBinary","Binary Pheno.", shared_ntot, ~isBinary, multiple=T),
+		filter_select("isBonfSig_h2","Signif. h2", shared_ntot, ~isBonfSig_h2, multiple=T),
+		filter_select("isBonfSig_int","Signif. Int.", shared_ntot, ~isBonfSig_int, multiple=T)
+	)
+)
+```
+</div>
+
+<br>
+
+
+

@@ -1,0 +1,30 @@
+---
+title: "Acknowledgements"
+date: "Last updated `r format(Sys.Date())`"
+output: html_document
+---
+
+***
+
+<div class="well">
+
+* **Lead:** Raymond Walters
+* **LDSR analysis support:** Nikolas Baya, Katherine Tashman, Danfeng Chen, Liam Abbott
+* **Phenotype analysis support**: Caitlin Carey, Duncan Palmer
+* **Supervision**: Benjamin Neale
+* **UK Biobank GWAS Core Team:** Liam Abbott, Sam Bryant, Claire Churchhouse, Andrea Ganna, Daniel Howrigan, Duncan Palmer, Ben Neale, Raymond Walters, Caitlin Carey, The Hail team, Benjamin Neale
+* **UK Biobank GWAS Contributors:** Verneri Anttila, Krishna Aragam, Alex Baumann, Joanne Cole, Mark J. Daly, Rob Damian, Mary Haas, Joel Hirschhorn, Eric Jones, Ruchi Munshi, Manuel Rivas, Sailaja Vedantam
+
+With additional thanks to Alex Bloemendal, Patrick Turley, Robert Maier, Michel Nivard, Steven Gazal, Tarjinder Singh, and many others for helpful conversations.
+
+For more info on the UK Biobank GWAS from the Neale Lab, visit [https://nealelab.is/uk-biobank](https://nealelab.is/uk-biobank)
+
+And our sincere thanks to the participants and researchers of the [UK Biobank](https://www.ukbiobank.ac.uk), who made this effort possible. This project completed under UK Biobank application 31063.
+
+Any and all mistakes on this site can be blamed on Raymond Walters. For any questions or feedback, please **contact us at: <nealelab.ukb@gmail.com>.**
+
+</div>
+
+***
+
+
