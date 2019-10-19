@@ -8,9 +8,9 @@ require("rmarkdown")
 # setup
 setwd("/Users/raymondwalters/Documents/Code/github/UKBB_ldsc/site_build/")
 process <- FALSE
-round1 <- FALSE
+round1 <- TRUE
 viz <- TRUE
-pages <- FALSE
+pages <- TRUE
 testing <- TRUE
 h2 <- read.delim("../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz")
 
@@ -20,7 +20,7 @@ system("cat ../site_source/yml_source/site_core.yml >> _site.yml")
 system("cp ../site_source/rmd_source/index.Rmd ./")
 system("cp ../site_source/rmd_source/downloads.Rmd ./")
 system("cp ../site_source/rmd_source/methods.Rmd ./")
-system("cp ../site_source/rmd_source/h2_credits.Rmd ./")
+system("cp ../site_source/rmd_source/credits.Rmd ./")
 system("cp ../site_source/rmd_source/h2_browser.Rmd ./")
 system("cp ../site_source/analytics_header.html ./")
 system("cp ../site_source/sandflat/sandflat.min.css ./")
@@ -57,9 +57,9 @@ if(viz){
 }
 
 if(process){
-  system("cp ../UKBB_ldsc_scripts/ukbb_h2_select_topline.Rmd ./")
-  system("cp ../UKBB_ldsc_scripts/ukbb_h2_process_confidence.Rmd ./")
-  system("cp ../UKBB_ldsc_scripts/ukbb_h2_process_significance.Rmd ./")
+  system("cp ../UKBB_ldsc_scripts/_ukbb_h2_select_topline.Rmd ./")
+  system("cp ../UKBB_ldsc_scripts/_ukbb_h2_process_confidence.Rmd ./")
+  system("cp ../UKBB_ldsc_scripts/_ukbb_h2_process_significance.Rmd ./")
   system("cat ../site_source/yml_source/site_processing.yml >> _site.yml")
   system("cp -r ../external_images ./images")
 }else{
@@ -71,8 +71,8 @@ if(pages){
     set.seed(5)
     h2 <- h2[c(sample(1:nrow(h2),10),137,2942,732),] # manual exclusions are extreme high/low pvals
   }
-  cat(paste0("\n  h2_summary_",h2$phenotype,".html:\n    src: \"h2_part_template.Rmd\"\n    params:\n      pheno: \"",h2$phenotype,"\"\n      dat_topline: \"../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz\"\n      dat_part: \"../results/round2_final/ukb31063_h2_z4.02Oct2019.tsv.gz\""), file="_site.yml", append=TRUE)
-  system("cp ../site_source/rmd_source/h2_part_template.Rmd ./")
+  cat(paste0("\n  h2_summary_",h2$phenotype,".html:\n    src: \"_h2_part_template.Rmd\"\n    params:\n      pheno: \"",h2$phenotype,"\"\n      dat_topline: \"../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz\"\n      dat_part: \"../results/round2_final/ukb31063_h2_z4.02Oct2019.tsv.gz\""), file="_site.yml", append=TRUE)
+  system("cp ../site_source/rmd_source/_h2_part_template.Rmd ./")
 }
   
 # create site
