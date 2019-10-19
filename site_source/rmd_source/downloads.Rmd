@@ -8,6 +8,8 @@ output:
     toc_float: true
     number_sections: false
     toc_depth: 3
+params:
+  datfile: "../results/round2_final/ukb31063_ldsc_sumstat_manifest.tsv.gz"
 ---
 
 ```{r child = '_toc_fix.Rmd'}
@@ -29,13 +31,109 @@ Results files for this LDSR analysis are available <a href="https://www.dropbox.
 
 Note the first two files are simply a subset of the full results in `ukb31063_h2_all.02Oct2019.tsv.gz`. They are provided for the convenience of a smaller download.
 
+</div>
+
 <p></p>
+
+<div class="well">
+
+### LDSC Sumstat Files
+
+In addition to the LDSR results, the exported sumstat files in LDSC format are also available via Dropbox. The table below provides direct download links to the sumstats for the [primary GWAS of each phenotype](select_topline.html) in the LDSR analysis for phenotypes where we have at least some confidence in the LDSR results (see [confidence ratings](confidence.html)). 
+
+You can also view and download a <a href="https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing" onclick="trackOutboundLink('https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing'); return false;">full manifest of dropbox links</a> for the LDSR sumstat files for all of the Neale UKB GWAS.
+
+<p></p>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+require(reshape2)
+require(ggplot2)
+require(plotly)
+require(DT)
+require(crosstalk)
+require(crosstool)
+
+```
+
+<style>
+.dt-body-breakwrap {
+   white-space: wrap;
+   word-wrap: break-word;
+}
+</style>
+
+```{r download_manifest, echo=F}
+
+# load file
+dat <- read.delim(file=normalizePath(params$datfile),sep='\t',header=T,stringsAsFactors=F)
+dat <- dat[dat$is_primary_gwas & (dat$ldsc_confidence %in% c("low","medium","high")),]
+
+dat$phen_stem <- sapply(dat$phenotype,function(a) strsplit(a,"_")[[1]][1])
+dat_phe <- dat[dat$source=="phesant" | dat$source=="biomarkers",]
+dat_icd <- dat[dat$source=="icd10",]
+dat_fin <- dat[dat$source=="finngen",]
+dat_cov <- dat[dat$source=="covariate",]
+dat <- rbind(dat_phe[order(as.numeric(dat_phe$phen_stem),decreasing=F),],
+             dat_cov[order(dat_cov$phenotype,decreasing=F),],
+             dat_icd[order(dat_icd$phenotype,decreasing=F),],
+             dat_fin[order(dat_fin$phenotype,decreasing=F),])
+rm(dat_phe,dat_icd,dat_fin,dat_cov)
+
+# setup links
+dat$phenobreak <- gsub("_","<wbr>_",dat$phenotype)
+# dat$showcase_link <- paste0("<a href='",dat$showcase,"'>",dat$phenobreak,"</a>")
+# dat$showcase_link[dat$source=="finngen"] <- dat$phenobreak[dat$source=="finngen"]
+
+dat$ldsc_dl <- gsub("dl=0","dl=1",dat$ldsc_sumstat_dropbox)
+dat$ldsc_link <- paste0("<a href='",dat$ldsc_dl,"'>","Download LDSC sumstats","</a>")
+
+dat$gwas_dl <- gsub("dl=0","dl=1",dat$gwas_dropbox)
+dat$gwas_link <- paste0("<a href='",dat$gwas_dl,"'>","Download GWAS results","</a>")
+
+# make table
+dt <- datatable(SharedData$new(dat[,c("phenobreak","description","ldsc_link","gwas_link")]), 
+		  rownames = F, 
+		  colnames = c("ID","Phenotype","LDSC Download Link","GWAS Download Link"), 
+		  selection="none",
+		  style="default", 
+		  class="stripe hover compact", 
+		  escape=F,
+      extensions = c('FixedHeader'),
+		  options = list(scrollY="475px", scrollX=TRUE, pageLength=15, fixedHeader=TRUE, autoWidth=TRUE,
+		                 search = list(regex=TRUE),
+		                 columnDefs = list(list(width="125px", targets=c(0)),
+		                                   list(width="225px", targets=c(1)),
+		                                   list(className='dt-body-breakwrap', targets=c(0)),
+		                                   list(searchable=FALSE, targets=c(2:3))),
+		                 dom = 'frtip')
+)
+
+dt
+
+```
+
+<br>
+
+These files are provided to facilitate running your own LDSR SNP heritability analyses with different models or for genetic correlation analyses. For genetic correlations between the heritable phenotypes in this UKB GWAS, visit [ukbb-rg.hail.is](https://ukbb-rg.hail.is/)
+
+</div>
+
+<p></p>
+
+<div class="well">
 
 ### Reference Files
 
 LD scores, weights, and allele frequencies for the Baseline-LD v1.1 model used here are available for [download from the Alkes Price lab](https://data.broadinstitute.org/alkesgroup/LDSCORE/).
 
+</div>
+
 <p></p>
+
+<div class="well">
 
 ### Full GWAS Results
 
@@ -43,7 +141,11 @@ The full GWAS results are available for download from Dropbox. A full manifest o
 
 For more information about the GWAS analyses, see [the Neale Lab blog](http://www.nealelab.is/uk-biobank) and [github](https://github.com/Nealelab/UK_Biobank_GWAS). 
 
+</div>
+
 <p></p>
+
+<div class="well">
 
 ### Previous SNP Heritability Results
 
