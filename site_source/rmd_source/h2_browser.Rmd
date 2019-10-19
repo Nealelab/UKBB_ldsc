@@ -24,14 +24,6 @@ div.main-container {
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# table {
-#   table-layout:fixed;
-# }
-# table td {
-#   word-wrap: break-word;
-#   max-width: 300px;
-#   white-space: pre-wrap;
-# }
 
 # parameters
 dat <- read.delim(file=normalizePath(params$datfile),sep='\t',header=T,stringsAsFactors=F,colClasses=c(intercept_p="character"))
