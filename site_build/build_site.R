@@ -7,11 +7,11 @@ require("rmarkdown")
 
 # setup
 setwd("/Users/raymondwalters/Documents/Code/github/UKBB_ldsc/site_build/")
-process <- FALSE
+process <- TRUE
 round1 <- TRUE
 viz <- TRUE
 pages <- TRUE
-testing <- TRUE
+testing <- FALSE
 h2 <- read.delim("../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz")
 
 # build yaml and get files

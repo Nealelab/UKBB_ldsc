@@ -9,48 +9,49 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Results from the Neale Lab" />
 
 
-<title>Heritability for 20002_1473</title>
+<title>SNP Heritability for Phenotype 20002_1473</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/sandstone.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
-<script src="site_libs/htmlwidgets-0.9/htmlwidgets.js"></script>
-<script src="site_libs/plotly-binding-4.7.1/plotly.js"></script>
+<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.8.0.9000/plotly.js"></script>
 <script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="site_libs/crosstalk-1.0.1/css/crosstalk.css" rel="stylesheet" />
 <script src="site_libs/crosstalk-1.0.1/js/crosstalk.min.js"></script>
-<link href="site_libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="site_libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
-<link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-57x57.png" />
-<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114.png" />
-<link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72.png" />
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x144.png" />
-<link rel="apple-touch-icon-precomposed" sizes="60x60" href="apple-touch-icon-60x60.png" />
-<link rel="apple-touch-icon-precomposed" sizes="120x120" href="apple-touch-icon-120x120.png" />
-<link rel="apple-touch-icon-precomposed" sizes="76x76" href="apple-touch-icon-76x76.png" />
-<link rel="apple-touch-icon-precomposed" sizes="152x152" href="apple-touch-icon-152x152.png" />
-<link rel="icon" type="image/png" href="favicon-196x196.png" sizes="196x196" />
-<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
-<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
-<link rel="icon" type="image/png" href="favicon-128.png" sizes="128x128" />
+<link href="site_libs/plotly-htmlwidgets-css-1.41.3/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-1.41.3/plotly-latest.min.js"></script>
+<!-- setup favicons -->
+<link rel="apple-touch-icon-precomposed" sizes="57x57" href="icon/apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="icon/apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="icon/apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="icon/apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon-precomposed" sizes="60x60" href="icon/apple-touch-icon-60x60.png" />
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="icon/apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon-precomposed" sizes="76x76" href="icon/apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="icon/apple-touch-icon-152x152.png" />
+<link rel="icon" type="image/png" href="icon/favicon-196x196.png" sizes="196x196" />
+<link rel="icon" type="image/png" href="icon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/png" href="icon/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="icon/favicon-16x16.png" sizes="16x16" />
+<link rel="icon" type="image/png" href="icon/favicon-128.png" sizes="128x128" />
 <meta name="application-name" content="&nbsp;"/>
 <meta name="msapplication-TileColor" content="#FFFFFF" />
-<meta name="msapplication-TileImage" content="mstile-144x144.png" />
-<meta name="msapplication-square70x70logo" content="mstile-70x70.png" />
-<meta name="msapplication-square150x150logo" content="mstile-150x150.png" />
-<meta name="msapplication-wide310x150logo" content="mstile-310x150.png" />
-<meta name="msapplication-square310x310logo" content="mstile-310x310.png" />
+<meta name="msapplication-TileImage" content="icon/mstile-144x144.png" />
+<meta name="msapplication-square70x70logo" content="icon/mstile-70x70.png" />
+<meta name="msapplication-square150x150logo" content="icon/mstile-150x150.png" />
+<meta name="msapplication-wide310x150logo" content="icon/mstile-310x150.png" />
+<meta name="msapplication-square310x310logo" content="icon/mstile-310x310.png" />
 
 
+<!-- Basic analytics to track views and downloads -->
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -58,8 +59,8 @@
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-106608402-1', 'auto');
-  ga('send', 'pageview');
   ga('set', 'anonymizeIp', true);
+  ga('send', 'pageview');
 
 </script>
 
@@ -70,7 +71,7 @@
 */
 var trackOutboundLink = function(url) {
     // check if the GA object exists and that it has initialized
-    if(window.ga && ga.loaded) {
+    if(typeof ga !== 'undefined' && ga.loaded) {
         // if yes, rely on GA to follow link
         ga('send', 'event', 'outbound', 'click', url, {
             'transport': 'beacon',
@@ -83,19 +84,6 @@ var trackOutboundLink = function(url) {
 }
 </script>
 
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
-<script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
-}
-</script>
 
 
 
@@ -126,6 +114,8 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="sandflat.min.css" type="text/css" />
+<link rel="stylesheet" href="dt_style.css" type="text/css" />
 
 </head>
 
@@ -157,34 +147,34 @@ button.code-folding-btn:focus {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 61px;
+  padding-top: 51px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 
 .section h2 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 .section h3 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 .section h4 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 .section h5 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 .section h6 {
-  padding-top: 66px;
-  margin-top: -66px;
+  padding-top: 56px;
+  margin-top: -56px;
 }
 </style>
 
@@ -231,12 +221,36 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">UKBB Heritability</a>
+      <a class="navbar-brand" href="index.html">UKB Heritability</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
   <a href="h2_browser.html">Browser</a>
+</li>
+<li>
+  <a href="downloads.html">Downloads</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Methods
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="details.html">Overview</a>
+    </li>
+    <li>
+      <a href="select_topline.html">Selecting Primary GWAS</a>
+    </li>
+    <li>
+      <a href="confidence.html">Confidence Criteria</a>
+    </li>
+    <li>
+      <a href="significance.html">Significance Thresholds</a>
+    </li>
+  </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -252,26 +266,56 @@ $(document).ready(function () {
       <a href="viz_annot.html">Partitioned Annotations</a>
     </li>
     <li>
-      <a href="viz_qq.html">QQ Plots</a>
-    </li>
-    <li>
       <a href="viz_sampsize.html">Sample Size Scaling</a>
     </li>
     <li>
-      <a href="viz_univar.html">Univariate LDSR</a>
+      <a href="viz_R1vR2.html">Round 1 vs. Round 2</a>
     </li>
   </ul>
 </li>
-<li>
-  <a href="details.html">Technical Details</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Archive
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="round1_details.html">Round 1 Methods</a>
+    </li>
+    <li>
+      <a href="round1_h2_browser.html">Round 1 Browser</a>
+    </li>
+    <li>
+      <a href="round1_h2_univar_browser.html">Round 1 Univariate Browser</a>
+    </li>
+    <li>
+      <a href="round1_plots_home.html">Round 1 Plots</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/Nealelab/UKBB_ldsc">Github Repo</a>
-</li>
-<li>
-  <a href="http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-370000-samples-in-the-uk-biobank">Neale Lab UKBB</a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    About
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="credits.html">Credits</a>
+    </li>
+    <li>
+      <a href="https://github.com/Nealelab/UKBB_ldsc">Site Github</a>
+    </li>
+    <li>
+      <a href="https://github.com/Nealelab/UKBB_ldsc_scripts">Analysis Github</a>
+    </li>
+    <li>
+      <a href="https://www.nealelab.is/uk-biobank">Neale Lab UKB</a>
+    </li>
+  </ul>
 </li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -282,58 +326,99 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Heritability for 20002_1473</h1>
-<h4 class="date"><em>Last updated 2017-09-20</em></h4>
+<h1 class="title toc-ignore">SNP Heritability for Phenotype 20002_1473</h1>
+<h4 class="author"><em>Results from the <a href="credits.html">Neale Lab</a></em></h4>
+<h4 class="date"><em>Last updated 2019-10-19</em></h4>
 
 </div>
 
 
 <p><br></p>
-<div class="panel panel-primary">
+<div class="panel panel-info">
 <div class="panel-body">
 <h3 id="phenotype-non-cancer-illness-code-self-reported-high-cholesterol"><strong>Phenotype:</strong> Non-cancer illness code, self-reported: high cholesterol</h3>
-<h4 id="estimated-snp-heritability-0.1139-se0.0116-p5.391e-23"><strong>Estimated SNP heritability:</strong> 0.1139 (se=0.0116, p=5.391e-23)</h4>
-<p>This phenotype can be found on the UK Biobank Showcase for <a href="http://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=20002">code 20002</a>. GWAS results are available for <em>N</em> = 337,159 unrelated individuals of European ancestry. This is a binary phenotype with 41,296 cases and 295,863 controls. <br></p>
-<p><em>Note:</em> Heritability for this binary outcome is reported on the liability scale, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set (0.122). This may be unreliable if the outcome was limited to a subset of individuals, or if the UK Biobank study population is not representative for this phenotype (<a href="https://academic.oup.com/aje/article/doi/10.1093/aje/kwx246/3883629/Comparison-of-Sociodemographic-and-Health-Related">which is likely in many cases</a>).<br><br>Estimated <strong>observed-scale heritability</strong>: 0.0436 (se=0.00445).</p>
+<p>This phenotype can be found on the UK Biobank Showcase for <a href="http://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=20002">code 20002</a>. Neale Lab GWAS results are available for 361,141 unrelated individuals of European ancestry. This is a binary phenotype with 43,957 cases and 317,184 controls.</p>
+</div>
+</div>
+<p><br></p>
+<div class="panel panel-primary">
+<div class="panel-heading">
+<h3 class="panel-title">
+Primary Results
+</h3>
+</div>
+<div class="panel-body">
+<h4 id="estimated-snp-heritability-0.1257-se0.0122-p3.22e-25"><strong>Estimated SNP heritability:</strong> 0.1257 (se=0.0122, p=3.22e-25)</h4>
+<h4 id="significance-level-strongly-significant-after-multiple-testing-correction"><strong><a href="significance.html">Significance level</a>:</strong> strongly significant after multiple testing correction</h4>
+<h4 id="confidence-rating-high"><strong><a href="confidence.html">Confidence rating</a>:</strong> high</h4>
+<p>
+</p>
+<p><em>Note:</em> SNP heritability for this binary outcome is reported on the liability scale, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set (0.122). This may be unreliable if the outcome was limited to a subset of individuals, or if the UK Biobank study population is not representative for this phenotype (<a href="https://academic.oup.com/aje/article/doi/10.1093/aje/kwx246/3883629/Comparison-of-Sociodemographic-and-Health-Related">which is likely in many cases</a>). The estimated <strong>observed-scale heritability</strong> is: 0.0480 (se=0.00465).</p>
+<hr />
+<h4 id="confounding-and-model-misspecification"><strong>Confounding and model misspecification</strong></h4>
+<p>In addition to SNP heritability, LD score regression also estimates an intercept term that indexes population stratification, other counfounding, and potential misspecification in the partitioned LD score model for the distribution of genetic effects genome-wide.</p>
+<ul>
+<li><strong>Intercept:</strong> 1.0591 (se=0.0225, p=0.00424)</li>
+<li><strong>Mean <span class="math inline">\(\chi^2\)</span>:</strong> 1.3677</li>
+<li><strong>Ratio:</strong> 0.1607 (se=0.0611)</li>
+<li><strong><span class="math inline">\(\lambda_{GC}\)</span>:</strong> 1.2326</li>
+</ul>
+<p>Intercept values near 1 indicate little or no confounding. The reported LDSR ratio compares the intercept estimate and the mean <span class="math inline">\(\chi^2\)</span> statistic to provide a rough index for how much of the polygenic signal in the GWAS may be due to confounding rather than genetic effects (assuming the LD score model is well specified). Note that the intercept, mean <span class="math inline">\(\chi^2\)</span>, and genomic control <span class="math inline">\(\lambda_{GC}\)</span> are all expected to scale with sample size, making the ratio better suited for comparisons between different GWAS.</p>
+<hr />
+<h4 id="correlations"><strong>Correlations</strong></h4>
+<p>Genetic correlations and phenotypic correlations comparing this phenotype to other significantly heritable phenotypes from the Neale Lab UK Biobank GWAS can be found at: <a href="https://ukbb-rg.hail.is/rg_summary_20002_1473.html"><strong>ukbb-rg.hail.is</strong></a></p>
+</div>
+</div>
+<p><br></p>
+<div class="panel panel-primary">
+<div class="panel-heading">
+<h3 class="panel-title">
+Partitioned Heritability
+</h3>
+</div>
+<div class="panel-body">
+<h4 id="significance-of-categorical-annotations">Significance of categorical annotations</h4>
+<div class="container-fluid crosstalk-bscols">
+<div class="fluid-row">
+<div class="col-xs-12">
+<div id="htmlwidget-d069e3d906d5cfc09b51" style="width:100%;height:400px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d069e3d906d5cfc09b51">{"x":{"visdat":{"7a75613c6026":["function () ","plotlyVisDat"]},"cur_data":"7a75613c6026","attrs":{"7a75613c6026":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"hoverinfo":"text","text":{},"type":"bar","name":"p-value for coefficient","inherit":true},"7a75613c6026.1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":[2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079],"type":"scatter","mode":"lines","hoverinfo":"text","text":"","name":"Bonferroni significance","inherit":true},"7a75613c6026.2":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":[1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398],"type":"scatter","mode":"lines","hoverinfo":"text","text":"","name":"Nominal significance","inherit":true}},"layout":{"margin":{"b":150,"l":100,"t":25,"r":10},"showlegend":false,"xaxis":{"domain":[0,1],"automargin":true,"title":"Annotation","tickangle":-30,"type":"category","categoryorder":"array","categoryarray":["Coding_UCSC","Conserved_LindbladToh","CTCF_Hoffman","DGF_ENCODE","DHS_peaks_Trynka","DHS_Trynka","Enhancer_Andersson","Enhancer_Hoffman","FetalDHS_Trynka","GERP.RSsup4","H3K27ac_Hnisz","H3K27ac_PGC2","H3K4me1_peaks_Trynka","H3K4me1_Trynka","H3K4me3_peaks_Trynka","H3K4me3_Trynka","H3K9ac_peaks_Trynka","H3K9ac_Trynka","Intron_UCSC","Promoter_UCSC","PromoterFlanking_Hoffman","Repressed_Hoffman","Super_Enhancer_Vahedi","SuperEnhancer_Hnisz","TFBS_ENCODE","Transcr_Hoffman","TSS_Hoffman","Typical_Enhancer_Vahedi","UTR_3_UCSC","UTR_5_UCSC","WeakEnhancer_Hoffman"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"-log10(p-value)","side":"left","range":[0,3.2]},"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":[],"cloud":false,"showLink":false,"displayModeBar":"hover","displaylogo":false,"sendData":false},"data":[{"x":["Coding_UCSC","Conserved_LindbladToh","CTCF_Hoffman","DGF_ENCODE","DHS_peaks_Trynka","DHS_Trynka","Enhancer_Andersson","Enhancer_Hoffman","FetalDHS_Trynka","H3K27ac_Hnisz","H3K27ac_PGC2","H3K4me1_peaks_Trynka","H3K4me1_Trynka","H3K4me3_peaks_Trynka","H3K4me3_Trynka","H3K9ac_peaks_Trynka","H3K9ac_Trynka","Intron_UCSC","PromoterFlanking_Hoffman","Promoter_UCSC","Repressed_Hoffman","SuperEnhancer_Hnisz","TFBS_ENCODE","Transcr_Hoffman","TSS_Hoffman","UTR_3_UCSC","UTR_5_UCSC","WeakEnhancer_Hoffman","Super_Enhancer_Vahedi","Typical_Enhancer_Vahedi","GERP.RSsup4"],"y":[0.383378542352967,1.20254061688697,0.524698323328805,0.580731766095931,0.385356165405179,0.344315761995511,0.685148989771061,0.112687465850916,0.0564669188599366,0.60136587932778,0.896568880646723,0.287466792558673,0.323808831253925,0.673012755441393,0.0646655936932577,0.00262528976053345,0.327335006886591,0.679777426972117,0.636267673691901,0.493089438314844,0.103534001711796,0.237112121634949,0.412352250082301,0.0999372881258468,0.414208366864196,0.264191576092346,0.137599292590443,0.6845554013421,0.492666955774442,0.802480359567409,0.475182454421431],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"text":["Annotation: Coding_UCSC<br>p-value: 0.414","Annotation: Conserved_LindbladToh<br>p-value: 0.0627","Annotation: CTCF_Hoffman<br>p-value: 0.299","Annotation: DGF_ENCODE<br>p-value: 0.263","Annotation: DHS_peaks_Trynka<br>p-value: 0.412","Annotation: DHS_Trynka<br>p-value: 0.453","Annotation: Enhancer_Andersson<br>p-value: 0.206","Annotation: Enhancer_Hoffman<br>p-value: 0.771","Annotation: FetalDHS_Trynka<br>p-value: 0.878","Annotation: H3K27ac_Hnisz<br>p-value: 0.25","Annotation: H3K27ac_PGC2<br>p-value: 0.127","Annotation: H3K4me1_peaks_Trynka<br>p-value: 0.516","Annotation: H3K4me1_Trynka<br>p-value: 0.474","Annotation: H3K4me3_peaks_Trynka<br>p-value: 0.212","Annotation: H3K4me3_Trynka<br>p-value: 0.862","Annotation: H3K9ac_peaks_Trynka<br>p-value: 0.994","Annotation: H3K9ac_Trynka<br>p-value: 0.471","Annotation: Intron_UCSC<br>p-value: 0.209","Annotation: PromoterFlanking_Hoffman<br>p-value: 0.231","Annotation: Promoter_UCSC<br>p-value: 0.321","Annotation: Repressed_Hoffman<br>p-value: 0.788","Annotation: SuperEnhancer_Hnisz<br>p-value: 0.579","Annotation: TFBS_ENCODE<br>p-value: 0.387","Annotation: Transcr_Hoffman<br>p-value: 0.794","Annotation: TSS_Hoffman<br>p-value: 0.385","Annotation: UTR_3_UCSC<br>p-value: 0.544","Annotation: UTR_5_UCSC<br>p-value: 0.728","Annotation: WeakEnhancer_Hoffman<br>p-value: 0.207","Annotation: Super_Enhancer_Vahedi<br>p-value: 0.322","Annotation: Typical_Enhancer_Vahedi<br>p-value: 0.158","Annotation: GERP.RSsup4<br>p-value: 0.335"],"type":"bar","name":"p-value for coefficient","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Coding_UCSC","Conserved_LindbladToh","CTCF_Hoffman","DGF_ENCODE","DHS_peaks_Trynka","DHS_Trynka","Enhancer_Andersson","Enhancer_Hoffman","FetalDHS_Trynka","H3K27ac_Hnisz","H3K27ac_PGC2","H3K4me1_peaks_Trynka","H3K4me1_Trynka","H3K4me3_peaks_Trynka","H3K4me3_Trynka","H3K9ac_peaks_Trynka","H3K9ac_Trynka","Intron_UCSC","PromoterFlanking_Hoffman","Promoter_UCSC","Repressed_Hoffman","SuperEnhancer_Hnisz","TFBS_ENCODE","Transcr_Hoffman","TSS_Hoffman","UTR_3_UCSC","UTR_5_UCSC","WeakEnhancer_Hoffman","Super_Enhancer_Vahedi","Typical_Enhancer_Vahedi","GERP.RSsup4"],"y":[2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079],"type":"scatter","mode":"lines","hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"text":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],"name":"Bonferroni significance","marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"line":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Coding_UCSC","Conserved_LindbladToh","CTCF_Hoffman","DGF_ENCODE","DHS_peaks_Trynka","DHS_Trynka","Enhancer_Andersson","Enhancer_Hoffman","FetalDHS_Trynka","H3K27ac_Hnisz","H3K27ac_PGC2","H3K4me1_peaks_Trynka","H3K4me1_Trynka","H3K4me3_peaks_Trynka","H3K4me3_Trynka","H3K9ac_peaks_Trynka","H3K9ac_Trynka","Intron_UCSC","PromoterFlanking_Hoffman","Promoter_UCSC","Repressed_Hoffman","SuperEnhancer_Hnisz","TFBS_ENCODE","Transcr_Hoffman","TSS_Hoffman","UTR_3_UCSC","UTR_5_UCSC","WeakEnhancer_Hoffman","Super_Enhancer_Vahedi","Typical_Enhancer_Vahedi","GERP.RSsup4"],"y":[1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398],"type":"scatter","mode":"lines","hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"text":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],"name":"Nominal significance","marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"line":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<p>Two-sided test of the tau coefficient for the named annotation conditional on the rest of the baseline-LD v1.1 model. The orange line indicates Bonferroni-corrected significance across 38 annotations of interest for this phenotype (<span class="math inline">\(p &lt;\)</span> 1.3e-3). The green line indicates nominal significance (<span class="math inline">\(p &lt;\)</span> .05). Bonferroni correction excludes the base annotation, 10 MAF bin annotations, and the 26 buffer annotations (extending 500-bp around the baseline functional annotations) since they are primarily intended as statistical controls rather than for direct inference. Note this does not account for multiple testing across phenotypes.</p>
+<p><br></p>
+<h4 id="significance-of-continuous-annotations">Significance of continuous annotations</h4>
+<div class="container-fluid crosstalk-bscols">
+<div class="fluid-row">
+<div class="col-xs-12">
+<div id="htmlwidget-8ea0522279efaf1d84af" style="width:100%;height:400px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8ea0522279efaf1d84af">{"x":{"visdat":{"7a753c77d4e4":["function () ","plotlyVisDat"]},"cur_data":"7a753c77d4e4","attrs":{"7a753c77d4e4":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"hoverinfo":"text","text":{},"type":"bar","name":"p-value for coefficient","inherit":true},"7a753c77d4e4.1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":[2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079],"type":"scatter","mode":"lines","hoverinfo":"text","text":"","name":"Bonferroni significance","inherit":true},"7a753c77d4e4.2":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":[1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398],"type":"scatter","mode":"lines","hoverinfo":"text","text":"","name":"Nominal significance","inherit":true}},"layout":{"margin":{"b":150,"l":100,"t":25,"r":10},"showlegend":false,"xaxis":{"domain":[0,1],"automargin":true,"title":"Annotation","tickangle":-30,"type":"category","categoryorder":"array","categoryarray":["Backgrd_Selection_Stat","CpG_Content_50kb","GERP.NS","MAF_Adj_LLD_AFR","MAF_Adj_Predicted_Allele_Age","Nucleotide_Diversity_10kb","Recomb_Rate_10kb"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"-log10(p-value)","side":"left","range":[0,3.2]},"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":[],"cloud":false,"showLink":false,"displayModeBar":"hover","displaylogo":false,"sendData":false},"data":[{"x":["GERP.NS","MAF_Adj_Predicted_Allele_Age","MAF_Adj_LLD_AFR","Recomb_Rate_10kb","Nucleotide_Diversity_10kb","Backgrd_Selection_Stat","CpG_Content_50kb"],"y":[0.315900161816499,1.31843989219483,1.76793602065396,0.0839198100288606,0.338645334844565,1.36263080547372,0.379398320695042],"hoverinfo":["text","text","text","text","text","text","text"],"text":["Annotation: GERP.NS<br>p-value: 0.483","Annotation: MAF_Adj_Predicted_Allele_Age<br>p-value: 0.048","Annotation: MAF_Adj_LLD_AFR<br>p-value: 0.0171","Annotation: Recomb_Rate_10kb<br>p-value: 0.824","Annotation: Nucleotide_Diversity_10kb<br>p-value: 0.459","Annotation: Backgrd_Selection_Stat<br>p-value: 0.0434","Annotation: CpG_Content_50kb<br>p-value: 0.417"],"type":"bar","name":"p-value for coefficient","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["GERP.NS","MAF_Adj_Predicted_Allele_Age","MAF_Adj_LLD_AFR","Recomb_Rate_10kb","Nucleotide_Diversity_10kb","Backgrd_Selection_Stat","CpG_Content_50kb"],"y":[2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079],"type":"scatter","mode":"lines","hoverinfo":["text","text","text","text","text","text","text"],"text":["","","","","","",""],"name":"Bonferroni significance","marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"line":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["GERP.NS","MAF_Adj_Predicted_Allele_Age","MAF_Adj_LLD_AFR","Recomb_Rate_10kb","Nucleotide_Diversity_10kb","Backgrd_Selection_Stat","CpG_Content_50kb"],"y":[1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398],"type":"scatter","mode":"lines","hoverinfo":["text","text","text","text","text","text","text"],"text":["","","","","","",""],"name":"Nominal significance","marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"line":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<p>Two-sided test of the tau coefficient for the named annotation conditional on the rest of the baseline-LD v1.1 model. The orange line indicates Bonferroni-corrected significance across 38 annotations of interest for this phenotype (<span class="math inline">\(p &lt;\)</span> 1.3e-3). The green line indicates nominal significance (<span class="math inline">\(p &lt;\)</span> .05). Bonferroni correction excludes the base annotation, 10 MAF bin annotations, and the 26 buffer annotations (extending 500-bp around the baseline functional annotations) since they are primarily intended as statistical controls rather than for direct inference. Note this does not account for multiple testing across phenotypes.</p>
 </div>
 </div>
 <p><br></p>
 <div class="well">
-<h3 id="additional-results">Additional Results</h3>
-<p>All results are from partitioned heritability analysis of this phenotype using LD score regression (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/">Bulik-Sullivan et al. 2015</a>, <a href="https://github.com/bulik/ldsc">github repo</a>) with 74 annotations as described by <a href="http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html">Gazal et al. 2017</a> (also on <a href="http://www.biorxiv.org/content/early/2017/04/03/082024">biorxiv</a>). See <a href="%60details.html%60">Technical Details</a> for more information.</p>
-<p><br></p>
-<h4 id="confounding-and-model-misspecification">Confounding and Model Misspecification</h4>
-<p>In addition to heritability, LD score regression also estimates a intercept term that indexes of population stratification, other counfounding, and potential misspecification in the partitioned LD score model for the distribution of genetic effects genome-wide.</p>
+<h4 id="methods">Methods</h4>
+<p>All results are from partitioned heritability analysis of this phenotype using LD score regression (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/">Bulik-Sullivan et al. 2015</a>, <a href="https://github.com/bulik/ldsc">github repo</a>) with 75 annotations as described by <a href="http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html">Gazal et al. 2017</a> (also on <a href="http://www.biorxiv.org/content/early/2017/04/03/082024">biorxiv</a>). See <a href="%60methods.html%60">Methods</a> for more information on the underlying GWAS and LDSR analysis. You can also read more about the <a href="confidence.html">confidence criteria</a> and the <a href="significance.html">significance thresholds</a>.</p>
+<p>
+</p>
+<h4 id="downloads">Downloads</h4>
 <ul>
-<li><strong>Intercept:</strong> 1.0602 (se=0.0202, p=1.408e-03)</li>
-<li><strong>Mean <span class="math inline">\(\chi^2\)</span>:</strong> 1.327</li>
-<li><strong><span class="math inline">\(\lambda_{GC}\)</span>:</strong> 1.2047</li>
-<li><strong>Ratio:</strong> 0.1841 (se=0.0616)</li>
+<li><strong>Full GWAS results (large file):</strong> <a href='https://www.dropbox.com/s/if4g01wvk0zt9iu/20002_1473.gwas.imputed_v3.both_sexes.tsv.bgz?dl=1'  onclick="trackOutboundLink('https://www.dropbox.com/s/if4g01wvk0zt9iu/20002_1473.gwas.imputed_v3.both_sexes.tsv.bgz?dl=1'); return false;"><code>20002_1473.gwas.imputed_v3.both_sexes.tsv.bgz</code></a></li>
+<li><strong>LDSR-formatted summary statistics:</strong> <a href='https://www.dropbox.com/s/gs4m5l0vh1js9ml/20002_1473.ldsc.imputed_v3.both_sexes.tsv.bgz?dl=1'  onclick="trackOutboundLink('https://www.dropbox.com/s/gs4m5l0vh1js9ml/20002_1473.ldsc.imputed_v3.both_sexes.tsv.bgz?dl=1'); return false;"><code>20002_1473.ldsc.imputed_v3.both_sexes.tsv.bgz</code></a></li>
+<li><strong>LDSR <span class="math inline">\(h^2_g\)</span> and intercepts for all primary GWAS:</strong> <a href="https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1'); return false;"><code>ukb31063_h2_topline.02Oct2019.tsv.gz</code></a></li>
+<li><strong>LDSR partitioning for significantly heritable phenotypes:</strong> <a href="https://www.dropbox.com/s/gu9ueqdulze9c9x/ukb31063_h2_z4.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/gu9ueqdulze9c9x/ukb31063_h2_z4.02Oct2019.tsv.gz?dl=1'); return false;"><code>ukb31063_h2_z4.02Oct2019.tsv.gz</code></a></li>
 </ul>
-<p>Intercept values near 1 indicate little or no confounding. Comparing the intercept and the mean <span class="math inline">\(\chi^2\)</span> statistic provides an rough index for how much of the polygenic signal in the GWAS may be due to confounding rather than genetic effects (assuming the LD score model is well specified).</p>
-<p><br></p>
-<h4 id="partitioned-heritability">Partitioned Heritability</h4>
-<h5 id="significance-of-categorical-annotations">Significance of categorical annotations</h5>
-<div class="container-fluid crosstalk-bscols">
-<div class="fluid-row">
-<div class="col-xs-12">
-<div id="151a656b1e026" style="width:100%;height:400px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="151a656b1e026">{"x":{"visdat":{"151a664f61072":["function () ","plotlyVisDat"]},"cur_data":"151a664f61072","attrs":{"151a664f61072":{"alpha":1,"sizes":[10,100],"x":{},"y":{},"hoverinfo":"text","text":{},"type":"bar","name":"p-value for coefficient"},"151a664f61072.1":{"alpha":1,"sizes":[10,100],"x":{},"y":[2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079],"type":"scatter","mode":"lines","hoverinfo":"text","text":"","name":"Bonferroni significance","yaxis":"y2"},"151a664f61072.2":{"alpha":1,"sizes":[10,100],"x":{},"y":[1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398],"type":"scatter","mode":"lines","hoverinfo":"text","text":"","name":"Nominal significance","yaxis":"y2"}},"layout":{"margin":{"b":150,"l":100,"t":25,"r":10},"showlegend":false,"xaxis":{"domain":[0,1],"title":"Annotation","tickangle":-30,"type":"category","categoryorder":"array","categoryarray":["Coding_UCSC","Conserved_LindbladToh","CTCF_Hoffman","DGF_ENCODE","DHS_peaks_Trynka","DHS_Trynka","Enhancer_Andersson","Enhancer_Hoffman","FetalDHS_Trynka","GERP.RSsup4","H3K27ac_Hnisz","H3K27ac_PGC2","H3K4me1_peaks_Trynka","H3K4me1_Trynka","H3K4me3_peaks_Trynka","H3K4me3_Trynka","H3K9ac_peaks_Trynka","H3K9ac_Trynka","Intron_UCSC","Promoter_UCSC","PromoterFlanking_Hoffman","Repressed_Hoffman","Super_Enhancer_Vahedi","SuperEnhancer_Hnisz","TFBS_ENCODE","Transcr_Hoffman","TSS_Hoffman","Typical_Enhancer_Vahedi","UTR_3_UCSC","UTR_5_UCSC","WeakEnhancer_Hoffman"]},"yaxis":{"domain":[0,1],"title":"-log10(p-value)","side":"left","range":[0,1.14207238920759]},"yaxis2":{"title":"","showgrid":false,"zeroline":false,"overlaying":"y","side":"right","range":[0,1.14207238920759],"showticklabels":false},"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":[],"cloud":false,"showLink":false,"displayModeBar":false,"displaylogo":false,"sendData":false},"data":[{"x":["Coding_UCSC","Conserved_LindbladToh","CTCF_Hoffman","DGF_ENCODE","DHS_peaks_Trynka","DHS_Trynka","Enhancer_Andersson","Enhancer_Hoffman","FetalDHS_Trynka","H3K27ac_Hnisz","H3K27ac_PGC2","H3K4me1_peaks_Trynka","H3K4me1_Trynka","H3K4me3_peaks_Trynka","H3K4me3_Trynka","H3K9ac_peaks_Trynka","H3K9ac_Trynka","Intron_UCSC","PromoterFlanking_Hoffman","Promoter_UCSC","Repressed_Hoffman","SuperEnhancer_Hnisz","TFBS_ENCODE","Transcr_Hoffman","TSS_Hoffman","UTR_3_UCSC","UTR_5_UCSC","WeakEnhancer_Hoffman","Super_Enhancer_Vahedi","Typical_Enhancer_Vahedi","GERP.RSsup4"],"y":[0.351779303466146,1.14207238920759,0.378403015879169,0.553651318589026,0.283490421173954,0.287108685841163,0.769638069170869,0.196079978376808,0.0350893557539066,0.956687003761016,0.845135658709735,0.209462061802319,0.560554787723565,0.558442649500082,0.0647269940836835,0.0471797207259679,0.337564305401101,0.801186578675867,0.58013265345356,0.541119239693776,0.147390337046449,0.0580214408315588,0.507518956550062,0.0278067030259649,0.458198363792564,0.613847446964045,0.379928138847794,0.754463234110266,0.413557710610303,0.783345368038301,0.671797065163635],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"text":["Annotation: Coding_UCSC<br>p-value: 0.445","Annotation: Conserved_LindbladToh<br>p-value: 0.0721","Annotation: CTCF_Hoffman<br>p-value: 0.418","Annotation: DGF_ENCODE<br>p-value: 0.279","Annotation: DHS_peaks_Trynka<br>p-value: 0.521","Annotation: DHS_Trynka<br>p-value: 0.516","Annotation: Enhancer_Andersson<br>p-value: 0.17","Annotation: Enhancer_Hoffman<br>p-value: 0.637","Annotation: FetalDHS_Trynka<br>p-value: 0.922","Annotation: H3K27ac_Hnisz<br>p-value: 0.11","Annotation: H3K27ac_PGC2<br>p-value: 0.143","Annotation: H3K4me1_peaks_Trynka<br>p-value: 0.617","Annotation: H3K4me1_Trynka<br>p-value: 0.275","Annotation: H3K4me3_peaks_Trynka<br>p-value: 0.276","Annotation: H3K4me3_Trynka<br>p-value: 0.862","Annotation: H3K9ac_peaks_Trynka<br>p-value: 0.897","Annotation: H3K9ac_Trynka<br>p-value: 0.46","Annotation: Intron_UCSC<br>p-value: 0.158","Annotation: PromoterFlanking_Hoffman<br>p-value: 0.263","Annotation: Promoter_UCSC<br>p-value: 0.288","Annotation: Repressed_Hoffman<br>p-value: 0.712","Annotation: SuperEnhancer_Hnisz<br>p-value: 0.875","Annotation: TFBS_ENCODE<br>p-value: 0.311","Annotation: Transcr_Hoffman<br>p-value: 0.938","Annotation: TSS_Hoffman<br>p-value: 0.348","Annotation: UTR_3_UCSC<br>p-value: 0.243","Annotation: UTR_5_UCSC<br>p-value: 0.417","Annotation: WeakEnhancer_Hoffman<br>p-value: 0.176","Annotation: Super_Enhancer_Vahedi<br>p-value: 0.386","Annotation: Typical_Enhancer_Vahedi<br>p-value: 0.165","Annotation: GERP.RSsup4<br>p-value: 0.213"],"type":"bar","name":"p-value for coefficient","marker":{"fillcolor":"rgba(31,119,180,1)","color":"rgba(31,119,180,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Coding_UCSC","Conserved_LindbladToh","CTCF_Hoffman","DGF_ENCODE","DHS_peaks_Trynka","DHS_Trynka","Enhancer_Andersson","Enhancer_Hoffman","FetalDHS_Trynka","H3K27ac_Hnisz","H3K27ac_PGC2","H3K4me1_peaks_Trynka","H3K4me1_Trynka","H3K4me3_peaks_Trynka","H3K4me3_Trynka","H3K9ac_peaks_Trynka","H3K9ac_Trynka","Intron_UCSC","PromoterFlanking_Hoffman","Promoter_UCSC","Repressed_Hoffman","SuperEnhancer_Hnisz","TFBS_ENCODE","Transcr_Hoffman","TSS_Hoffman","UTR_3_UCSC","UTR_5_UCSC","WeakEnhancer_Hoffman","Super_Enhancer_Vahedi","Typical_Enhancer_Vahedi","GERP.RSsup4"],"y":[2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079],"type":"scatter","mode":"lines","hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"text":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],"name":"Bonferroni significance","yaxis":"y2","line":{"fillcolor":"rgba(255,127,14,1)","color":"rgba(255,127,14,1)"},"xaxis":"x","frame":null},{"x":["Coding_UCSC","Conserved_LindbladToh","CTCF_Hoffman","DGF_ENCODE","DHS_peaks_Trynka","DHS_Trynka","Enhancer_Andersson","Enhancer_Hoffman","FetalDHS_Trynka","H3K27ac_Hnisz","H3K27ac_PGC2","H3K4me1_peaks_Trynka","H3K4me1_Trynka","H3K4me3_peaks_Trynka","H3K4me3_Trynka","H3K9ac_peaks_Trynka","H3K9ac_Trynka","Intron_UCSC","PromoterFlanking_Hoffman","Promoter_UCSC","Repressed_Hoffman","SuperEnhancer_Hnisz","TFBS_ENCODE","Transcr_Hoffman","TSS_Hoffman","UTR_3_UCSC","UTR_5_UCSC","WeakEnhancer_Hoffman","Super_Enhancer_Vahedi","Typical_Enhancer_Vahedi","GERP.RSsup4"],"y":[1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398],"type":"scatter","mode":"lines","hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"text":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],"name":"Nominal significance","yaxis":"y2","line":{"fillcolor":"rgba(44,160,44,1)","color":"rgba(44,160,44,1)"},"xaxis":"x","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1}},"base_url":"https://plot.ly"},"evals":[],"jsHooks":{"render":[{"code":"function(el, x) { var ctConfig = crosstalk.var('plotlyCrosstalkOpts').set({\"on\":\"plotly_click\",\"persistent\":false,\"dynamic\":false,\"selectize\":false,\"opacityDim\":0.2,\"selected\":{\"opacity\":1}}); }","data":null}]}}</script>
-</div>
-</div>
-</div>
-<p>The orange line indicates Bonferroni-corrected significance across 38 annotations for this phenotype (<span class="math inline">\(p &lt;\)</span> 1.3e-3). The green line indicates nominal significance (<span class="math inline">\(p &lt;\)</span> .05). Bonferroni correction excludes the 10 MAF bin annotations and the 26 buffer annotations (extending 500-bp around the baseline functional annotations) since they are primarily intended as statistical controls rather than for direct inference.</p>
-<p><br></p>
-<h5 id="significance-of-continuous-annotations">Significance of continuous annotations</h5>
-<div class="container-fluid crosstalk-bscols">
-<div class="fluid-row">
-<div class="col-xs-12">
-<div id="151a62fb7073d" style="width:100%;height:400px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="151a62fb7073d">{"x":{"visdat":{"151a65b0528c2":["function () ","plotlyVisDat"]},"cur_data":"151a65b0528c2","attrs":{"151a65b0528c2":{"alpha":1,"sizes":[10,100],"x":{},"y":{},"hoverinfo":"text","text":{},"type":"bar","name":"p-value for coefficient"},"151a65b0528c2.1":{"alpha":1,"sizes":[10,100],"x":{},"y":[2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079],"type":"scatter","mode":"lines","hoverinfo":"text","text":"","name":"Bonferroni significance","yaxis":"y2"},"151a65b0528c2.2":{"alpha":1,"sizes":[10,100],"x":{},"y":[1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398],"type":"scatter","mode":"lines","hoverinfo":"text","text":"","name":"Nominal significance","yaxis":"y2"}},"layout":{"margin":{"b":150,"l":100,"t":25,"r":10},"showlegend":false,"xaxis":{"domain":[0,1],"title":"Annotation","tickangle":-30,"type":"category","categoryorder":"array","categoryarray":["Backgrd_Selection_Stat","CpG_Content_50kb","GERP.NS","MAF_Adj_LLD_AFR","MAF_Adj_Predicted_Allele_Age","Nucleotide_Diversity_10kb","Recomb_Rate_10kb"]},"yaxis":{"domain":[0,1],"title":"-log10(p-value)","side":"left","range":[0,1.99989461909607]},"yaxis2":{"title":"","showgrid":false,"zeroline":false,"overlaying":"y","side":"right","range":[0,1.99989461909607],"showticklabels":false},"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":[],"cloud":false,"showLink":false,"displayModeBar":false,"displaylogo":false,"sendData":false},"data":[{"x":["GERP.NS","MAF_Adj_Predicted_Allele_Age","MAF_Adj_LLD_AFR","Recomb_Rate_10kb","Nucleotide_Diversity_10kb","Backgrd_Selection_Stat","CpG_Content_50kb"],"y":[0.541207923945693,0.633387177872616,1.99989461909607,0.306746353192678,0.443826826184679,1.45798094579462,0.394078266985272],"hoverinfo":["text","text","text","text","text","text","text"],"text":["Annotation: GERP.NS<br>p-value: 0.288","Annotation: MAF_Adj_Predicted_Allele_Age<br>p-value: 0.233","Annotation: MAF_Adj_LLD_AFR<br>p-value: 0.01","Annotation: Recomb_Rate_10kb<br>p-value: 0.493","Annotation: Nucleotide_Diversity_10kb<br>p-value: 0.36","Annotation: Backgrd_Selection_Stat<br>p-value: 0.0348","Annotation: CpG_Content_50kb<br>p-value: 0.404"],"type":"bar","name":"p-value for coefficient","marker":{"fillcolor":"rgba(31,119,180,1)","color":"rgba(31,119,180,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["GERP.NS","MAF_Adj_Predicted_Allele_Age","MAF_Adj_LLD_AFR","Recomb_Rate_10kb","Nucleotide_Diversity_10kb","Backgrd_Selection_Stat","CpG_Content_50kb"],"y":[2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079,2.88081359228079],"type":"scatter","mode":"lines","hoverinfo":["text","text","text","text","text","text","text"],"text":["","","","","","",""],"name":"Bonferroni significance","yaxis":"y2","line":{"fillcolor":"rgba(255,127,14,1)","color":"rgba(255,127,14,1)"},"xaxis":"x","frame":null},{"x":["GERP.NS","MAF_Adj_Predicted_Allele_Age","MAF_Adj_LLD_AFR","Recomb_Rate_10kb","Nucleotide_Diversity_10kb","Backgrd_Selection_Stat","CpG_Content_50kb"],"y":[1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398,1.30102999566398],"type":"scatter","mode":"lines","hoverinfo":["text","text","text","text","text","text","text"],"text":["","","","","","",""],"name":"Nominal significance","yaxis":"y2","line":{"fillcolor":"rgba(44,160,44,1)","color":"rgba(44,160,44,1)"},"xaxis":"x","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1}},"base_url":"https://plot.ly"},"evals":[],"jsHooks":{"render":[{"code":"function(el, x) { var ctConfig = crosstalk.var('plotlyCrosstalkOpts').set({\"on\":\"plotly_click\",\"persistent\":false,\"dynamic\":false,\"selectize\":false,\"opacityDim\":0.2,\"selected\":{\"opacity\":1}}); }","data":null}]}}</script>
-</div>
-</div>
-</div>
-<p>The orange line indicates Bonferroni-corrected significance across 38 annotations for this phenotype (<span class="math inline">\(p &lt;\)</span> 1.3e-3). The green line indicates nominal significance (<span class="math inline">\(p &lt;\)</span> .05). Bonferroni correction excludes the 10 MAF bin annotations and the 26 buffer annotations (extending 500-bp around the baseline functional annotations) since they are primarily intended as statistical controls rather than for direct inference.</p>
+<p>See the <a href="https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing" onclick="trackOutboundLink('https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing'); return false;">full manifest of LDSR sumstats files</a> for sumstats for other GWAS of this phenotype, where applicable.</p>
+<p>See the <a href="downloads.html">Downloads page</a> for more information.</p>
+<p>
+</p>
+<h4 id="credits">Credits</h4>
+<p>See the full team behind these results <a href="credits.html">here</a>.</p>
 </div>
 
 

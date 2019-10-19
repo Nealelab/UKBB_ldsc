@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Results from the Neale Lab" />
+
+
+<title>SNP Heritability for Phenotype 20090_373</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.8.0.9000/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.0.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-1.41.3/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-1.41.3/plotly-latest.min.js"></script>
+<!-- setup favicons -->
+<link rel="apple-touch-icon-precomposed" sizes="57x57" href="icon/apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="icon/apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="icon/apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="icon/apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon-precomposed" sizes="60x60" href="icon/apple-touch-icon-60x60.png" />
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="icon/apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon-precomposed" sizes="76x76" href="icon/apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="icon/apple-touch-icon-152x152.png" />
+<link rel="icon" type="image/png" href="icon/favicon-196x196.png" sizes="196x196" />
+<link rel="icon" type="image/png" href="icon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/png" href="icon/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="icon/favicon-16x16.png" sizes="16x16" />
+<link rel="icon" type="image/png" href="icon/favicon-128.png" sizes="128x128" />
+<meta name="application-name" content="&nbsp;"/>
+<meta name="msapplication-TileColor" content="#FFFFFF" />
+<meta name="msapplication-TileImage" content="icon/mstile-144x144.png" />
+<meta name="msapplication-square70x70logo" content="icon/mstile-70x70.png" />
+<meta name="msapplication-square150x150logo" content="icon/mstile-150x150.png" />
+<meta name="msapplication-wide310x150logo" content="icon/mstile-310x150.png" />
+<meta name="msapplication-square310x310logo" content="icon/mstile-310x310.png" />
+
+
+<!-- Basic analytics to track views and downloads -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-106608402-1', 'auto');
+  ga('set', 'anonymizeIp', true);
+  ga('send', 'pageview');
+
+</script>
+
+<script>
+/**
+* Function that tracks a click on an outbound link in Analytics.
+# modifications from: https://hacks.mozilla.org/2016/01/google-analytics-privacy-and-event-tracking/
+*/
+var trackOutboundLink = function(url) {
+    // check if the GA object exists and that it has initialized
+    if(typeof ga !== 'undefined' && ga.loaded) {
+        // if yes, rely on GA to follow link
+        ga('send', 'event', 'outbound', 'click', url, {
+            'transport': 'beacon',
+            'hitCallback': function(){document.location = url;}
+        });
+    } else {
+        // if not, follow link ourselves
+        document.location = url;
+    }
+}
+</script>
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="sandflat.min.css" type="text/css" />
+<link rel="stylesheet" href="dt_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">UKB Heritability</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="h2_browser.html">Browser</a>
+</li>
+<li>
+  <a href="downloads.html">Downloads</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Methods
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="details.html">Overview</a>
+    </li>
+    <li>
+      <a href="select_topline.html">Selecting Primary GWAS</a>
+    </li>
+    <li>
+      <a href="confidence.html">Confidence Criteria</a>
+    </li>
+    <li>
+      <a href="significance.html">Significance Thresholds</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Plots
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="viz_h2.html">Heritability and Intercept</a>
+    </li>
+    <li>
+      <a href="viz_annot.html">Partitioned Annotations</a>
+    </li>
+    <li>
+      <a href="viz_sampsize.html">Sample Size Scaling</a>
+    </li>
+    <li>
+      <a href="viz_R1vR2.html">Round 1 vs. Round 2</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Archive
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="round1_details.html">Round 1 Methods</a>
+    </li>
+    <li>
+      <a href="round1_h2_browser.html">Round 1 Browser</a>
+    </li>
+    <li>
+      <a href="round1_h2_univar_browser.html">Round 1 Univariate Browser</a>
+    </li>
+    <li>
+      <a href="round1_plots_home.html">Round 1 Plots</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    About
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="credits.html">Credits</a>
+    </li>
+    <li>
+      <a href="https://github.com/Nealelab/UKBB_ldsc">Site Github</a>
+    </li>
+    <li>
+      <a href="https://github.com/Nealelab/UKBB_ldsc_scripts">Analysis Github</a>
+    </li>
+    <li>
+      <a href="https://www.nealelab.is/uk-biobank">Neale Lab UKB</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">SNP Heritability for Phenotype 20090_373</h1>
+<h4 class="author"><em>Results from the <a href="credits.html">Neale Lab</a></em></h4>
+<h4 class="date"><em>Last updated 2019-10-19</em></h4>
+
+</div>
+
+
+<p><br></p>
+<div class="panel panel-info">
+<div class="panel-body">
+<h3 id="phenotype-type-of-fatoil-used-in-cooking-low-fat-polyunsaturated-margarine"><strong>Phenotype:</strong> Type of fat/oil used in cooking: Low fat polyunsaturated margarine</h3>
+<p>This phenotype can be found on the UK Biobank Showcase for <a href="http://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=20090">code 20090</a>. Neale Lab GWAS results are available for 51,427 unrelated individuals of European ancestry. This is a binary phenotype with 1,895 cases and 49,532 controls.</p>
+</div>
+</div>
+<br>
+<div class="panel panel-warning">
+<div class="panel-heading">
+<h3 class="panel-title">
+Warning: Low confidence
+</h3>
+</div>
+<div class="panel-body">
+Our confidence rating for this phenotype is <strong>low</strong>. Estimates are likely unstable. For that reason, we do not report enrichment results from partitioning (though they remain available in the <a href="downloads.html">full results file download</a>) and we recommend you avoid making any strong inferences from these results. Read more about our confidence criteria <a href="confidence.html">here</a>.
+</div>
+</div>
+<p><br></p>
+<div class="panel panel-primary">
+<div class="panel-heading">
+<h3 class="panel-title">
+Primary Results
+</h3>
+</div>
+<div class="panel-body">
+<h4 id="estimated-snp-heritability-0.0322-se0.0779-p0.34"><strong>Estimated SNP heritability:</strong> 0.0322 (se=0.0779, p=0.34)</h4>
+<h4 id="significance-level-none-insufficient-confidence"><strong><a href="significance.html">Significance level</a>:</strong> none (insufficient confidence)</h4>
+<h4 id="confidence-rating-low"><strong><a href="confidence.html">Confidence rating</a>:</strong> low</h4>
+<p>Our confidence in the LD Score regression result for this phenotype is reduced due to:</p>
+<ul>
+<li>Potentially biased estimates at low effective sample size</li>
+</ul>
+<p>
+</p>
+<p><em>Note:</em> SNP heritability for this binary outcome is reported on the liability scale, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set (0.0368). This may be unreliable if the outcome was limited to a subset of individuals, or if the UK Biobank study population is not representative for this phenotype (<a href="https://academic.oup.com/aje/article/doi/10.1093/aje/kwx246/3883629/Comparison-of-Sociodemographic-and-Health-Related">which is likely in many cases</a>). The estimated <strong>observed-scale heritability</strong> is: 0.0059 (se=0.0143).</p>
+<hr />
+<h4 id="confounding-and-model-misspecification"><strong>Confounding and model misspecification</strong></h4>
+<p>In addition to SNP heritability, LD score regression also estimates an intercept term that indexes population stratification, other counfounding, and potential misspecification in the partitioned LD score model for the distribution of genetic effects genome-wide.</p>
+<ul>
+<li><strong>Intercept:</strong> 1 (se=0.00824, p=0.498)</li>
+<li><strong>Mean <span class="math inline">\(\chi^2\)</span>:</strong> 1.0023</li>
+<li><strong>Ratio:</strong> 0.0160 (se=3.5856)</li>
+<li><strong><span class="math inline">\(\lambda_{GC}\)</span>:</strong> 1.0041</li>
+</ul>
+<p>Intercept values near 1 indicate little or no confounding. The reported LDSR ratio compares the intercept estimate and the mean <span class="math inline">\(\chi^2\)</span> statistic to provide a rough index for how much of the polygenic signal in the GWAS may be due to confounding rather than genetic effects (assuming the LD score model is well specified). Note that the intercept, mean <span class="math inline">\(\chi^2\)</span>, and genomic control <span class="math inline">\(\lambda_{GC}\)</span> are all expected to scale with sample size, making the ratio better suited for comparisons between different GWAS.</p>
+</div>
+</div>
+<p><br></p>
+<div class="well">
+<h4 id="methods">Methods</h4>
+<p>All results are from partitioned heritability analysis of this phenotype using LD score regression (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/">Bulik-Sullivan et al. 2015</a>, <a href="https://github.com/bulik/ldsc">github repo</a>) with 75 annotations as described by <a href="http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3954.html">Gazal et al. 2017</a> (also on <a href="http://www.biorxiv.org/content/early/2017/04/03/082024">biorxiv</a>). See <a href="%60methods.html%60">Methods</a> for more information on the underlying GWAS and LDSR analysis. You can also read more about the <a href="confidence.html">confidence criteria</a> and the <a href="significance.html">significance thresholds</a>.</p>
+<p>
+</p>
+<h4 id="downloads">Downloads</h4>
+<ul>
+<li><strong>Full GWAS results (large file):</strong> <a href='https://www.dropbox.com/s/kq8otyn7ezy5cv0/20090_373.gwas.imputed_v3.both_sexes.tsv.bgz?dl=1'  onclick="trackOutboundLink('https://www.dropbox.com/s/kq8otyn7ezy5cv0/20090_373.gwas.imputed_v3.both_sexes.tsv.bgz?dl=1'); return false;"><code>20090_373.gwas.imputed_v3.both_sexes.tsv.bgz</code></a></li>
+<li><strong>LDSR-formatted summary statistics:</strong> <a href='https://www.dropbox.com/s/gvqxyyzafnqk11b/20090_373.ldsc.imputed_v3.both_sexes.tsv.bgz?dl=1'  onclick="trackOutboundLink('https://www.dropbox.com/s/gvqxyyzafnqk11b/20090_373.ldsc.imputed_v3.both_sexes.tsv.bgz?dl=1'); return false;"><code>20090_373.ldsc.imputed_v3.both_sexes.tsv.bgz</code></a></li>
+<li><strong>LDSR <span class="math inline">\(h^2_g\)</span> and intercepts for all primary GWAS:</strong> <a href="https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/8vca84rsslgbsua/ukb31063_h2_topline.02Oct2019.tsv.gz?dl=1'); return false;"><code>ukb31063_h2_topline.02Oct2019.tsv.gz</code></a></li>
+</ul>
+<p>See the <a href="https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing" onclick="trackOutboundLink('https://docs.google.com/spreadsheets/d/1EmwlCYYqkoVKqAS71nNDKoN18PyKwysYUppKTSMvKiM/edit?usp=sharing'); return false;">full manifest of LDSR sumstats files</a> for sumstats for other GWAS of this phenotype, where applicable.</p>
+<p>See the <a href="downloads.html">Downloads page</a> for more information.</p>
+<p>
+</p>
+<h4 id="credits">Credits</h4>
+<p>See the full team behind these results <a href="credits.html">here</a>.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
