@@ -181,9 +181,9 @@ bscols(widths=c(12),
 ```{r hist_coef, echo=FALSE}
 
 dtmp <- dat
-dtmp <- dtmp[,-grep("_se",names(dtmp))]
-dtmp <- dtmp[,-grep("_z",names(dtmp))]
-dtmp <- dtmp[,-grep("_p",names(dtmp))]
+dtmp <- dtmp[,-grep("_se$",names(dtmp))]
+dtmp <- dtmp[,-grep("_z$",names(dtmp))]
+dtmp <- dtmp[,-grep("_p$",names(dtmp))]
 dtmp <- dtmp[,-grep("Prop_SNPs",names(dtmp))]
 dtmp <- dtmp[,-grep("Prop_h2",names(dtmp))]
 dtmp <- dtmp[,-grep("Enrichment",names(dtmp))]
@@ -196,17 +196,17 @@ dtmp <- dtmp[,-grep("Nucleotide",names(dtmp))]
 dtmp <- dtmp[,-grep("Backgrd",names(dtmp))]
 dtmp <- dtmp[,-grep("Recomb_Rate",names(dtmp))]
 dtmp <- dtmp[,-grep("extend.500",names(dtmp))]
-dtmp <- dtmp[,!(names(dtmp) %in% c("description","n","n_cases","n_controls","prevalence","mean_chi2","lambdaGC","intercept","ratio","h2_observed","sex","dilute","gwas_file","n_missing","phen_stem","isBinary","keep","notes","isNotPrimary","isBadPower","isLowNeff","isMidNeff","isExtremeSE","isHighSE","isSexBias","isBadOrdinal","isNumericOrdinal","conf_simple","h2_sig","urls"))]
+dtmp <- dtmp[,!(names(dtmp) %in% c("description","n","n_cases","n_controls","prevalence","mean_chi2","lambdaGC","intercept","ratio","sex","dilute","gwas_file","n_missing","phen_stem","isBinary","keep","notes","isNotPrimary","isBadPower","isLowNeff","isMidNeff","isExtremeSE","isHighSE","isSexBias","isBadOrdinal","isNumericOrdinal","conf_simple","h2_sig","urls"))]
 
-dd <- melt(dtmp,c("phenotype","Neff","variable_type","confidence","source","h2_liability"),variable.name = "annot1",value.name="Coefficient")
+dd <- melt(dtmp,c("phenotype","Neff","variable_type","confidence","source","h2_liability","h2_observed"),variable.name = "annot1",value.name="Coefficient")
 dd$annot <- gsub("..Coefficient","",dd$annot1)
 dd$annot <- factor(dd$annot, levels = foo$annot[order(foo$pval)])
 
-d3 <- SharedData$new(dd)
+d3 <- SharedData$new(dd[order(dd$annot),])
 
 pp <- plot_ly(d3, height=600) %>%
 		add_trace(
-			  y = ~Coefficient/h2_liability,
+			  y = ~Coefficient/h2_observed,
 			  split = ~annot,
 			  type="box",
 			  hoverinfo = "x"
@@ -338,9 +338,9 @@ bscols(widths=c(12),
 ```{r hist_enrich, echo=FALSE}
 
 dtmp <- dat
-dtmp <- dtmp[,-grep("_se",names(dtmp))]
-dtmp <- dtmp[,-grep("_z",names(dtmp))]
-dtmp <- dtmp[,-grep("_p",names(dtmp))]
+dtmp <- dtmp[,-grep("_se$",names(dtmp))]
+dtmp <- dtmp[,-grep("_z$",names(dtmp))]
+dtmp <- dtmp[,-grep("_p$",names(dtmp))]
 dtmp <- dtmp[,-grep("Prop_SNPs",names(dtmp))]
 dtmp <- dtmp[,-grep("Prop_h2",names(dtmp))]
 dtmp <- dtmp[,-grep("Coefficient",names(dtmp))]
