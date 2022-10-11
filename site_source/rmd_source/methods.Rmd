@@ -25,7 +25,7 @@ output:
 
 * Genotyping and phenotyping of ~500,000 individuals performed by the [UK Biobank](https://www.ukbiobank.ac.uk/). Accessed under application 31063.
 
-* Phenotypes processed for GWAS using [PHESANT](https://github.com/astheeggeggs/PHESANT) and by extracting ICD10 codes (letter + digits) and recreating [FinnGen](https://www.finngen.fi/en) endpoints.
+* Phenotypes processed for GWAS using [PHESANT](https://github.com/astheeggeggs/PHESANT) and by extracting ICD10 codes (letter + digits) and recreating [FinnGen endpoints](https://www.finngen.fi/en/researchers/clinical-endpoints).
 
 * GWAS performed by the [Neale Lab](https://www.nealelab.is/uk-biobank) using [Hail](https://hail.is) on the [Google Cloud Platform](https://cloud.google.com/). [A full technical discussion](http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded) on the limitations of this analysis and recommendations for intepreting the results based on the Round 1 results, as well as more general details about [our analysis of UK Biobank](http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas), are available elsewhere. Code is also available [on Github](https://github.com/Nealelab/UK_Biobank_GWAS).
 

@@ -9,7 +9,7 @@ output:
     number_sections: false
     toc_depth: 3
 params:
-  datfile: "../results/round2_final/ukb31063_ldsc_sumstat_manifest.tsv.gz"
+  datfile: "../results/round2_final/ukb31063_ldsc_sumstat_manifest_aws_sep2022.tsv.gz"
 ---
 
 ```{r child = '_toc_fix.Rmd'}
@@ -90,7 +90,7 @@ dat$phenobreak <- gsub("_","<wbr>_",dat$phenotype)
 dat$ldsc_dl <- gsub("dl=0","dl=1",dat$ldsc_sumstat_dropbox)
 dat$ldsc_link <- paste0("<a href='",dat$ldsc_dl,"'>","Download LDSC sumstats","</a>")
 
-dat$gwas_dl <- gsub("dl=0","dl=1",dat$gwas_dropbox)
+dat$gwas_dl <- gsub("dl=0","dl=1",dat$gwas_aws)
 dat$gwas_link <- paste0("<a href='",dat$gwas_dl,"'>","Download GWAS results","</a>")
 
 # make table
@@ -137,7 +137,7 @@ LD scores, weights, and allele frequencies for the Baseline-LD v1.1 model used h
 
 ### Full GWAS Results
 
-The full GWAS results are available for download from Dropbox. A full manifest of the available files, with links and documentation, are available [here](https://docs.google.com/spreadsheets/d/1kvPoupSzsSFBNSztMzl04xMoSC3Kcx3CrjVf4yBmESU/edit#gid=227859291). 
+The full GWAS results are available for download from AWS. A full manifest of the available files, with links and documentation, are available [here](https://docs.google.com/spreadsheets/d/1kvPoupSzsSFBNSztMzl04xMoSC3Kcx3CrjVf4yBmESU/edit#gid=227859291). 
 
 For more information about the GWAS analyses, see [the Neale Lab blog](http://www.nealelab.is/uk-biobank) and [github](https://github.com/Nealelab/UK_Biobank_GWAS). 
 
@@ -149,6 +149,6 @@ For more information about the GWAS analyses, see [the Neale Lab blog](http://ww
 
 ### Previous SNP Heritability Results
 
-Lastly, the previous results based on the Round 1 Neale Lab GWAS remain available for download <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">on Dropbox</a>, including both univariate and paritioned LDSR results. Round 1 LDSR results can be browsed [here](round1_h2_browser.html) (with the corresponding univariate results [here](round1_h2_univar_browser.html)).
+Lastly, the previous results based on the Round 1 Neale Lab GWAS remain available for download <a href="https://www.dropbox.com/sh/1kd4tznqx3ahf5i/AAC92j-yYiPoYsAEyGTnAy-oa?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/1kd4tznqx3ahf5i/AAC92j-yYiPoYsAEyGTnAy-oa?dl=0'); return false;">on Dropbox</a>, including both univariate and paritioned LDSR results. Round 1 LDSR results can be browsed [here](round1_h2_browser.html) (with the corresponding univariate results [here](round1_h2_univar_browser.html)).
 
 </div>

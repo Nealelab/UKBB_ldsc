@@ -171,7 +171,7 @@ Use the search box on the top right of the table to filter the table.
 
 Searches include all non-numeric fields, so you filter on flags in multiple columns. For example, try
 
-* `z7 finngen` for highly significant $h^2_g$ results for ICD10-based endpoints defined by [FinnGen](https://www.finngen.fi/en)
+* `z7 finngen` for highly significant $h^2_g$ results for ICD10-based endpoints defined by [FinnGen](https://www.finngen.fi/en/researchers/clinical-endpoints)
 * `female medication` for medication codes where the primary GWAS is in females only
 
 <p></p>
@@ -194,7 +194,7 @@ The above browser includes the following fields:
 
 | Name | Description |
 |------------|------------------------------------------------------------|
-| **ID** (hidden) | either the UK Biobank phenotype code (e.g. matching the [UKB Showcase](http://biobank.ctsu.ox.ac.uk/crystal/index.cgi)), an ICD10 code, or a [FinnGen](https://www.finngen.fi/en) endpoint code |
+| **ID** (hidden) | either the UK Biobank phenotype code (e.g. matching the [UKB Showcase](http://biobank.ctsu.ox.ac.uk/crystal/index.cgi)), an ICD10 code, or a [FinnGen](https://www.finngen.fi/en/researchers/clinical-endpoints) endpoint code |
 | **Phenotype** | Name/description of the phenotype. Clink to link to a more detailed set of LDSR results for the phenotype. |
 | **h2** | the SNP heritability estimate from partitioned LD score regression. Value is given on the liability scale for binary phenotypes, assuming that the population prevalence matches the prevalence in the UK Biobank analysis set. |
 | **h2 se** (hidden) | standard error of the SNP heritability estimate. |
@@ -210,7 +210,7 @@ The above browser includes the following fields:
 | **Neff** | The effective sample size in the UKB GWAS analysis set. For binary variables is 4/(1/$N_{case}$)+(1/$N_{control}$), otherwise is the sample size. More info on the GWAS analysis set is available on the [Neale Lab blog](http://www.nealelab.is/uk-biobank). |
 | **Var Type** (hidden) | Measurement type for the phenotype. One of `binary`, `ordinal`, `continuous_irnt` (i.e. inverse rank-normalized), or `continuous_raw`. |
 | **Prev.** (hidden) | prevalence for binary phenotypes. Is blank if the variable isn't binary.
-| **Source** | the GWAS batch the phenotype belonged to. One of: [PHESANT](https://github.com/astheeggeggs/PHESANT), ICD10, [FinnGen](https://www.finngen.fi/en), or biomarkers. |
+| **Source** | the GWAS batch the phenotype belonged to. One of: [PHESANT](https://github.com/astheeggeggs/PHESANT), ICD10, [FinnGen](https://www.finngen.fi/en/researchers/clinical-endpoints), or biomarkers. |
 | **Sex** (hidden) | the sex strata used as the primary GWAS for this phenotype, e.g. to limit choice of controls for sex-specific case/control phenotypes. One of: `both`, `female`, or `male`. |
 
 Hidden fields can be accessed using the "Select Columns" botton on the top left of the browser table. Search includes all fields even when hidden.
