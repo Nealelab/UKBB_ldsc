@@ -111,6 +111,8 @@ Yes! You can browse genetic correlations between the significantly heritable phe
 * **Supervision**: Benjamin Neale
 * **UK Biobank GWAS Core Team:** Liam Abbott, Sam Bryant, Claire Churchhouse, Andrea Ganna, Daniel Howrigan, Duncan Palmer, Ben Neale, Raymond Walters, Caitlin Carey, The Hail team, Benjamin Neale
 
+**Round 2 release:** <a href="https://zenodo.org/badge/latestdoi/99861592"><img src="https://zenodo.org/badge/99861592.svg" alt="DOI"></a>
+
 See [Credits](credits.html) for complete acknowledgements.
 
 </div>

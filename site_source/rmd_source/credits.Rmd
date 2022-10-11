@@ -17,6 +17,8 @@ output: html_document
 
 With additional thanks to Alex Bloemendal, Patrick Turley, Robert Maier, Michel Nivard, Steven Gazal, Tarjinder Singh, and many others for helpful conversations.
 
+**Round 2 release:** <a href="https://zenodo.org/badge/latestdoi/99861592"><img src="https://zenodo.org/badge/99861592.svg" alt="DOI"></a>
+
 For more info on the UK Biobank GWAS from the Neale Lab, visit [https://nealelab.is/uk-biobank](https://nealelab.is/uk-biobank)
 
 And our sincere thanks to the participants and researchers of the [UK Biobank](https://www.ukbiobank.ac.uk), who made this effort possible. This project completed under UK Biobank application 31063.
