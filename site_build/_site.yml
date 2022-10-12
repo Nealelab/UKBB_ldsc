@@ -64,7 +64,7 @@ output_files:
   downloads.html:
     src: "downloads.Rmd"
     params:
-      datfile: "../results/round2_final/ukb31063_ldsc_sumstat_manifest.tsv.gz"
+      datfile: "../results/round2_final/ukb31063_ldsc_sumstat_manifest_aws_sep2022.tsv.gz"
   credits.html:
     src: "credits.Rmd"
   h2_browser.html:

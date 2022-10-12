@@ -419,7 +419,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Details on LD Score Regression in UK Biobank</h1>
 <h4 class="author"><em>Results from the <a href="credits.html">Neale Lab</a></em></h4>
-<h4 class="date"><em>Last updated 2019-10-19</em></h4>
+<h4 class="date"><em>Last updated 2022-10-11</em></h4>
 
 </div>
 
@@ -463,7 +463,7 @@ code{
 <h3 id="methods-outline">Methods Outline</h3>
 <ul>
 <li><p>Genotyping and phenotyping of ~500,000 individuals performed by the <a href="https://www.ukbiobank.ac.uk/">UK Biobank</a>. Accessed under application 31063.</p></li>
-<li><p>Phenotypes processed for GWAS using <a href="https://github.com/astheeggeggs/PHESANT">PHESANT</a> and by extracting ICD10 codes (letter + digits) and recreating <a href="https://www.finngen.fi/en">FinnGen</a> endpoints.</p></li>
+<li><p>Phenotypes processed for GWAS using <a href="https://github.com/astheeggeggs/PHESANT">PHESANT</a> and by extracting ICD10 codes (letter + digits) and recreating <a href="https://www.finngen.fi/en/researchers/clinical-endpoints">FinnGen endpoints</a>.</p></li>
 <li><p>GWAS performed by the <a href="https://www.nealelab.is/uk-biobank">Neale Lab</a> using <a href="https://hail.is">Hail</a> on the <a href="https://cloud.google.com/">Google Cloud Platform</a>. <a href="http://www.nealelab.is/blog/2017/9/14/heritability-501-ldsr-based-h2-in-ukbb-for-the-technically-minded">A full technical discussion</a> on the limitations of this analysis and recommendations for intepreting the results based on the Round 1 results, as well as more general details about <a href="http://www.nealelab.is/blog/2017/9/11/details-and-considerations-of-the-uk-biobank-gwas">our analysis of UK Biobank</a>, are available elsewhere. Code is also available <a href="https://github.com/Nealelab/UK_Biobank_GWAS">on Github</a>.</p></li>
 <li><p>GWAS summary statistics for HapMap3 sites passing QC (MAF &gt; 0.01, INFO &gt; 0.9, excluding multiallelics and the MHC region) in UK Biobank extracted in the proper format for <a href="https://github.com/bulik/ldsc">ldsc</a> using <a href="https://hail.is">Hail</a>.</p></li>
 <li><p>SNP Heritability estimated using partitioned LD Score regression (LDSR; <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4495769/">Bulik-Sullivan et al. 2015</a>, <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4626285/">Finucane et al. 2015</a>) run using the <a href="https://github.com/omeed-maghzian/mtag">MTAG</a> implementation of <a href="https://github.com/bulik/ldsc">ldsc</a> with the Baseline-LD v1.1 model (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6133304/">Gazal et al. 2017</a>) on the <a href="https://cloud.google.com/">Google Cloud Platform</a>.</p></li>

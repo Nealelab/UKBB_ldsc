@@ -11,7 +11,11 @@ As you may know, the UK Biobank released data on ~500,000 individuals to the sci
 
 <p></p>
 
-Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 4,000 as of this writing. As with the primary GWAS analyses, we’re making the heritability results available for [browsing](h2_browser.html) and bulk [download](downloads.html). 
+Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 4,000 as of this writing. As with the primary GWAS analyses, we’re making the LD Score Regression SNP-heritability results available for [browsing](h2_browser.html) and bulk [download](downloads.html). 
+
+<p></p>
+
+If you're interested in additional traits, additional ancestry groups, and/or other heritability estimation methods, SNP hertiability estimates are also now available from the [Pan-UK Biobank analysis](https://pan.ukbb.broadinstitute.org/docs/heritability).
 
 <br>
 
@@ -21,7 +25,7 @@ Building on the initial genome-wide association analyses, we’ve now estimated 
 
 <br>
 
-You can learn more about the heritability analysis in this series of blog posts:
+You can learn more about the Round 2 Neale Lab GWAS heritability analysis in this series of blog posts:
 
 * [Heritability 101: What is “heritability”?](http://www.nealelab.is/blog/2017/9/13/heritability-101-what-is-heritability)
 * [Heritability 201: Types of heritability and how we estimate it](http://www.nealelab.is/blog/2017/9/13/heritability-201-types-of-heritability-and-how-we-estimate-it)
@@ -52,7 +56,7 @@ If you want more information, please **contact us at: <nealelab.ukb@gmail.com>.*
 
 #### **Where can I find the heritability results?**
 
-We’ve created a browser to explore the results [here](h2_browser.html). You can also download the full results file <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">here</a>.
+We’ve created a browser to explore the results [here](h2_browser.html). You can also download the full results file <a href="https://www.dropbox.com/s/ipeqyhrpdqav5uh/ukb31063_h2_all.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/ipeqyhrpdqav5uh/ukb31063_h2_all.02Oct2019.tsv.gz?dl=1'); return false;">here</a>.
 
 <p></p>
 
@@ -70,9 +74,16 @@ Yes! The full GWAS results are [available for download](https://docs.google.com/
 
 #### **Can I download just the LDSC-formatted sumstats files instead of the full GWAS results?**
 
-Yes! Direct download links for the LDSC sumstats files for all of the primary GWAS are available in a searchable table on the [Downloads page](downloads.html#ldsc_sumstat_files). You can also view and download the <a href="https://www.dropbox.com/s/1sc5k7c8k7mjfv3/ukb31063_ldsc_sumstat_manifest.tsv.gz?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/s/1sc5k7c8k7mjfv3/ukb31063_ldsc_sumstat_manifest.tsv.gz?dl=0'); return false;">full manifest of ldsc sumstats files</a> for easier programmatic access and links to sumstats files for all of the Neale UKB GWAS.
+Yes! Direct download links for the LDSC sumstats files for all of the primary GWAS are available in a searchable table on the [Downloads page](downloads.html#ldsc_sumstat_files). You can also view and download the <a href="https://www.dropbox.com/s/4fantvoxkzdhcou/ukb31063_ldsc_sumstat_manifest_aws_sep2022.tsv.gz?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/s/4fantvoxkzdhcou/ukb31063_ldsc_sumstat_manifest_aws_sep2022.tsv.gz?dl=0'); return false;">full manifest of ldsc sumstats files</a> for easier programmatic access and links to sumstats files for all of the Neale UKB GWAS.
 
 <p></p>
+
+#### **Are there heritability results available for non-European ancestries?**
+
+Yes, the [Pan-UK Biobank](https://pan.ukbb.broadinstitute.org/) analysis includes multiple forms of heritability analysis in 6 ancestry groups in UK Biobank. Details on the analysis can be found [here](https://pan.ukbb.broadinstitute.org/docs/heritability), and results are avalable [for download](https://pan.ukbb.broadinstitute.org/downloads) or can be searched in a [google sheets manifest](https://docs.google.com/spreadsheets/d/1AeeADtT0U1AukliiNyiVzVRdLYPkTbruQSk38DeutU8/edit#gid=1797288938).
+
+<p></p>
+
 
 #### **How should I interpret these heritability results?**
 
@@ -84,7 +95,7 @@ This is a very rough initial analysis and should be treated accordingly. All est
 
 #### **Are genetic correlation results available for these phenotypes?**
 
-Yes! You can browse genetic correlations between the significantly heritable phenotypes at [https://ukbb-rg.hail.is/](https://ukbb-rg.hail.is/). You can also [download the LDSC-formatted sumstats files](downloads.html#ldsc_sumstat_files) for your own genetic correlation analyses. Round 1 results are also available for genetic correlation analyses through [LD Hub](http://ldsc.broadinstitute.org/).
+Yes! You can browse genetic correlations between the significantly heritable phenotypes at [https://ukbb-rg.hail.is/](https://ukbb-rg.hail.is/). You can also [download the LDSC-formatted sumstats files](downloads.html#ldsc_sumstat_files) for your own genetic correlation analyses. 
 
 </div>
 
@@ -99,6 +110,8 @@ Yes! You can browse genetic correlations between the significantly heritable phe
 * **Phenotype analysis support**: Caitlin Carey, Duncan Palmer
 * **Supervision**: Benjamin Neale
 * **UK Biobank GWAS Core Team:** Liam Abbott, Sam Bryant, Claire Churchhouse, Andrea Ganna, Daniel Howrigan, Duncan Palmer, Ben Neale, Raymond Walters, Caitlin Carey, The Hail team, Benjamin Neale
+
+**Round 2 release:** <a href="https://zenodo.org/badge/latestdoi/99861592"><img src="https://zenodo.org/badge/99861592.svg" alt="DOI"></a>
 
 See [Credits](credits.html) for complete acknowledgements.
 

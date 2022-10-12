@@ -8,7 +8,7 @@ params:
   pheno: "20003_1140909368"
   dat_topline: "../results/round2_final/ukb31063_h2_topline.02Oct2019.tsv.gz"
   dat_part: "../results/round2_final/ukb31063_h2_z4.02Oct2019.tsv.gz"
-  dat_manifest: "../results/round2_final/ukb31063_ldsc_sumstat_manifest.tsv.gz"
+  dat_manifest: "../results/round2_final/ukb31063_ldsc_sumstat_manifest_aws_sep2022.tsv.gz"
 title: "SNP Heritability for Phenotype `r params$pheno`"
 ---
 
@@ -31,7 +31,7 @@ ukcode <- strsplit(phen,"_")[[1]][1]
 phen_stem <- ifelse(grepl("_irnt",phen) | grepl("_raw",phen), ukcode, phen)
 
 sumstat_dl <- gsub("dl=0","dl=1",manif_sub$ldsc_sumstat_dropbox)
-gwas_dl <- gsub("dl=0","dl=1",manif_sub$gwas_dropbox)
+gwas_dl <- gsub("dl=0","dl=1",manif_sub$gwas_aws)
 
 isICD <- (as.character(dat_sub$source)=="icd10")
 if(isICD){
@@ -80,7 +80,7 @@ plot_ly(x=rnorm(2),y=rnorm(2),type="scatter",mode="markers")
 ### **Phenotype:** `r dat_sub$description`
 
 `r if(dat_sub$source=="finngen"){
-  paste0("This phenotype is defined based on ICD10 codes to match an endpoint defined by [FinnGen](https://www.finngen.fi/en).")
+  paste0("This phenotype is defined based on ICD10 codes to match an endpoint defined by [FinnGen](https://www.finngen.fi/en/researchers/clinical-endpoints).")
 }else if(isICD){
   paste0("This phenotype can be found as part of the ICD code listings on the UK Biobank Showcase for [code ",ukcode,"](",ukb_url,").")
 }else{
