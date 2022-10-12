@@ -3,6 +3,7 @@
 # load packages
 rm(list=ls())
 # devtools::install_github("rstudio/rmarkdown",ref="bcdb1a28b231576a98dea398986a868da804e609")
+# note: this PR still hasn't been merged, so requires pandoc < 2.0 for compatibility
 require("rmarkdown")
 
 # setup

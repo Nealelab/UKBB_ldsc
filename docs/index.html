@@ -328,11 +328,14 @@ $(document).ready(function () {
 <p>As you may know, the UK Biobank released data on ~500,000 individuals to the scientific community to advance research on genetics. The <a href="http://nealelab.is">Neale Lab</a> has been working to make some basic analyses of that data freely available; you can read more about the overall effort <a href="http://www.nealelab.is/uk-biobank">here</a>.</p>
 <p>
 </p>
-<p>Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 4,000 as of this writing. As with the primary GWAS analyses, we’re making the heritability results available for <a href="h2_browser.html">browsing</a> and bulk <a href="downloads.html">download</a>.</p>
+<p>Building on the initial genome-wide association analyses, we’ve now estimated the heritability of each of those traits and disorders, over 4,000 as of this writing. As with the primary GWAS analyses, we’re making the LD Score Regression SNP-heritability results available for <a href="h2_browser.html">browsing</a> and bulk <a href="downloads.html">download</a>.</p>
+<p>
+</p>
+<p>If you’re interested in additional traits, additional ancestry groups, and/or other heritability estimation methods, SNP hertiability estimates are also now available from the <a href="https://pan.ukbb.broadinstitute.org/docs/heritability">Pan-UK Biobank analysis</a>.</p>
 <p><br></p>
 <p><a href="h2_browser.html" class="btn btn-primary btn-lg">Browse <span class="math inline">\(h^2\)</span></a> <a href="viz_h2.html" class="btn btn-primary btn-lg">Explore Plots</a> <a href="downloads.html"  class="btn btn-primary btn-lg">Download Results</a></p>
 <p><br></p>
-<p>You can learn more about the heritability analysis in this series of blog posts:</p>
+<p>You can learn more about the Round 2 Neale Lab GWAS heritability analysis in this series of blog posts:</p>
 <ul>
 <li><a href="http://www.nealelab.is/blog/2017/9/13/heritability-101-what-is-heritability">Heritability 101: What is “heritability”?</a></li>
 <li><a href="http://www.nealelab.is/blog/2017/9/13/heritability-201-types-of-heritability-and-how-we-estimate-it">Heritability 201: Types of heritability and how we estimate it</a></li>
@@ -356,7 +359,7 @@ $(document).ready(function () {
 <div class="well">
 <h3 id="faq">FAQ</h3>
 <h4 id="where-can-i-find-the-heritability-results"><strong>Where can I find the heritability results?</strong></h4>
-<p>We’ve created a browser to explore the results <a href="h2_browser.html">here</a>. You can also download the full results file <a href="https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/sh/g28ee03vy4hvqw5/AADAkDbSFHsYE8bme1Jjeekca/ldsc_results?dl=0'); return false;">here</a>.</p>
+<p>We’ve created a browser to explore the results <a href="h2_browser.html">here</a>. You can also download the full results file <a href="https://www.dropbox.com/s/ipeqyhrpdqav5uh/ukb31063_h2_all.02Oct2019.tsv.gz?dl=1" onclick="trackOutboundLink('https://www.dropbox.com/s/ipeqyhrpdqav5uh/ukb31063_h2_all.02Oct2019.tsv.gz?dl=1'); return false;">here</a>.</p>
 <p>
 </p>
 <h4 id="what-method-have-you-used-to-estimated-heritability"><strong>What method have you used to estimated heritability?</strong></h4>
@@ -368,7 +371,11 @@ $(document).ready(function () {
 <p>
 </p>
 <h4 id="can-i-download-just-the-ldsc-formatted-sumstats-files-instead-of-the-full-gwas-results"><strong>Can I download just the LDSC-formatted sumstats files instead of the full GWAS results?</strong></h4>
-<p>Yes! Direct download links for the LDSC sumstats files for all of the primary GWAS are available in a searchable table on the <a href="downloads.html#ldsc_sumstat_files">Downloads page</a>. You can also view and download the <a href="https://www.dropbox.com/s/1sc5k7c8k7mjfv3/ukb31063_ldsc_sumstat_manifest.tsv.gz?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/s/1sc5k7c8k7mjfv3/ukb31063_ldsc_sumstat_manifest.tsv.gz?dl=0'); return false;">full manifest of ldsc sumstats files</a> for easier programmatic access and links to sumstats files for all of the Neale UKB GWAS.</p>
+<p>Yes! Direct download links for the LDSC sumstats files for all of the primary GWAS are available in a searchable table on the <a href="downloads.html#ldsc_sumstat_files">Downloads page</a>. You can also view and download the <a href="https://www.dropbox.com/s/4fantvoxkzdhcou/ukb31063_ldsc_sumstat_manifest_aws_sep2022.tsv.gz?dl=0" onclick="trackOutboundLink('https://www.dropbox.com/s/4fantvoxkzdhcou/ukb31063_ldsc_sumstat_manifest_aws_sep2022.tsv.gz?dl=0'); return false;">full manifest of ldsc sumstats files</a> for easier programmatic access and links to sumstats files for all of the Neale UKB GWAS.</p>
+<p>
+</p>
+<h4 id="are-there-heritability-results-available-for-non-european-ancestries"><strong>Are there heritability results available for non-European ancestries?</strong></h4>
+<p>Yes, the <a href="https://pan.ukbb.broadinstitute.org/">Pan-UK Biobank</a> analysis includes multiple forms of heritability analysis in 6 ancestry groups in UK Biobank. Details on the analysis can be found <a href="https://pan.ukbb.broadinstitute.org/docs/heritability">here</a>, and results are avalable <a href="https://pan.ukbb.broadinstitute.org/downloads">for download</a> or can be searched in a <a href="https://docs.google.com/spreadsheets/d/1AeeADtT0U1AukliiNyiVzVRdLYPkTbruQSk38DeutU8/edit#gid=1797288938">google sheets manifest</a>.</p>
 <p>
 </p>
 <h4 id="how-should-i-interpret-these-heritability-results"><strong>How should I interpret these heritability results?</strong></h4>
@@ -377,7 +384,7 @@ $(document).ready(function () {
 <p>
 </p>
 <h4 id="are-genetic-correlation-results-available-for-these-phenotypes"><strong>Are genetic correlation results available for these phenotypes?</strong></h4>
-<p>Yes! You can browse genetic correlations between the significantly heritable phenotypes at <a href="https://ukbb-rg.hail.is/" class="uri">https://ukbb-rg.hail.is/</a>. You can also <a href="downloads.html#ldsc_sumstat_files">download the LDSC-formatted sumstats files</a> for your own genetic correlation analyses. Round 1 results are also available for genetic correlation analyses through <a href="http://ldsc.broadinstitute.org/">LD Hub</a>.</p>
+<p>Yes! You can browse genetic correlations between the significantly heritable phenotypes at <a href="https://ukbb-rg.hail.is/" class="uri">https://ukbb-rg.hail.is/</a>. You can also <a href="downloads.html#ldsc_sumstat_files">download the LDSC-formatted sumstats files</a> for your own genetic correlation analyses.</p>
 </div>
 <p><br></p>
 <div class="well">
@@ -389,6 +396,7 @@ $(document).ready(function () {
 <li><strong>Supervision</strong>: Benjamin Neale</li>
 <li><strong>UK Biobank GWAS Core Team:</strong> Liam Abbott, Sam Bryant, Claire Churchhouse, Andrea Ganna, Daniel Howrigan, Duncan Palmer, Ben Neale, Raymond Walters, Caitlin Carey, The Hail team, Benjamin Neale</li>
 </ul>
+<p><strong>Round 2 release:</strong> <a href="https://zenodo.org/badge/latestdoi/99861592"><img src="https://zenodo.org/badge/99861592.svg" alt="DOI"></a></p>
 <p>See <a href="credits.html">Credits</a> for complete acknowledgements.</p>
 </div>
 
