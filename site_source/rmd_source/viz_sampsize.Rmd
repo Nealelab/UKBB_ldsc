@@ -109,7 +109,7 @@ The large sample size of UK Biobank, coupled with the large number of phenotypes
 
 In looking at these trends we largely focus on effective sample, defined for binary phenotypes as
 
-$$N_{eff} = \frac{1}{\frac{1}{N_{cases}}+\frac{1}{N_{controls}}}$$
+$$N_{eff} = \frac{4}{\frac{1}{N_{cases}}+\frac{1}{N_{controls}}}$$
 and as the standard sample size for non-binary phenotypes. We expect this effective N to better capture statistical power for rare binary phenotypes. We compare how $N$ and $N_{eff}$ relate to the significance of $h^2_g$ results below.
 
 </div>

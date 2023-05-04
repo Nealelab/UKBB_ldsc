@@ -19,6 +19,7 @@ Scripts used for the LD Score regression analysis itself are in the [UKBB_ldsc_s
 * **September 2017:** first release
 * **October 2019:** round2 release
 * **October 2022:** minor formatting fixes and link updates (AWS, Pan-UK Biobank)
+* **May 2023:** fix typo in description of effective N on sample size plots page
 
 ## Main contents of this repo
 
